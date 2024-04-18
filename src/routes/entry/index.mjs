@@ -61,7 +61,7 @@ export default {
         additionalProperties: false,
       },
       fn: async (ctx) => {
-        const entryItem = await createEntry(ctx.contentData);
+        const entryItem = await createEntry(ctx.request.data);
         ctx.entryItem = entryItem;
         ctx.response = {
           data: entryItem,
@@ -69,7 +69,9 @@ export default {
       },
     },
     onPost: (ctx) => {
-      dispatch('entryList', (pre) => [...pre, ctx.entryItem]);
+      if (ctx.entryItem) {
+        dispatch('entryList', (pre) => [...pre, ctx.entryItem]);
+      }
     },
   },
   '/api/entries': {
@@ -92,7 +94,7 @@ export default {
       properties: entryType,
     },
     onPre: async (ctx) => {
-      const entryItem = await findEntry(decodeURIComponent(ctx.matches[2]));
+      const entryItem = await findEntry(decodeURIComponent(ctx.request.params.entry));
       if (!entryItem) {
         ctx.throw(404);
       }
@@ -125,7 +127,7 @@ export default {
         additionalProperties: false,
       },
       fn: async (ctx) => {
-        const entryItem = await updateEntry(ctx.entryItem, ctx.response.data);
+        const entryItem = await updateEntry(ctx.entryItem, ctx.request.data);
         ctx.response = {
           data: entryItem,
         };

@@ -13,7 +13,7 @@ export default async (input) => {
       },
     });
     if (matched) {
-      throw createError(403, 'alias alreay set');
+      throw createError(403, `\`${matched.alias}\` alias alreay set`);
     }
   }
   const entryItem = new EntryModel(data);

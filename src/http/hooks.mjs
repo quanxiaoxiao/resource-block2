@@ -36,6 +36,9 @@ export default {
     } else {
       ctx.onRequest = async (_ctx) => {
         const data = decodeContentToJSON(ctx.request.body, _ctx.request.headers);
+        if (!data) {
+          throw createError(400);
+        }
         if (!requestHandler.validate(data)) {
           throw createError(400, JSON.stringify(requestHandler.validate.errors));
         }
