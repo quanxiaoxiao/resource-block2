@@ -1,5 +1,9 @@
+import createError from 'http-errors';
 import resourceType from '../../types/resource.mjs';
+import { selectEntry } from '../../store/selector.mjs';
+import createResource from './createResource.mjs';
 import queryResources from './queryResources.mjs';
+import handleResourceStreamReceive from './handleResourceStreamReceive.mjs';
 
 export default {
   '/api/:entry/resources': {
@@ -82,6 +86,46 @@ export default {
           list,
         },
       };
+    },
+  },
+  '/upload/:entry?': {
+    select: {
+      type: 'object',
+      properties: resourceType,
+    },
+    query: {
+      name: {
+        type: 'string',
+        resolve: (v) => {
+          if (!v) {
+            return '';
+          }
+          return v;
+        },
+      },
+    },
+    onPre: async (ctx) => {
+      const entry = ctx.request.params.entry || 'default';
+      const entryItem = selectEntry(entry);
+      if (!entryItem) {
+        throw createError(403, `\`${entry}\` entry is not exist`);
+      }
+      ctx.entryItem = entryItem;
+    },
+    post: {
+      fn: handleResourceStreamReceive,
+      onRequestEnd: async (ctx) => {
+        ctx.blockItem.sha256 = ctx.hash.digest('hex');
+        const resourceItem = await createResource({
+          name: ctx.request.query.name,
+          pathname: ctx.resourcePathname,
+          entry: ctx.entryItem._id,
+          blockData: ctx.blockItem,
+        });
+        ctx.response = {
+          data: resourceItem,
+        };
+      },
     },
   },
 };

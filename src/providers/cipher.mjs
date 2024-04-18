@@ -1,7 +1,10 @@
+import assert from 'node:assert';
 import {
   createCipheriv,
   createDecipheriv,
+  createHmac,
 } from 'node:crypto';
+import { isValidObjectId } from '@quanxiaoxiao/mongo';
 import store from '../store/store.mjs';
 
 const { getState } = store;
@@ -24,29 +27,29 @@ const incrementBuffer = (buf, counter) => {
 
 export const hmacSha256 = (buf) => {
   const { secret } = getState().cipher;
-  return crypto.createHmac('sha256', secret).update(buf).digest();
+  return createHmac('sha256', secret).update(buf).digest();
 };
 
-export const calcKey = (blockItem) => hmacSha256([
-  blockItem.size,
-  blockItem.sha256,
-  blockItem._id.toString(),
-].join(':'));
+export const calcKey = (block) => hmacSha256(Buffer.from(block));
 
-export const calcIV = (blockItem) => hmacSha256(Buffer.from(blockItem._id.toString())).slice(-16);
+export const calcIV = (block) => Buffer.from(block).slice(-16);
 
-export const encrypt = (blockItem) => {
+export const encrypt = (block) => {
+  assert(isValidObjectId(block));
   const { algorithm } = getState().cipher;
-  const iv = calcIV(blockItem);
-  const key = calcKey(blockItem);
+  const blockId = block.toString();
+  const key = calcKey(blockId);
+  const iv = calcIV(blockId);
   const cipher = createCipheriv(algorithm, key, iv);
   return cipher;
 };
 
-export const decrypt = (blockItem, counter = 0) => {
+export const decrypt = (block, counter = 0) => {
+  assert(isValidObjectId(block));
+  const blockId = block.toString();
   const { algorithm } = getState().cipher;
-  const iv = calcIV(blockItem);
-  const key = calcKey(blockItem);
+  const iv = calcIV(blockId);
+  const key = calcKey(blockId);
   const decipher = createDecipheriv(algorithm, key, incrementBuffer(iv, counter));
   return decipher;
 };

@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import createError from 'http-errors';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
 import { selectRouteMatchList } from '../store/selector.mjs';
@@ -16,43 +17,58 @@ export default {
     if (!requestHandler) {
       throw createError(405);
     }
+    ctx.requestHandler = requestHandler;
     ctx.request.params = ctx.routeMatched.urlMatch(ctx.request.pathname).params;
     if (ctx.routeMatched.query) {
       ctx.request.query = ctx.routeMatched.query(ctx.request.query);
     }
-    if (ctx.routeMatched.match) {
-      if (!ctx.routeMatched.match(ctx.request)) {
-        throw createError(400);
-      }
+    if (ctx.routeMatched.match
+      && !ctx.routeMatched.match(ctx.request)) {
+      throw createError(400);
     }
+
     if (ctx.routeMatched.onPre) {
       await ctx.routeMatched.onPre(ctx);
     }
-    if (['PUT', 'POST'].includes(ctx.request.method)) {
+
+    if (!requestHandler.validate) {
+      await requestHandler.fn(ctx);
+    } else {
       ctx.onRequest = async (_ctx) => {
         const data = decodeContentToJSON(ctx.request.body, _ctx.request.headers);
-        if (requestHandler.validate && !requestHandler.validate(data)) {
+        if (!requestHandler.validate(data)) {
           throw createError(400, JSON.stringify(requestHandler.validate.errors));
         }
         _ctx.request.data = data;
         await requestHandler.fn(_ctx);
       };
-    } else {
-      ctx.onRequest = requestHandler.fn;
     }
+
     if (ctx.routeMatched.select) {
       ctx.onResponse = (_ctx) => {
+        if (!_ctx.response) {
+          throw createError(503);
+        }
+        if (!_ctx.response.data) {
+          throw createError(404);
+        }
         _ctx.response.data = ctx.routeMatched.select(_ctx.response.data);
       };
     }
+  },
+  onClose: (ctx) => {
+    if (ctx.resourcePathname && fs.existsSync(ctx.resourcePathname)) {
+      fs.unlinkSync(ctx.resourcePathname);
+    }
+  },
+  onHttpRequestEnd: async (ctx) => {
+    if (ctx.requestHandler.onRequestEnd) {
+      await ctx.requestHandler.onRequestEnd(ctx);
+    }
+  },
+  onHttpResponseEnd: (ctx) => {
     if (ctx.routeMatched.onPost) {
-      const _onResponse = ctx.onResponse;
-      ctx.onResponse = async (_ctx) => {
-        if (_onResponse) {
-          await _onResponse(_ctx);
-        }
-        await ctx.routeMatched.onPost(_ctx);
-      };
+      ctx.routeMatched.onPost(ctx);
     }
   },
   onHttpError: (ctx) => {

@@ -2,22 +2,25 @@ import process from 'node:process';
 import assert from 'node:assert';
 import Ajv from 'ajv';
 import _ from 'lodash';
-import shelljs from 'shelljs';
+// import shelljs from 'shelljs';
 import { select } from '@quanxiaoxiao/datav';
 import { generateRouteList } from '@quanxiaoxiao/http-router';
 import store from './store/store.mjs';
 import './models/index.mjs';
 import createServer from './http/createServer.mjs';
 import routes from './routes/index.mjs';
+import queryEntries from './routes/entry/queryEntries.mjs';
 
-const { getState, dispatch } = store;
+const { dispatch } = store;
 
 createServer();
 
 process.on('exit', () => {
+  /*
   if (shelljs.test('-f', getState().configPathnames.state)) {
     shelljs.rm(getState().configPathnames.state);
   }
+  */
 });
 
 process.on('SIGINT', () => {
@@ -30,7 +33,7 @@ process.on('uncaughtException', (error) => {
   process.exit(1);
 });
 
-process.nextTick(() => {
+process.nextTick(async () => {
   const routeList = generateRouteList(routes);
   dispatch('routeMatchList', routeList.map((d) => {
     const routeItem = {
@@ -55,28 +58,35 @@ process.nextTick(() => {
     if (d.onPost) {
       routeItem.onPost = d.onPost;
     }
-    const methodList = ['get', 'post', 'put', 'delete'];
-    for (let i = 0; i < methodList.length; i++) {
-      const method = methodList[i];
-      const handler = d[method];
+    const httpMethodList = ['get', 'post', 'put', 'delete'];
+    for (let i = 0; i < httpMethodList.length; i++) {
+      const handler = d[httpMethodList[i]];
+      const httpMethod = httpMethodList[i].toUpperCase();
       if (handler) {
         if (typeof handler === 'function') {
-          routeItem[method.toUpperCase()] = {
+          routeItem[httpMethod] = {
             fn: handler,
           };
         } else {
+          assert(_.isPlainObject(handler));
           assert(typeof handler.fn === 'function');
-          routeItem[method.toUpperCase()] = {
+          routeItem[httpMethod] = {
             fn: handler.fn,
           };
           if (handler.validate) {
             const ajv = new Ajv();
-            routeItem[method.toUpperCase()].validate = ajv.compile(handler.validate);
-            routeItem[method.toUpperCase()].validate.toJSON = () => handler.validate;
+            routeItem[httpMethod].validate = ajv.compile(handler.validate);
+            routeItem[httpMethod].validate.toJSON = () => handler.validate;
+          }
+          if (handler.onRequestEnd) {
+            routeItem[httpMethod].onRequestEnd = handler.onRequestEnd;
           }
         }
       }
     }
     return routeItem;
   }));
+
+  const entryList = await queryEntries({});
+  dispatch('entryList', entryList);
 });

@@ -16,5 +16,6 @@ export default {
   },
   timeCreate: {
     type: 'number',
+    index: 1,
   },
 };

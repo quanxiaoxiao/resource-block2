@@ -7,6 +7,7 @@ export default new Schema({
     type: String,
     required: true,
     unique: true,
+    index: true,
   },
   timeCreate: {
     type: Number,
@@ -19,6 +20,7 @@ export default new Schema({
   linkCount: {
     type: Number,
     default: 1,
+    index: true,
   },
   size: {
     type: Number,
