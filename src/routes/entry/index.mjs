@@ -103,12 +103,10 @@ export default {
       }
       ctx.entryItem = entryItem;
     },
-    get: {
-      fn: (ctx) => {
-        ctx.response = {
-          data: ctx.entryItem,
-        };
-      },
+    get: (ctx) => {
+      ctx.response = {
+        data: ctx.entryItem,
+      };
     },
     put: {
       validate: {
@@ -147,16 +145,14 @@ export default {
         );
       },
     },
-    delete: {
-      fn: async (ctx) => {
-        await removeEntry(ctx.entryItem);
-        ctx.response = {
-          data: ctx.entryItem,
-        };
-        const { entryList } = getState();
-        const entry = ctx.entryItem._id.toString();
-        ctx.entryList = curd.remove(entryList, (d) => d._id.toString() === entry);
-      },
+    delete: async (ctx) => {
+      await removeEntry(ctx.entryItem);
+      ctx.response = {
+        data: ctx.entryItem,
+      };
+      const { entryList } = getState();
+      const entry = ctx.entryItem._id.toString();
+      ctx.entryList = curd.remove(entryList, (d) => d._id.toString() === entry);
     },
     onPost: (ctx) => {
       if (Object.hasOwnProperty.call(ctx, 'entryList')) {
