@@ -6,6 +6,21 @@ import {
   updateEntry,
 } from './apis.mjs';
 
+const clear = async () => {
+  await [
+    'test_123',
+    'test_1234',
+    'test_9999',
+  ].reduce(async (acc, alias) => {
+    const entryItem = await fetchEntry(alias);
+    if (entryItem) {
+      await removeEntry(entryItem._id);
+    }
+  }, Promise.resolve);
+};
+
+await clear();
+
 const entryItem = await createEntry({
   name: 'aaa',
 });
@@ -40,16 +55,69 @@ entryItem2 = await fetchEntry('test_123');
 assert.equal(entryItem2.name, 'fffffff');
 assert.equal(entryItem2.alias, 'test_123');
 
-entryItem2 = await removeEntry(entryItem._id);
+let entryItem3 = await createEntry({
+  name: 'eee',
+  alias: 'test_123',
+});
 
-assert(entryItem2 != null);
+assert(entryItem3 === null);
 
-entryItem2 = await fetchEntry(entryItem._id);
+entryItem3 = await createEntry({
+  name: 'eee',
+  alias: 'test_1234',
+});
 
-assert.equal(entryItem2, null);
+assert.equal(entryItem3.name, 'eee');
+assert.equal(entryItem3.alias, 'test_1234');
+
+const bbb = await updateEntry(entryItem3._id, {
+  alias: 'test_123',
+});
+
+assert.equal(bbb, null);
+
+entryItem3 = await fetchEntry('test_1234');
+
+assert.equal(entryItem3.name, 'eee');
 
 entryItem2 = await fetchEntry('test_123');
 
+assert.equal(entryItem2.name, 'fffffff');
+
+entryItem2 = await updateEntry('test_123', {
+  alias: 'test_9999',
+});
+
+assert.equal(entryItem2.alias, 'test_9999');
+
+entryItem2 = await removeEntry('test_123');
+
 assert.equal(entryItem2, null);
 
-console.log(999);
+entryItem3 = await updateEntry('test_1234', {
+  alias: 'test_123',
+});
+
+assert.equal(entryItem3.name, 'eee');
+
+entryItem3 = await fetchEntry('test_1234');
+
+assert.equal(entryItem3, null);
+
+entryItem3 = await fetchEntry('test_123');
+
+assert.equal(entryItem3.name, 'eee');
+
+entryItem2 = await removeEntry(entryItem._id);
+
+assert.equal(entryItem2.alias, 'test_9999');
+assert.equal(entryItem2.name, 'fffffff');
+
+entryItem3 = await updateEntry(entryItem3._id, {
+  alias: 'test_9999',
+});
+
+assert.equal(entryItem3.alias, 'test_9999');
+assert.equal(entryItem3.name, 'eee');
+
+await clear();
