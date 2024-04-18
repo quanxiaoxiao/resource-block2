@@ -1,5 +1,6 @@
 import { generateSortDataUpdates } from '@quanxiaoxiao/mongo';
 import { Entry as EntryModel } from '../../models/index.mjs';
+import queryEntries from './queryEntries.mjs';
 
 export default async (input) => {
   const entryList = await EntryModel.find({
@@ -20,12 +21,5 @@ export default async (input) => {
     },
   );
   await EntryModel.bulkWrite(updates);
-  return EntryModel.find({
-    invalid: {
-      $ne: true,
-    },
-  }).sort({
-    order: -1,
-    timeCreate: 1,
-  });
+  return queryEntries({});
 };

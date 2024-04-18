@@ -1,3 +1,4 @@
+import curd from '@quanxiaoxiao/curd';
 import store from '../../store/store.mjs';
 import entryType from '../../types/entry.mjs';
 import createEntry from './createEntry.mjs';
@@ -7,7 +8,7 @@ import updateEntry from './updateEntry.mjs';
 import queryEntries from './queryEntries.mjs';
 import sortEntries from './sortEntries.mjs';
 
-const { dispatch } = store;
+const { dispatch, getState } = store;
 
 export default {
   '/api/entries/sort': {
@@ -16,7 +17,9 @@ export default {
       properties: ['_id', { type: 'string' }],
     },
     onPost: (ctx) => {
-      dispatch('entryList', ctx.entryList);
+      if (Object.hasOwnProperty.call(ctx, 'entryList')) {
+        dispatch('entryList', ctx.entryList);
+      }
     },
     put: {
       validate: {
@@ -131,6 +134,17 @@ export default {
         ctx.response = {
           data: entryItem,
         };
+        const { entryList } = getState();
+        const entry = entryItem._id.toString();
+        ctx.entryList = curd.update(
+          entryList,
+          (d) => d._id.toString() === entry,
+          {
+            name: entryItem.name,
+            alias: entryItem.alias,
+            description: entryItem.description,
+          },
+        );
       },
     },
     delete: {
@@ -139,10 +153,13 @@ export default {
         ctx.response = {
           data: ctx.entryItem,
         };
+        const { entryList } = getState();
+        const entry = ctx.entryItem._id.toString();
+        ctx.entryList = curd.remove(entryList, (d) => d._id.toString() === entry);
       },
     },
     onPost: (ctx) => {
-      if (ctx.entryList) {
+      if (Object.hasOwnProperty.call(ctx, 'entryList')) {
         dispatch('entryList', ctx.entryList);
       }
     },

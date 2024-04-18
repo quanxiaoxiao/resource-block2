@@ -18,5 +18,5 @@ export default async (input) => {
   }
   const entryItem = new EntryModel(data);
   await entryItem.save();
-  return entryItem;
+  return entryItem.toObject();
 };

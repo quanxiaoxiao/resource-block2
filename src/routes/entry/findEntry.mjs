@@ -13,7 +13,9 @@ export default async (entry) => {
   } else {
     query.alias = entry;
   }
-  const entryItem = await EntryModel.findOne(query);
+  const entryItem = await EntryModel
+    .findOne(query)
+    .lean();
   if (!entryItem) {
     throw createError(404);
   }

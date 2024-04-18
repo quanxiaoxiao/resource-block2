@@ -24,22 +24,24 @@ export default async (entryItem, input) => {
       throw createError(403, `\`${data.alias}\` alias alreay set`);
     }
   }
-  const entryItemNext = await EntryModel.findOneAndUpdate(
-    {
-      _id: entryItem._id,
-      invalid: {
-        $ne: true,
+  const entryItemNext = await EntryModel
+    .findOneAndUpdate(
+      {
+        _id: entryItem._id,
+        invalid: {
+          $ne: true,
+        },
       },
-    },
-    {
-      $set: {
-        ...data,
+      {
+        $set: {
+          ...data,
+        },
       },
-    },
-    {
-      new: true,
-    },
-  );
+      {
+        new: true,
+      },
+    )
+    .lean();
   if (!entryItemNext) {
     throw createError(404);
   }
