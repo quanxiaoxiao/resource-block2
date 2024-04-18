@@ -103,6 +103,11 @@ export default {
       }
       ctx.entryItem = entryItem;
     },
+    onPost: (ctx) => {
+      if (Object.hasOwnProperty.call(ctx, 'entryList')) {
+        dispatch('entryList', ctx.entryList);
+      }
+    },
     get: (ctx) => {
       ctx.response = {
         data: ctx.entryItem,
@@ -153,11 +158,6 @@ export default {
       const { entryList } = getState();
       const entry = ctx.entryItem._id.toString();
       ctx.entryList = curd.remove(entryList, (d) => d._id.toString() === entry);
-    },
-    onPost: (ctx) => {
-      if (Object.hasOwnProperty.call(ctx, 'entryList')) {
-        dispatch('entryList', ctx.entryList);
-      }
     },
   },
 };
