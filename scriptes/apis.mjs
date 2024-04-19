@@ -39,10 +39,7 @@ export const fetchEntry = async (entry) => {
     port: 4059,
     path: `/api/entry/${entry}`,
   });
-  if (responseItem.statusCode !== 200) {
-    return null;
-  }
-  return decodeContentToJSON(responseItem.body, responseItem.headers);
+  return decode(responseItem);
 };
 
 export const removeEntry = async (entry) => {
@@ -52,10 +49,7 @@ export const removeEntry = async (entry) => {
     method: 'DELETE',
     path: `/api/entry/${entry}`,
   });
-  if (responseItem.statusCode !== 200) {
-    return null;
-  }
-  return decodeContentToJSON(responseItem.body, responseItem.headers);
+  return decode(responseItem);
 };
 
 export const updateEntry = async (entry, data) => {
@@ -69,10 +63,7 @@ export const updateEntry = async (entry, data) => {
     body: JSON.stringify(data),
     path: `/api/entry/${entry}`,
   });
-  if (responseItem.statusCode !== 200) {
-    return null;
-  }
-  return decodeContentToJSON(responseItem.body, responseItem.headers);
+  return decode(responseItem);
 };
 
 export const fetchResource = async (resource) => {
@@ -81,10 +72,7 @@ export const fetchResource = async (resource) => {
     port: 4059,
     path: `/api/resource/${resource}`,
   });
-  if (responseItem.statusCode !== 200) {
-    return null;
-  }
-  return decodeContentToJSON(responseItem.body, responseItem.headers);
+  return decode(responseItem);
 };
 
 export const removeResource = async (resource) => {
@@ -94,8 +82,19 @@ export const removeResource = async (resource) => {
     method: 'DELETE',
     path: `/api/resource/${resource}`,
   });
-  if (responseItem.statusCode !== 200) {
-    return null;
-  }
-  return decodeContentToJSON(responseItem.body, responseItem.headers);
+  return decode(responseItem);
+};
+
+export const updateResource = async (resource, data) => {
+  const responseItem = await httpRequest({
+    hostname: '127.0.0.1',
+    port: 4059,
+    method: 'PUT',
+    headers: {
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    path: `/api/resource/${resource}`,
+  });
+  return decode(responseItem);
 };

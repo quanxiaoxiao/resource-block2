@@ -7,6 +7,7 @@ import {
   removeEntry,
   removeResource,
   fetchResource,
+  updateResource,
 } from './apis.mjs';
 
 const upload = async (entryName) => {
@@ -16,7 +17,7 @@ const upload = async (entryName) => {
     hostname: '127.0.0.1',
     port: 4059,
     method: 'POST',
-    path: `/upload/${entryName}`,
+    path: entryName ? `/upload/${entryName}` : '/upload',
     body: content,
   });
   if (responseItem.statusCode !== 200) {
@@ -68,5 +69,21 @@ resourceItem2 = await fetchResource(resourceItem2._id);
 assert.equal(resourceItem2, null);
 
 resourceItem2 = await upload(entryName);
+
+assert.equal(resourceItem2, null);
+
+resourceItem2 = await upload();
+
+assert.equal(resourceItem2.name, '');
+
+resourceItem2 = await updateResource(resourceItem2._id, {
+  name: 'cqqq',
+});
+
+assert.equal(resourceItem2.name, 'cqqq');
+
+resourceItem2 = await updateResource(resourceItem2._id, {
+  name: '',
+});
 
 assert.equal(resourceItem2, null);
