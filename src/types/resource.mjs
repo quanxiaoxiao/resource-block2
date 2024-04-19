@@ -18,10 +18,10 @@ export default {
     type: 'string',
   },
   size: ['block.size', { type: 'number' }],
+  hash: ['block.sha256', { type: 'string' }],
   entry: {
     type: 'string',
   },
-  hash: ['block.sha256', { type: 'string' }],
   category: {
     type: 'string',
   },

@@ -8,6 +8,7 @@ dist
 _index.mjs
 _index.js
 _temp
+_blocks
 
 # Swap
 [._]*.s[a-v][a-z]

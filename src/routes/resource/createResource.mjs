@@ -3,6 +3,8 @@ import {
   Resource as ResourceModel,
   Block as BlockModel,
 } from '../../models/index.mjs';
+import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
+import findResource from './findResource.mjs';
 
 export default async ({
   name,
@@ -33,6 +35,7 @@ export default async ({
     resourceItem.block = blockMatched._id;
   } else {
     const blockItem = new BlockModel({
+      _id: blockData._id,
       sha256: blockData.sha256,
       size: blockData.size,
       timeCreate: blockData.timeCreate,
@@ -40,10 +43,20 @@ export default async ({
       linkCount: 1,
     });
     resourceItem.block = blockItem._id;
-    await blockItem.save();
+    const blockPathname = calcBlockPathname(resourceItem.block);
+    try {
+      await fs.stat(blockPathname);
+      console.warn(`\`${blockPathname}\` block already exist`);
+    } catch (error) {
+      // ignore
+    }
+    await Promise.all([
+      blockItem.save(),
+      fs.rename(pathname, blockPathname),
+    ]);
   }
 
-  // await resourceItem.save();
+  await resourceItem.save();
 
-  return resourceItem;
+  return findResource(resourceItem._id);
 };
