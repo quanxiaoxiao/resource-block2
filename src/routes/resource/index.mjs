@@ -4,9 +4,38 @@ import { selectEntry } from '../../store/selector.mjs';
 import createResource from './createResource.mjs';
 import queryResources from './queryResources.mjs';
 import handleResourceStreamReceive from './handleResourceStreamReceive.mjs';
+import findResource from './findResource.mjs';
 
 export default {
+  '/api/resource/:_id': {
+    select: {
+      type: 'object',
+      properties: resourceType,
+    },
+    onPre: async (ctx) => {
+      const resourceItem = await findResource(ctx.request.params._id);
+      if (!resourceItem) {
+        throw createError(404);
+      }
+      const entryItem = selectEntry(resourceItem.entry);
+      if (!entryItem) {
+        throw createError(404);
+      }
+      ctx.resourceItem = resourceItem;
+    },
+    get: (ctx) => {
+      ctx.response = {
+        data: ctx.resourceItem,
+      };
+    },
+  },
   '/api/:entry/resources': {
+    onPre: async (ctx) => {
+      const entryItem = selectEntry(ctx.request.params.entry);
+      if (!entryItem) {
+        throw createError(404);
+      }
+    },
     select: {
       type: 'object',
       properties: {

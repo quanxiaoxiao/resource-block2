@@ -21,5 +21,9 @@ export default async (resource) => {
   if (!resourceItem || !resourceItem.block) {
     throw createError(404);
   }
+  if (resourceItem.block.linkCount === 0) {
+    console.warn(`\`${resource}\` resource block link count is 0`);
+    throw createError(500);
+  }
   return resourceItem;
 };

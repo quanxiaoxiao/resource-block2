@@ -70,3 +70,15 @@ export const updateEntry = async (entry, data) => {
   }
   return decodeContentToJSON(responseItem.body, responseItem.headers);
 };
+
+export const fetchResource = async (resource) => {
+  const responseItem = await httpRequest({
+    hostname: '127.0.0.1',
+    port: 4059,
+    path: `/api/resource/${resource}`,
+  });
+  if (responseItem.statusCode !== 200) {
+    return null;
+  }
+  return decodeContentToJSON(responseItem.body, responseItem.headers);
+};
