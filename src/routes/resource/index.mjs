@@ -6,6 +6,7 @@ import createResource from './createResource.mjs';
 import queryResources from './queryResources.mjs';
 import findResource from './findResource.mjs';
 import removeResource from './removeResource.mjs';
+import updateResource from './updateResource.mjs';
 
 export default {
   '/api/resource/:_id': {
@@ -34,6 +35,40 @@ export default {
       ctx.response = {
         data: ctx.resourceItem,
       };
+    },
+    put: {
+      validate: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+            minLength: 1,
+          },
+          mime: {
+            type: 'string',
+            nullable: true,
+          },
+          entry: {
+            type: 'string',
+            minLength: 1,
+          },
+          category: {
+            type: 'string',
+            nullable: true,
+          },
+          description: {
+            type: 'string',
+            nullable: true,
+          },
+        },
+        additionalProperties: true,
+      },
+      fn: async (ctx) => {
+        const resourceItem = await updateResource(ctx.resourceItem, ctx.request.data);
+        ctx.response = {
+          data: resourceItem,
+        };
+      },
     },
   },
   '/api/:entry/resources': {

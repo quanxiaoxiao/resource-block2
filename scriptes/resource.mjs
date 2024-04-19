@@ -38,7 +38,7 @@ const resourceEmpty = await upload(entryName);
 
 assert.equal(resourceEmpty, null);
 
-await createEntry({
+const entryItem = await createEntry({
   name: 'aaXXXXXXXa',
   alias: entryName,
 });
@@ -54,5 +54,19 @@ resourceItem2 = await removeResource(resourceItem._id);
 assert.deepEqual(resourceItem, resourceItem2);
 
 resourceItem2 = await fetchResource(resourceItem._id);
+
+assert.equal(resourceItem2, null);
+
+resourceItem2 = await upload(entryName);
+
+assert(!!resourceItem2);
+
+await removeEntry(entryItem._id);
+
+resourceItem2 = await fetchResource(resourceItem2._id);
+
+assert.equal(resourceItem2, null);
+
+resourceItem2 = await upload(entryName);
 
 assert.equal(resourceItem2, null);
