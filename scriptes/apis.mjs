@@ -2,6 +2,13 @@ import assert from 'node:assert';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
 import { httpRequest } from '@quanxiaoxiao/http-request';
 
+const decode = (responseItem) => {
+  if (responseItem.statusCode !== 200) {
+    return null;
+  }
+  return decodeContentToJSON(responseItem.body, responseItem.headers);
+};
+
 export const fetchEntries = async () => {
   const responseItem = await httpRequest({
     hostname: '127.0.0.1',
@@ -23,10 +30,7 @@ export const createEntry = async (data) => {
     },
     body: JSON.stringify(data),
   });
-  if (responseItem.statusCode !== 200) {
-    return null;
-  }
-  return decodeContentToJSON(responseItem.body, responseItem.headers);
+  return decode(responseItem);
 };
 
 export const fetchEntry = async (entry) => {
@@ -75,6 +79,19 @@ export const fetchResource = async (resource) => {
   const responseItem = await httpRequest({
     hostname: '127.0.0.1',
     port: 4059,
+    path: `/api/resource/${resource}`,
+  });
+  if (responseItem.statusCode !== 200) {
+    return null;
+  }
+  return decodeContentToJSON(responseItem.body, responseItem.headers);
+};
+
+export const removeResource = async (resource) => {
+  const responseItem = await httpRequest({
+    hostname: '127.0.0.1',
+    port: 4059,
+    method: 'DELETE',
     path: `/api/resource/${resource}`,
   });
   if (responseItem.statusCode !== 200) {

@@ -1,10 +1,11 @@
 import createError from 'http-errors';
 import resourceType from '../../types/resource.mjs';
 import { selectEntry } from '../../store/selector.mjs';
+import handleResourceStreamReceive from './handleResourceStreamReceive.mjs';
 import createResource from './createResource.mjs';
 import queryResources from './queryResources.mjs';
-import handleResourceStreamReceive from './handleResourceStreamReceive.mjs';
 import findResource from './findResource.mjs';
+import removeResource from './removeResource.mjs';
 
 export default {
   '/api/resource/:_id': {
@@ -24,6 +25,12 @@ export default {
       ctx.resourceItem = resourceItem;
     },
     get: (ctx) => {
+      ctx.response = {
+        data: ctx.resourceItem,
+      };
+    },
+    delete: async (ctx) => {
+      await removeResource(ctx.resourceItem);
       ctx.response = {
         data: ctx.resourceItem,
       };

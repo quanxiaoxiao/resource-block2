@@ -5,6 +5,7 @@ import {
   fetchEntry,
   createEntry,
   removeEntry,
+  removeResource,
   fetchResource,
 } from './apis.mjs';
 
@@ -44,6 +45,14 @@ await createEntry({
 
 const resourceItem = await upload(entryName);
 
-const resourceItem2 = await fetchResource(resourceItem._id);
+let resourceItem2 = await fetchResource(resourceItem._id);
 
 assert.deepEqual(resourceItem, resourceItem2);
+
+resourceItem2 = await removeResource(resourceItem._id);
+
+assert.deepEqual(resourceItem, resourceItem2);
+
+resourceItem2 = await fetchResource(resourceItem._id);
+
+assert.equal(resourceItem2, null);
