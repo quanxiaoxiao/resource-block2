@@ -7,24 +7,47 @@ import queryResources from './queryResources.mjs';
 import findResource from './findResource.mjs';
 import removeResource from './removeResource.mjs';
 import updateResource from './updateResource.mjs';
+import getResourceBlockStream from './getResourceBlockStream.mjs';
+
+const checkoutResource = async (ctx) => {
+  const resourceItem = await findResource(ctx.request.params._id);
+  if (!resourceItem) {
+    throw createError(404);
+  }
+  const entryItem = selectEntry(resourceItem.entry);
+  if (!entryItem) {
+    throw createError(404);
+  }
+  ctx.resourceItem = resourceItem;
+};
 
 export default {
+  '/resource/:_id/(preview)?': {
+    onPre: checkoutResource,
+    get: {
+      fn: (ctx) => {
+        ctx.response = {
+          headers: {},
+          body: getResourceBlockStream(ctx.resourceItem),
+        };
+        const resourceName = ctx.resourceItem.name || ctx.resourceItem._id.toString();
+        if (ctx.request.params[0] === 'preview') {
+          if (ctx.resourceItem.mime) {
+            ctx.response.headers['content-type'] = ctx.resourceItem.mine;
+          }
+          ctx.response.headers['content-disposition'] = `inline; filename=${resourceName}`;
+        } else {
+          ctx.response.headers['content-disposition'] = `attachment; filename="${resourceName}"`;
+        }
+      },
+    },
+  },
   '/api/resource/:_id': {
     select: {
       type: 'object',
       properties: resourceType,
     },
-    onPre: async (ctx) => {
-      const resourceItem = await findResource(ctx.request.params._id);
-      if (!resourceItem) {
-        throw createError(404);
-      }
-      const entryItem = selectEntry(resourceItem.entry);
-      if (!entryItem) {
-        throw createError(404);
-      }
-      ctx.resourceItem = resourceItem;
-    },
+    onPre: checkoutResource,
     get: (ctx) => {
       ctx.response = {
         data: ctx.resourceItem,
