@@ -53,7 +53,7 @@ export default async (
       linkCount: 1,
     });
     const blockPathname = calcBlockPathname(blockItem._id.toString());
-    const tempPathname = path.join( path.resolve(pathname, '..'), path.basename(blockPathname));
+    const tempPathname = path.join(path.resolve(pathname, '..'), path.basename(blockPathname));
     shelljs.mv(
       pathname,
       tempPathname,
