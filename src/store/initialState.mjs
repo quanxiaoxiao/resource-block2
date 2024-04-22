@@ -10,10 +10,12 @@ const initialState = {
     port: select({ type: 'integer' })(process.env.SERVER_PORT),
   },
   entryList: [],
-  resourceStreamList: [],
   block: {
     dir: getPathname(process.env.BLOCK_DIR),
     tempDir: getPathname(process.env.BLOCK_TEMP_DIR),
+  },
+  configPathnames: {
+    state: getPathname('./.state.json'),
   },
   cipher: {
     secret: process.env.CIPHER_SECRET,

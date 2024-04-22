@@ -9,6 +9,7 @@ _index.mjs
 _index.js
 _temp
 _blocks
+.state.json
 
 # Swap
 [._]*.s[a-v][a-z]
