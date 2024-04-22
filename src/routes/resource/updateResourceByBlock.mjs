@@ -1,4 +1,6 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
+import shelljs from 'shelljs';
 import {
   Block as BlockModel,
   Resource as ResourceModel,
@@ -51,6 +53,12 @@ export default async (
       linkCount: 1,
     });
     const blockPathname = calcBlockPathname(blockItem._id.toString());
+    const tempPathname = path.join( path.resolve(pathname, '..'), path.basename(blockPathname));
+    shelljs.mv(
+      pathname,
+      tempPathname,
+    );
+    shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
     await Promise.all([
       ResourceModel.updateOne(
         {
@@ -75,7 +83,6 @@ export default async (
         },
       ),
       blockItem.save(),
-      fs.rename(pathname, blockPathname),
     ]);
   }
 

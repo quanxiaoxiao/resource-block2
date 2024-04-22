@@ -1,4 +1,6 @@
 import fs from 'node:fs/promises';
+import shelljs from 'shelljs';
+import path from 'node:path';
 import {
   Resource as ResourceModel,
   Block as BlockModel,
@@ -44,10 +46,13 @@ export default async ({
     });
     resourceItem.block = blockItem._id;
     const blockPathname = calcBlockPathname(blockItem._id.toString());
-    await Promise.all([
-      blockItem.save(),
-      fs.rename(pathname, blockPathname),
-    ]);
+    const tempPathname = path.join( path.resolve(pathname, '..'), path.basename(blockPathname));
+    shelljs.mv(
+      pathname,
+      tempPathname,
+    );
+    shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
+    await blockItem.save();
   }
 
   await resourceItem.save();
