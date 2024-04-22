@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+import { select } from '@quanxiaoxiao/datav';
 import resourceType from '../../types/resource.mjs';
 import { selectEntry } from '../../store/selector.mjs';
 import handleResourceStreamReceive from './handleResourceStreamReceive.mjs';
@@ -8,6 +9,7 @@ import findResource from './findResource.mjs';
 import removeResource from './removeResource.mjs';
 import updateResource from './updateResource.mjs';
 import getResourceBlockStream from './getResourceBlockStream.mjs';
+import updateResourceByBlock from './updateResourceByBlock.mjs';
 
 const checkoutResource = async (ctx) => {
   const resourceItem = await findResource(ctx.request.params._id);
@@ -24,6 +26,39 @@ const checkoutResource = async (ctx) => {
 export default {
   '/resource/:_id/(preview)?': {
     onPre: checkoutResource,
+    put: {
+      fn: (ctx) => {
+        if (ctx.request.params[0] === 'preview') {
+          throw createError(404);
+        }
+        return handleResourceStreamReceive(ctx);
+      },
+      onRequestEnd: async (ctx) => {
+        ctx.blockItem.sha256 = ctx.hash.digest('hex');
+        if (ctx.blockItem.sha256 === ctx.resourceItem.block.sha256) {
+          ctx.response = {
+            data: select({
+              type: 'object',
+              properties: resourceType,
+            })(ctx.resourceItem),
+          };
+        } else {
+          const resourceItem = await updateResourceByBlock(
+            ctx.resourceItem,
+            {
+              pathname: ctx.resourcePathname,
+              blockData: ctx.blockItem,
+            },
+          );
+          ctx.response = {
+            data: select({
+              type: 'object',
+              properties: resourceType,
+            })(resourceItem),
+          };
+        }
+      },
+    },
     get: {
       fn: (ctx) => {
         ctx.response = {

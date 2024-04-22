@@ -1,26 +1,24 @@
 import fs from 'node:fs/promises';
 import {
-  Resource as ResourceModel,
   Block as BlockModel,
+  Resource as ResourceModel,
 } from '../../models/index.mjs';
 import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
 import findResource from './findResource.mjs';
 
-export default async ({
-  name,
-  entry,
-  blockData,
-  pathname,
-}) => {
+export default async (
+  resourceItem,
+  {
+    pathname,
+    blockData,
+  },
+) => {
   const blockMatched = await BlockModel.findOne({
     sha256: blockData.sha256,
   });
-  const resourceItem = new ResourceModel({
-    name,
-    entry,
-    timeCreate: blockData.timeCreate,
-    timeUpdate: blockData.timeUpdate,
-  });
+
+  const blockOrigin = resourceItem.block._id;
+
   if (blockMatched) {
     await Promise.all([
       BlockModel.updateOne(
@@ -30,9 +28,19 @@ export default async ({
           timeUpdate: blockData.timeCreate,
         },
       ),
+      ResourceModel.updateOne(
+        {
+          _id: resourceItem._id,
+        },
+        {
+          $set: {
+            timeUpdate: blockData.timeUpdate,
+            block: blockMatched._id,
+          },
+        },
+      ),
       fs.unlink(pathname),
     ]);
-    resourceItem.block = blockMatched._id;
   } else {
     const blockItem = new BlockModel({
       _id: blockData._id,
@@ -42,15 +50,34 @@ export default async ({
       timeUpdate: blockData.timeCreate,
       linkCount: 1,
     });
-    resourceItem.block = blockItem._id;
     const blockPathname = calcBlockPathname(blockItem._id.toString());
     await Promise.all([
+      ResourceModel.updateOne(
+        {
+          _id: resourceItem._id,
+        },
+        {
+          $set: {
+            timeUpdate: blockData.timeUpdate,
+            block: blockItem._id,
+          },
+        },
+      ),
+      BlockModel.updateOne(
+        {
+          _id: blockOrigin,
+          linkCount: {
+            $gte: 1,
+          },
+        },
+        {
+          $inc: { linkCount: -1 },
+        },
+      ),
       blockItem.save(),
       fs.rename(pathname, blockPathname),
     ]);
   }
-
-  await resourceItem.save();
 
   return findResource(resourceItem._id);
 };
