@@ -86,10 +86,17 @@ export default {
           if (start === end) {
             ctx.response.body = null;
           } else {
-            ctx.response.body = getResourceBlockStream(ctx.resourceItem, [start, end]);
+            ctx.response.body = getResourceBlockStream(
+              ctx.resourceItem,
+              ctx.request.timeCreate,
+              [start, end],
+            );
           }
         } else {
-          ctx.response.body = getResourceBlockStream(ctx.resourceItem);
+          ctx.response.body = getResourceBlockStream(
+            ctx.resourceItem,
+            ctx.request.timeCreate,
+          );
         }
       },
     },
