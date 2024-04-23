@@ -36,8 +36,8 @@ export default {
         return handleResourceStreamReceive(ctx);
       },
       onRequestEnd: async (ctx) => {
-        ctx.blockItem.sha256 = ctx.hash.digest('hex');
         await waitFor(50);
+        ctx.blockItem.sha256 = ctx.hash.digest('hex');
         if (ctx.blockItem.sha256 === ctx.resourceItem.block.sha256) {
           await fs.unlink(ctx.pathname);
           ctx.response = {
@@ -248,8 +248,8 @@ export default {
     post: {
       fn: handleResourceStreamReceive,
       onRequestEnd: async (ctx) => {
-        ctx.blockItem.sha256 = ctx.hash.digest('hex');
         await waitFor(50);
+        ctx.blockItem.sha256 = ctx.hash.digest('hex');
         const resourceItem = await createResource({
           name: ctx.request.query.name,
           pathname: ctx.resourcePathname,
