@@ -1,5 +1,7 @@
+import fs from 'node:fs/promises';
 import createError from 'http-errors';
 import { select } from '@quanxiaoxiao/datav';
+import { waitFor } from '@quanxiaoxiao/utils';
 import resourceType from '../../types/resource.mjs';
 import { selectEntry } from '../../store/selector.mjs';
 import handleResourceStreamReceive from './handleResourceStreamReceive.mjs';
@@ -35,7 +37,9 @@ export default {
       },
       onRequestEnd: async (ctx) => {
         ctx.blockItem.sha256 = ctx.hash.digest('hex');
+        await waitFor(50);
         if (ctx.blockItem.sha256 === ctx.resourceItem.block.sha256) {
+          await fs.unlink(ctx.pathname);
           ctx.response = {
             data: select({
               type: 'object',
@@ -245,6 +249,7 @@ export default {
       fn: handleResourceStreamReceive,
       onRequestEnd: async (ctx) => {
         ctx.blockItem.sha256 = ctx.hash.digest('hex');
+        await waitFor(50);
         const resourceItem = await createResource({
           name: ctx.request.query.name,
           pathname: ctx.resourcePathname,

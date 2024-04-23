@@ -45,14 +45,32 @@ export default async ({
       linkCount: 1,
     });
     resourceItem.block = blockItem._id;
-    const blockPathname = calcBlockPathname(blockItem._id.toString());
-    const tempPathname = path.join(path.resolve(pathname, '..'), path.basename(blockPathname));
-    shelljs.mv(
-      pathname,
-      tempPathname,
-    );
-    shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
-    await blockItem.save();
+    try {
+      await blockItem.save();
+      const blockPathname = calcBlockPathname(blockItem._id.toString());
+      const tempPathname = path.join(path.resolve(pathname, '..'), path.basename(blockPathname));
+      shelljs.mv(
+        pathname,
+        tempPathname,
+      );
+      shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
+    } catch (error) {
+      const blockItemOther = await BlockModel.findOneAndUpdate(
+        {
+          sha256: blockData.sha256,
+        },
+        {
+          $inc: { linkCount: 1 },
+          timeUpdate: blockData.timeCreate,
+        },
+      );
+      if (blockItemOther) {
+        resourceItem.block = blockItemOther._id;
+      } else {
+        console.warn(error);
+      }
+      await fs.unlink(pathname);
+    }
   }
 
   await resourceItem.save();

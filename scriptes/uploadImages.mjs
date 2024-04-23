@@ -1,8 +1,11 @@
 import path from 'node:path';
 import process from 'node:process';
 import fs from 'node:fs';
+import { Semaphore } from '@quanxiaoxiao/utils';
 import { httpRequest } from '@quanxiaoxiao/http-request';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
+
+const sem = new Semaphore(16);
 
 const cookie = '_auth=BearereyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdW5sYW5kIiwic3ViIjoidHp0ZXN0IiwiZXhwIjoxNzIxODA2NzMyLCJ2ZXJzaW9uIjoiMjAyNDA0MTUxNTM4NTIiLCJpYXQiOjE3MTMxNjY3MzIsInJvbGVzIjpbIlVTRVIiLCJBRE1JTiIsIlNVUFBPUlQiXX0.ZL783G4XI4KUZUHme0Ng9kGUJkyulIJDyoGrlVPxz6A';
 
@@ -11,7 +14,7 @@ const host1 = {
   port: 3381,
 };
 
-const resourceServerPort = 3000;
+const resourceServerPort = 4059;
 
 const upload = async (pathname, name) => {
   const responseItem = await httpRequest({
@@ -56,8 +59,7 @@ const dirname = path.resolve(process.cwd(), 'imgs');
 
 const fileList = fs.readdirSync(dirname);
 
-await fileList.reduce(async (acc, name) => {
-  await acc;
+const action = async (name) => {
   const matches = name.match(/^([0-9x]+)_(\w+)\.\w+$/i);
   if (matches) {
     const data = await upload(path.join(dirname, name), name);
@@ -69,4 +71,14 @@ await fileList.reduce(async (acc, name) => {
       console.log(ret);
     }
   }
-}, Promise.resolve);
+};
+
+for (let i = 0; i < fileList.length; i++) {
+  const fileName = fileList[i];
+  sem.acquire(() => {
+    action(fileName)
+      .then(() => {
+        sem.release();
+      });
+  });
+}
