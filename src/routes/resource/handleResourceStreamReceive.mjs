@@ -20,8 +20,7 @@ export default (ctx) => {
     timeUpdate: ctx.request.timeCreate,
   };
   ctx.resourcePathname = path.resolve(getState().block.tempDir, ctx.blockItem._id.toString());
-  const ws = createWriteStream(ctx.resourcePathname);
-  const encode = encrypt(ctx.blockItem._id.toString());
+
   pass
     .pipe(new Transform({
       transform(chunk, encoding, callback) {
@@ -30,7 +29,7 @@ export default (ctx) => {
         callback(null, chunk);
       },
     }))
-    .pipe(encode)
-    .pipe(ws);
+    .pipe(encrypt(ctx.blockItem._id.toString()))
+    .pipe(createWriteStream(ctx.resourcePathname));
   ctx.request.body = pass;
 };
