@@ -4,6 +4,7 @@ import { select } from '@quanxiaoxiao/datav';
 import { waitFor } from '@quanxiaoxiao/utils';
 import resourceType from '../../types/resource.mjs';
 import { selectEntry } from '../../store/selector.mjs';
+import parseContentRange from '../../utilities/parseContentRange.mjs';
 import handleResourceStreamReceive from './handleResourceStreamReceive.mjs';
 import createResource from './createResource.mjs';
 import queryResources from './queryResources.mjs';
@@ -67,7 +68,6 @@ export default {
       fn: (ctx) => {
         ctx.response = {
           headers: {},
-          body: getResourceBlockStream(ctx.resourceItem),
         };
         const resourceName = ctx.resourceItem.name || ctx.resourceItem._id.toString();
         if (ctx.request.params[0] === 'preview') {
@@ -77,6 +77,19 @@ export default {
           ctx.response.headers['content-disposition'] = `inline; filename=${resourceName}`;
         } else {
           ctx.response.headers['content-disposition'] = `attachment; filename="${resourceName}"`;
+        }
+        if (ctx.request.headers.range) {
+          const [start, end] = parseContentRange(ctx.request.headers.range, ctx.resourceItem.block.size);
+          ctx.response.statusCode = 206;
+          ctx.response.headers['accept-ranges'] = 'bytes';
+          ctx.response.headers['content-range'] = `bytes ${start}-${end}/${ctx.resourceItem.block.size}`;
+          if (start === end) {
+            ctx.response.body = null;
+          } else {
+            ctx.response.body = getResourceBlockStream(ctx.resourceItem, [start, end]);
+          }
+        } else {
+          ctx.response.body = getResourceBlockStream(ctx.resourceItem);
         }
       },
     },
