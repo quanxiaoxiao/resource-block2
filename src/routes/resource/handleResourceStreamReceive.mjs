@@ -3,10 +3,11 @@ import crypto from 'node:crypto';
 import { PassThrough, Transform } from 'node:stream';
 import { createWriteStream } from 'node:fs';
 import mongoose from 'mongoose';
+import curd from '@quanxiaoxiao/curd';
 import store from '../../store/store.mjs';
 import { encrypt } from '../../providers/cipher.mjs';
 
-const { getState } = store;
+const { getState, dispatch } = store;
 
 export default (ctx) => {
   const pass = new PassThrough();
@@ -19,7 +20,18 @@ export default (ctx) => {
     timeCreate: ctx.request.timeCreate,
     timeUpdate: ctx.request.timeCreate,
   };
-  ctx.resourcePathname = path.resolve(getState().block.tempDir, ctx.blockItem._id.toString());
+  const block = ctx.blockItem._id.toString();
+  ctx.resourcePathname = path.resolve(getState().block.tempDir, block);
+
+  dispatch('streamInputList', (pre) => [...pre, {
+    block,
+    timeCreate: ctx.blockItem.timeCreate,
+  }]);
+  const ws = createWriteStream(ctx.resourcePathname);
+
+  ws.once('close', () => {
+    dispatch('streamInputList', (pre) => curd.remove(pre, (d) => d.block === block));
+  });
 
   pass
     .pipe(new Transform({
@@ -30,6 +42,7 @@ export default (ctx) => {
       },
     }))
     .pipe(encrypt(ctx.blockItem._id.toString()))
-    .pipe(createWriteStream(ctx.resourcePathname));
+    .pipe(ws);
+
   ctx.request.body = pass;
 };

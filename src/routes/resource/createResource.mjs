@@ -24,17 +24,19 @@ export default async ({
     timeUpdate: blockData.timeUpdate,
   });
   if (blockMatched) {
-    await Promise.all([
-      BlockModel.updateOne(
-        { _id: blockMatched._id },
-        {
-          $inc: { linkCount: 1 },
-          timeUpdate: blockData.timeCreate,
-        },
-      ),
-      fs.unlink(pathname),
-    ]);
+    await BlockModel.updateOne(
+      { _id: blockMatched._id },
+      {
+        $inc: { linkCount: 1 },
+        timeUpdate: blockData.timeCreate,
+      },
+    );
     resourceItem.block = blockMatched._id;
+    fs.unlink(pathname)
+      .then(
+        () => {},
+        () => {},
+      );
   } else {
     const blockItem = new BlockModel({
       _id: blockData._id,
@@ -69,7 +71,11 @@ export default async ({
       } else {
         console.warn(error);
       }
-      await fs.unlink(pathname);
+      fs.unlink(pathname)
+        .then(
+          () => {},
+          () => {},
+        );
     }
   }
 

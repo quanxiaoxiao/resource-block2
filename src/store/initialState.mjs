@@ -10,6 +10,7 @@ const initialState = {
     port: select({ type: 'integer' })(process.env.SERVER_PORT),
   },
   entryList: [],
+  streamInputList: [],
   block: {
     dir: getPathname(process.env.BLOCK_DIR),
     tempDir: getPathname(process.env.BLOCK_TEMP_DIR),
