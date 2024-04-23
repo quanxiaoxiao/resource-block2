@@ -1,0 +1,17 @@
+.git
+logger
+.env
+Dockerfile
+.state.json
+node_modules
+imgs
+_temp
+_blocks
+.eslintrc
+.editorconfig
+.dockerignore
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]

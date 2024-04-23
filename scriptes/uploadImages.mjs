@@ -14,7 +14,7 @@ const host1 = {
   port: 3381,
 };
 
-const resourceServerPort = 4059;
+const resourceServerPort = 3000;
 
 const upload = async (pathname, name) => {
   const responseItem = await httpRequest({
