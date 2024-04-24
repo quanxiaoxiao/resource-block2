@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { Readable } from 'node:stream';
 import createError from 'http-errors';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
 import { selectRouteMatchList } from '../store/selector.mjs';
@@ -62,6 +63,12 @@ export default {
   onClose: (ctx) => {
     if (ctx.resourcePathname && fs.existsSync(ctx.resourcePathname)) {
       fs.unlinkSync(ctx.resourcePathname);
+    }
+    if (ctx.response
+      && ctx.response.body instanceof Readable
+      && !ctx.response.body.destroyed
+    ) {
+      ctx.response.body.destroy();
     }
   },
   onHttpRequestEnd: async (ctx) => {
