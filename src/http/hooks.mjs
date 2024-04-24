@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import { Readable } from 'node:stream';
 import createError from 'http-errors';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
 import { selectRouteMatchList } from '../store/selector.mjs';
@@ -32,43 +31,39 @@ export default {
       await ctx.routeMatched.onPre(ctx);
     }
 
-    if (!requestHandler.validate) {
-      await requestHandler.fn(ctx);
-    } else {
-      ctx.onRequest = async (_ctx) => {
-        const data = decodeContentToJSON(ctx.request.body, _ctx.request.headers);
-        if (!data) {
-          throw createError(400);
-        }
-        if (!requestHandler.validate(data)) {
-          throw createError(400, JSON.stringify(requestHandler.validate.errors));
-        }
-        _ctx.request.data = data;
-        await requestHandler.fn(_ctx);
-      };
-    }
+    if (ctx.socket.writable) {
+      if (!requestHandler.validate) {
+        await requestHandler.fn(ctx);
+      } else {
+        ctx.onRequest = async (_ctx) => {
+          const data = decodeContentToJSON(ctx.request.body, _ctx.request.headers);
+          if (!data) {
+            throw createError(400);
+          }
+          if (!requestHandler.validate(data)) {
+            throw createError(400, JSON.stringify(requestHandler.validate.errors));
+          }
+          _ctx.request.data = data;
+          await requestHandler.fn(_ctx);
+        };
+      }
 
-    if (ctx.routeMatched.select) {
-      ctx.onResponse = (_ctx) => {
-        if (!_ctx.response) {
-          throw createError(503);
-        }
-        if (!_ctx.response.data) {
-          throw createError(404);
-        }
-        _ctx.response.data = ctx.routeMatched.select(_ctx.response.data);
-      };
+      if (ctx.routeMatched.select) {
+        ctx.onResponse = (_ctx) => {
+          if (!_ctx.response) {
+            throw createError(503);
+          }
+          if (!_ctx.response.data) {
+            throw createError(404);
+          }
+          _ctx.response.data = ctx.routeMatched.select(_ctx.response.data);
+        };
+      }
     }
   },
   onClose: (ctx) => {
     if (ctx.resourcePathname && fs.existsSync(ctx.resourcePathname)) {
       fs.unlinkSync(ctx.resourcePathname);
-    }
-    if (ctx.response
-      && ctx.response.body instanceof Readable
-      && !ctx.response.body.destroyed
-    ) {
-      ctx.response.body.destroy();
     }
   },
   onHttpRequestEnd: async (ctx) => {

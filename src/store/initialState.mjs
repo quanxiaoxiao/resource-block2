@@ -11,7 +11,6 @@ const initialState = {
   },
   entryList: [],
   streamInputList: [],
-  streamOutputList: [],
   block: {
     dir: getPathname(process.env.BLOCK_DIR),
     tempDir: getPathname(process.env.BLOCK_TEMP_DIR),
