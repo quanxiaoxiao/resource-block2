@@ -153,7 +153,7 @@ export default {
       },
     },
   },
-  '/api/:entry/resources': {
+  '/api/entry/:entry/resources': {
     onPre: async (ctx) => {
       const entryItem = selectEntry(ctx.request.params.entry);
       if (!entryItem) {

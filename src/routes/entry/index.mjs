@@ -7,6 +7,7 @@ import removeEntry from './removeEntry.mjs';
 import updateEntry from './updateEntry.mjs';
 import queryEntries from './queryEntries.mjs';
 import sortEntries from './sortEntries.mjs';
+import statisticsEntry from './statisticsEntry.mjs';
 
 const { dispatch, getState } = store;
 
@@ -89,6 +90,28 @@ export default {
           data: entryList,
         };
       },
+    },
+  },
+  '/api/entry/:entry/statistics': {
+    select: {
+      type: 'object',
+      properties: {
+        size: {
+          type: 'number',
+        },
+        count: {
+          type: 'integer',
+        },
+        timeUpdate: {
+          type: 'number',
+        },
+      },
+    },
+    get: async (ctx) => {
+      const dataStatistics = await statisticsEntry(ctx.request.params.entry);
+      ctx.response = {
+        data: dataStatistics,
+      };
     },
   },
   '/api/entry/:entry': {

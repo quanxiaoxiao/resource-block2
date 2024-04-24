@@ -19,6 +19,25 @@ export const fetchEntries = async () => {
   return decodeContentToJSON(responseItem.body, responseItem.headers);
 };
 
+export const fetchEntryStatistics = async (entry) => {
+  const responseItem = await httpRequest({
+    hostname: '127.0.0.1',
+    port: 4059,
+    path: `/api/entry/${entry}/statistics`,
+  });
+  return decode(responseItem);
+};
+
+export const fetchEntryResources = async (entry, count) => {
+  const responseItem = await httpRequest({
+    hostname: '127.0.0.1',
+    port: 4059,
+    path: `/api/entry/${entry}/resources?limit=${count}`,
+  });
+  const { list } = decode(responseItem);
+  return list;
+};
+
 export const createEntry = async (data) => {
   const responseItem = await httpRequest({
     hostname: '127.0.0.1',

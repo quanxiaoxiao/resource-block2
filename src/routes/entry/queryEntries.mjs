@@ -6,6 +6,7 @@ export default async (args) => {
   query.invalid = {
     $ne: true,
   };
+
   const entryList = await EntryModel
     .find(query)
     .sort({
