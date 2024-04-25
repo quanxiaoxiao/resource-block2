@@ -32,6 +32,7 @@ export default async ({
         timeUpdate: blockData.timeCreate,
       },
     );
+    logger.warn(`\`${blockMatched._id.toString()}\` block link count \`${blockMatched.linkCount + 1}\``);
     resourceItem.block = blockMatched._id;
     fs.unlink(pathname)
       .then(
@@ -57,8 +58,9 @@ export default async ({
         tempPathname,
       );
       shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
+      logger.warn(`\`${blockItem._id.toString()}\` store block \`${blockPathname}\``);
     } catch (error) {
-      const blockItemOther = await BlockModel.findOneAndUpdate(
+      const blockOtherItem = await BlockModel.findOneAndUpdate(
         {
           sha256: blockData.sha256,
         },
@@ -66,9 +68,13 @@ export default async ({
           $inc: { linkCount: 1 },
           timeUpdate: blockData.timeCreate,
         },
+        {
+          new: true,
+        },
       );
-      if (blockItemOther) {
-        resourceItem.block = blockItemOther._id;
+      if (blockOtherItem) {
+        resourceItem.block = blockOtherItem._id;
+        logger.warn(`\`${blockItem._id.toString()}\` block link count \`${blockOtherItem.linkCount}\``);
       } else {
         logger.warn(error);
       }
@@ -79,6 +85,8 @@ export default async ({
         );
     }
   }
+
+  logger.warn(`\`${resourceItem._id.toString()}\` createResource \`${JSON.stringify({ name, entry })}\``);
 
   await resourceItem.save();
 

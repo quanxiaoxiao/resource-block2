@@ -25,7 +25,7 @@ export default (ctx) => {
   const block = ctx.blockItem._id.toString();
   ctx.resourcePathname = path.resolve(getState().block.tempDir, block);
 
-  logger.warn(`\`${block}\` start receive block stream`);
+  logger.warn(`\`${ctx.entryItem._id.toString()}\` entry \`${block}\` block start receive stream`);
 
   dispatch('streamInputList', (pre) => [...pre, {
     block,
@@ -46,7 +46,7 @@ export default (ctx) => {
     if (!isSocketCloseEmit) {
       socket.off('close', handleCloseOnSocket);
     }
-    logger.warn(`\`${block}\` receive block stream done`);
+    logger.warn(`\`${block}\` block receive stream done`);
     dispatch('streamInputList', (pre) => curd.remove(pre, (d) => d.block === block));
   }
 

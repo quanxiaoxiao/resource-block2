@@ -23,6 +23,7 @@ const checkoutResource = async (ctx) => {
   if (!entryItem) {
     throw createError(404);
   }
+  ctx.entryItem = entryItem;
   ctx.resourceItem = resourceItem;
 };
 

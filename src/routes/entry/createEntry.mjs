@@ -18,7 +18,7 @@ export default async (input) => {
     }
   }
   const entryItem = new EntryModel(data);
-  logger.warn(`createEntry \`${JSON.stringify(data)}\``);
+  logger.warn(`\`${entryItem._id.toString()}\` createEntry \`${JSON.stringify(data)}\``);
   await entryItem.save();
   return entryItem.toObject();
 };

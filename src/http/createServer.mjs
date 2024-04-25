@@ -13,5 +13,7 @@ export default () => {
 
   const { port } = getState().server;
 
+  console.log(`server listen at \`${port}\``);
+
   server.listen(port);
 };
