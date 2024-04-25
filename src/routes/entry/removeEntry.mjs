@@ -1,6 +1,8 @@
+import logger from '../../logger.mjs';
 import { Entry as EntryModel } from '../../models/index.mjs';
 
 export default async (entryItem) => {
+  logger.warn(`removeEntry \`${entryItem._id}\``);
   await EntryModel.updateOne(
     {
       _id: entryItem._id,
