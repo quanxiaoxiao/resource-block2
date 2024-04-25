@@ -119,7 +119,8 @@ export default async (
     ]);
   }
 
-  logger.warn(`\`${resourceItem._id.toString()}\` updateResourceByBlock \`${resourceItem.block.toString()}\``);
+  const resourceItemNext = await findResource(resourceItem._id);
+  logger.warn(`\`${resourceItem._id.toString()}\` updateResourceByBlock \`${resourceItemNext.block._id.toString()}\``);
 
-  return findResource(resourceItem._id);
+  return resourceItemNext;
 };
