@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+import logger from '../../logger.mjs';
 import { Entry as EntryModel } from '../../models/index.mjs';
 
 export default async (entryItem, input) => {
@@ -45,5 +46,6 @@ export default async (entryItem, input) => {
   if (!entryItemNext) {
     throw createError(404);
   }
+  logger.warn(`\`${entryItem._id}\` updateEntry \`${JSON.stringify(data)}\``);
   return entryItemNext;
 };
