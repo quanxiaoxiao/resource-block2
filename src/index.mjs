@@ -2,6 +2,7 @@ import process from 'node:process';
 import shelljs from 'shelljs';
 import store from './store/store.mjs';
 import './models/index.mjs';
+import logger from './logger.mjs';
 import createServer from './http/createServer.mjs';
 import generateRequestRoutes from './configs/generateRequestRoutes.mjs';
 import generateBlockDirs from './configs/generateBlockDirs.mjs';
@@ -24,6 +25,7 @@ process.on('SIGINT', () => {
 process.on('uncaughtException', (error) => {
   console.error('boooooooom');
   console.error(error);
+  logger.error(`boooooooom ${error.message}`);
   process.exit(1);
 });
 

@@ -11,5 +11,7 @@ export default () => {
     socket,
   }));
 
-  server.listen(getState().server.port);
+  const { port } = getState().server;
+
+  server.listen(port);
 };

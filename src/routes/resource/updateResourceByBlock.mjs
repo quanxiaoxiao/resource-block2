@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import shelljs from 'shelljs';
+import logger from '../../logger.mjs';
 import {
   Block as BlockModel,
   Resource as ResourceModel,
@@ -74,7 +75,7 @@ export default async (
       if (blockItemOther) {
         resourceItem.block = blockItemOther._id;
       } else {
-        console.warn(error);
+        logger.warn(error);
       }
       await fs.unlink(pathname);
     }

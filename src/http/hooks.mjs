@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import createError from 'http-errors';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
 import { selectRouteMatchList } from '../store/selector.mjs';
+import logger from '../logger.mjs';
 
 export default {
   onHttpRequestStartLine: (ctx) => {
@@ -77,9 +78,9 @@ export default {
     }
   },
   onHttpError: (ctx) => {
-    console.warn(`${ctx.request.method} ${ctx.request.path} ${ctx.error.message}`);
+    logger.warn(`${ctx.response.statusCode} ${ctx.request.method} ${ctx.request.path}`);
     if (ctx.response.statusCode >= 500 && ctx.response.statusCode <= 599) {
-      console.error(ctx.error);
+      logger.error(ctx.error);
     }
   },
 };
