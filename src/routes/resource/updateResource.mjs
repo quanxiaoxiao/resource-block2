@@ -1,5 +1,6 @@
 import createError from 'http-errors';
 import { isValidObjectId } from '@quanxiaoxiao/mongo';
+import logger from '../../logger.mjs';
 import {
   Resource as ResourceModel,
   Entry as EntryModel,
@@ -10,7 +11,7 @@ export default async (resourceItem, input) => {
   if (Object.hasOwnProperty.call(input, 'name')
     && (!input.name || input.name.trim() === '')
   ) {
-    throw createError(400);
+    throw createError(400, 'resource name is empty');
   }
   if (Object.hasOwnProperty.call(input, 'entry')) {
     if (!isValidObjectId(input.entry)) {
@@ -41,5 +42,6 @@ export default async (resourceItem, input) => {
       },
     },
   );
+  logger.warn(`\`${resourceItem._id.toString()}\` updateResource \`${JSON.stringify(input)}\``);
   return findResource(resourceItem._id);
 };

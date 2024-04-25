@@ -1,3 +1,4 @@
+import logger from '../../logger.mjs';
 import {
   Resource as ResourceModel,
   Block as BlockModel,
@@ -6,6 +7,18 @@ import {
 export default async (resourceItem) => {
   const now = Date.now();
   await Promise.all([
+    BlockModel.updateOne(
+      {
+        _id: resourceItem.block._id,
+        linkCount: {
+          $gt: 0,
+        },
+      },
+      {
+        $inc: { linkCount: -1 },
+        timeUpdate: now,
+      },
+    ),
     ResourceModel.updateOne(
       {
         _id: resourceItem._id,
@@ -20,17 +33,6 @@ export default async (resourceItem) => {
         },
       },
     ),
-    BlockModel.updateOne(
-      {
-        _id: resourceItem.block._id,
-        linkCount: {
-          $gt: 0,
-        },
-      },
-      {
-        $inc: { linkCount: -1 },
-        timeUpdate: now,
-      },
-    ),
   ]);
+  logger.warn(`\`${resourceItem._id.toString()}\` removeResource`);
 };

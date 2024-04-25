@@ -32,7 +32,7 @@ export default async ({
         timeUpdate: blockData.timeCreate,
       },
     );
-    logger.warn(`\`${blockMatched._id.toString()}\` block link count \`${blockMatched.linkCount + 1}\``);
+    logger.warn(`\`${blockMatched._id.toString()}\` block set link count \`${blockMatched.linkCount + 1}\``);
     resourceItem.block = blockMatched._id;
     fs.unlink(pathname)
       .then(
@@ -72,17 +72,16 @@ export default async ({
           new: true,
         },
       );
-      if (blockOtherItem) {
-        resourceItem.block = blockOtherItem._id;
-        logger.warn(`\`${blockItem._id.toString()}\` block link count \`${blockOtherItem.linkCount}\``);
-      } else {
-        logger.warn(error);
-      }
       fs.unlink(pathname)
         .then(
           () => {},
           () => {},
         );
+      if (!blockOtherItem) {
+        throw error;
+      }
+      resourceItem.block = blockOtherItem._id;
+      logger.warn(`\`${blockItem._id.toString()}\` block set link count \`${blockOtherItem.linkCount}\``);
     }
   }
 

@@ -42,8 +42,13 @@ export default async (
           },
         },
       ),
-      fs.unlink(pathname),
     ]);
+    logger.warn(`\`${blockMatched._id.toString()}\` block set link count \`${blockMatched.linkCount + 1}\``);
+    fs.unlink(pathname)
+      .then(
+        () => {},
+        () => {},
+      );
   } else {
     const blockItem = new BlockModel({
       _id: blockData._id,
@@ -53,6 +58,7 @@ export default async (
       timeUpdate: blockData.timeCreate,
       linkCount: 1,
     });
+    resourceItem.block = blockItem._id;
     try {
       await blockItem.save();
       const blockPathname = calcBlockPathname(blockItem._id.toString());
@@ -62,8 +68,9 @@ export default async (
         tempPathname,
       );
       shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
+      logger.warn(`\`${blockItem._id.toString()}\` store block \`${blockPathname}\``);
     } catch (error) {
-      const blockItemOther = await BlockModel.findOneAndUpdate(
+      const blockOtherItem = await BlockModel.findOneAndUpdate(
         {
           sha256: blockData.sha256,
         },
@@ -71,13 +78,20 @@ export default async (
           $inc: { linkCount: 1 },
           timeUpdate: blockData.timeCreate,
         },
+        {
+          new: true,
+        },
       );
-      if (blockItemOther) {
-        resourceItem.block = blockItemOther._id;
-      } else {
-        logger.warn(error);
+      fs.unlink(pathname)
+        .then(
+          () => {},
+          () => {},
+        );
+      if (!blockOtherItem) {
+        throw error;
       }
-      await fs.unlink(pathname);
+      resourceItem.block = blockOtherItem._id;
+      logger.warn(`\`${blockItem._id.toString()}\` block set link count \`${blockOtherItem.linkCount}\``);
     }
     await Promise.all([
       ResourceModel.updateOne(
@@ -104,6 +118,8 @@ export default async (
       ),
     ]);
   }
+
+  logger.warn(`\`${resourceItem._id.toString()}\` updateResourceByBlock \`${resourceItem.block.toString()}\``);
 
   return findResource(resourceItem._id);
 };
