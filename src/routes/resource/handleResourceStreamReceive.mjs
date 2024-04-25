@@ -4,6 +4,7 @@ import { PassThrough, Transform } from 'node:stream';
 import { createWriteStream } from 'node:fs';
 import mongoose from 'mongoose';
 import curd from '@quanxiaoxiao/curd';
+import logger from '../../logger.mjs';
 import store from '../../store/store.mjs';
 import { encrypt } from '../../providers/cipher.mjs';
 
@@ -12,6 +13,7 @@ const { getState, dispatch } = store;
 export default (ctx) => {
   const pass = new PassThrough();
   const hash = crypto.createHash('sha256');
+  const { socket } = ctx;
   ctx.hash = hash;
   ctx.blockItem = {
     _id: new mongoose.Types.ObjectId(),
@@ -23,15 +25,33 @@ export default (ctx) => {
   const block = ctx.blockItem._id.toString();
   ctx.resourcePathname = path.resolve(getState().block.tempDir, block);
 
+  logger.warn(`\`${block}\` start receive block stream`);
+
   dispatch('streamInputList', (pre) => [...pre, {
     block,
     timeCreate: ctx.blockItem.timeCreate,
   }]);
   const ws = createWriteStream(ctx.resourcePathname);
 
-  ws.once('close', () => {
+  let isSocketCloseEmit = false;
+
+  function handleCloseOnSocket() {
+    isSocketCloseEmit = true;
+    if (!ws.destroyed) {
+      ws.destroy();
+    }
+  }
+
+  function handleCloseOnStream() {
+    if (!isSocketCloseEmit) {
+      socket.off('close', handleCloseOnSocket);
+    }
+    logger.warn(`\`${block}\` receive block stream done`);
     dispatch('streamInputList', (pre) => curd.remove(pre, (d) => d.block === block));
-  });
+  }
+
+  ws.once('close', handleCloseOnStream);
+  socket.once('close', handleCloseOnSocket);
 
   pass
     .pipe(new Transform({
