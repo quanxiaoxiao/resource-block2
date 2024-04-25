@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+import logger from '../../logger.mjs';
 import { Entry as EntryModel } from '../../models/index.mjs';
 
 export default async (input) => {
@@ -18,5 +19,6 @@ export default async (input) => {
   }
   const entryItem = new EntryModel(data);
   await entryItem.save();
+  logger.warn(`createEntry \`${JSON.stringify(data)}\``);
   return entryItem.toObject();
 };

@@ -16,6 +16,7 @@ export default async (entry) => {
   const entryItem = await EntryModel
     .findOne(query)
     .lean();
+
   if (!entryItem) {
     throw createError(404);
   }
