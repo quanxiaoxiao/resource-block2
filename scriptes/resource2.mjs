@@ -23,8 +23,8 @@ const fetchResourceChunk = async (resource) => {
 };
 
 const aaa = async () => {
-  const buf2 = crypto.randomBytes(_.random(30, 80));
-  const buf1 = crypto.randomBytes(_.random(30, 80));
+  const buf2 = crypto.randomBytes(_.random(30, 800));
+  const buf1 = crypto.randomBytes(_.random(30, 800));
   assert(sha256(buf1) !== sha256(buf2));
   let responseItem = await httpRequest({
     hostname: '127.0.0.1',
