@@ -272,6 +272,7 @@ export default {
         await waitFor(50);
         ctx.blockItem.sha256 = ctx.hash.digest('hex');
         const resourceItem = await createResource({
+          socket: ctx.socket,
           name: ctx.request.query.name,
           pathname: ctx.resourcePathname,
           entry: ctx.entryItem._id,

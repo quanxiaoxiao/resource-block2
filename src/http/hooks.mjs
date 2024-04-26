@@ -62,11 +62,6 @@ export default {
       }
     }
   },
-  onClose: (ctx) => {
-    if (ctx.resourcePathname && fs.existsSync(ctx.resourcePathname)) {
-      fs.unlinkSync(ctx.resourcePathname);
-    }
-  },
   onHttpRequestEnd: async (ctx) => {
     if (ctx.requestHandler.onRequestEnd) {
       await ctx.requestHandler.onRequestEnd(ctx);
@@ -81,6 +76,16 @@ export default {
     logger.warn(`$$${ctx.request.method} ${ctx.request.path} ${ctx.response.statusCode} ${ctx.error.message}`);
     if (ctx.response.statusCode >= 500 && ctx.response.statusCode <= 599) {
       console.error(ctx.error);
+    }
+  },
+  onClose: (ctx) => {
+    const { resourcePathname } = ctx;
+    if (resourcePathname) {
+      setTimeout(() => {
+        if (fs.existsSync(ctx.resourcePathname)) {
+          fs.unlinkSync(ctx.resourcePathname);
+        }
+      }, 50);
     }
   },
 };

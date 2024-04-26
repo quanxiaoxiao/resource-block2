@@ -1,7 +1,9 @@
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { PassThrough, Transform } from 'node:stream';
-import { createWriteStream } from 'node:fs';
+import {
+  createWriteStream,
+} from 'node:fs';
 import mongoose from 'mongoose';
 import curd from '@quanxiaoxiao/curd';
 import logger from '../../logger.mjs';
@@ -13,7 +15,6 @@ const { getState, dispatch } = store;
 export default (ctx) => {
   const pass = new PassThrough();
   const hash = crypto.createHash('sha256');
-  const { socket } = ctx;
   ctx.hash = hash;
   ctx.blockItem = {
     _id: new mongoose.Types.ObjectId(),
@@ -23,7 +24,8 @@ export default (ctx) => {
     timeUpdate: ctx.request.timeCreate,
   };
   const block = ctx.blockItem._id.toString();
-  ctx.resourcePathname = path.resolve(getState().block.tempDir, block);
+  const resourcePathname = path.resolve(getState().block.tempDir, block);
+  ctx.resourcePathname = resourcePathname;
 
   logger.warn(`\`${ctx.entryItem._id.toString()}\` entry \`${block}\` block start receive stream`);
 
@@ -31,27 +33,26 @@ export default (ctx) => {
     block,
     timeCreate: ctx.blockItem.timeCreate,
   }]);
-  const ws = createWriteStream(ctx.resourcePathname);
+  const ws = createWriteStream(resourcePathname);
 
-  let isSocketCloseEmit = false;
+  let isStreamErrorEmit = false;
 
-  function handleCloseOnSocket() {
-    isSocketCloseEmit = true;
-    if (!ws.destroyed) {
-      ws.destroy();
-    }
+  function handleErrorOnStream() {
+    isStreamErrorEmit = true;
   }
 
   function handleCloseOnStream() {
-    if (!isSocketCloseEmit) {
-      socket.off('close', handleCloseOnSocket);
-    }
+    setTimeout(() => {
+      if (!isStreamErrorEmit) {
+        ws.off('error', handleErrorOnStream);
+      }
+    }, 100);
     logger.warn(`\`${block}\` block receive stream done`);
     dispatch('streamInputList', (pre) => curd.remove(pre, (d) => d.block === block));
   }
 
   ws.once('close', handleCloseOnStream);
-  socket.once('close', handleCloseOnSocket);
+  ws.once('error', handleErrorOnStream);
 
   pass
     .pipe(new Transform({

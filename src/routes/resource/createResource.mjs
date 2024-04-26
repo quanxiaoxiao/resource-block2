@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import assert from 'node:assert';
 import shelljs from 'shelljs';
 import path from 'node:path';
 import logger from '../../logger.mjs';
@@ -14,6 +15,7 @@ export default async ({
   entry,
   blockData,
   pathname,
+  socket,
 }) => {
   const blockMatched = await BlockModel.findOne({
     sha256: blockData.sha256,
@@ -49,8 +51,9 @@ export default async ({
       linkCount: 1,
     });
     resourceItem.block = blockItem._id;
+    await fs.stat(pathname);
+    assert(socket.writable);
     try {
-      await blockItem.save();
       const blockPathname = calcBlockPathname(blockItem._id.toString());
       const tempPathname = path.join(path.resolve(pathname, '..'), path.basename(blockPathname));
       shelljs.mv(
@@ -58,6 +61,8 @@ export default async ({
         tempPathname,
       );
       shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
+      await fs.stat(blockPathname);
+      await blockItem.save();
       logger.warn(`\`${blockItem._id.toString()}\` store block \`${blockPathname}\``);
     } catch (error) {
       const blockOtherItem = await BlockModel.findOneAndUpdate(
