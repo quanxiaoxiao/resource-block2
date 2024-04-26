@@ -12,20 +12,20 @@ const sem = new Semaphore(24);
 
 const entryList = await fetchEntries();
 
-const entryDefault = entryList.find((d) => d.alias === 'default');
+await entryList.reduce(async (acc, entryItem) => {
+  await acc;
+  const { count } = await fetchEntryStatistics(entryItem._id);
+  const resourceList = await fetchEntryResources(entryItem._id, count);
 
-const { count } = await fetchEntryStatistics(entryDefault._id);
-
-const resourceList = await fetchEntryResources(entryDefault._id, count);
-
-for (let i = 0; i < resourceList.length; i++) {
-  const resourceItem = resourceList[i];
-  sem.acquire(() => {
-    fetchResourceChunk(resourceItem._id)
-      .then((buf) => {
-        assert.equal(sha256(buf), resourceItem.hash);
-        console.log(`------${i}`);
-        sem.release();
-      });
-  });
-}
+  for (let i = 0; i < resourceList.length; i++) {
+    const resourceItem = resourceList[i];
+    sem.acquire(() => {
+      fetchResourceChunk(resourceItem._id)
+        .then((buf) => {
+          assert.equal(sha256(buf), resourceItem.hash);
+          console.log(`------${i}`);
+          sem.release();
+        });
+    });
+  }
+}, Promise.resolve);
