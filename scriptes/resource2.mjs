@@ -1,8 +1,8 @@
 import assert from 'node:assert';
-import crypto from 'node:crypto';
 import _ from 'lodash';
 import { Semaphore } from '@quanxiaoxiao/utils';
 import { sha256 } from '@quanxiaoxiao/node-utils';
+import generateChunk from './generateChunk.mjs';
 import {
   removeResource,
   fetchResource,
@@ -14,8 +14,8 @@ import {
 const semp = new Semaphore(24);
 
 const aaa = async () => {
-  const buf2 = crypto.randomBytes(_.random(30, 800));
-  const buf1 = crypto.randomBytes(_.random(30, 800));
+  const buf2 = generateChunk(_.random(30, 800));
+  const buf1 = generateChunk(_.random(30, 800));
   assert(sha256(buf1) !== sha256(buf2));
   let data = await upload({
     content: buf1,
