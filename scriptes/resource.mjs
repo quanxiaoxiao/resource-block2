@@ -1,6 +1,4 @@
 import assert from 'node:assert';
-import { httpRequest } from '@quanxiaoxiao/http-request';
-import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
 import {
   fetchEntry,
   createEntry,
@@ -8,23 +6,9 @@ import {
   removeResource,
   fetchResource,
   updateResource,
+  upload,
 } from './apis.mjs';
-
-const upload = async (entryName) => {
-  const content = Buffer.from(`${Date.now()}__aaabbccdee`);
-
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
-    method: 'POST',
-    path: entryName ? `/upload/${entryName}` : '/upload',
-    body: content,
-  });
-  if (responseItem.statusCode !== 200) {
-    return null;
-  }
-  return decodeContentToJSON(responseItem.body, responseItem.headers);
-};
+import generateChunk from './generateChunk.mjs';
 
 const entryName = 'test_88';
 
@@ -35,7 +19,10 @@ const entryName = 'test_88';
   }
 }
 
-const resourceEmpty = await upload(entryName);
+const resourceEmpty = await upload({
+  entryName,
+  content: generateChunk(),
+});
 
 assert.equal(resourceEmpty, null);
 
@@ -44,7 +31,10 @@ const entryItem = await createEntry({
   alias: entryName,
 });
 
-const resourceItem = await upload(entryName);
+const resourceItem = await upload({
+  entryName,
+  content: generateChunk(),
+});
 
 let resourceItem2 = await fetchResource(resourceItem._id);
 
@@ -58,7 +48,10 @@ resourceItem2 = await fetchResource(resourceItem._id);
 
 assert.equal(resourceItem2, null);
 
-resourceItem2 = await upload(entryName);
+resourceItem2 = await upload({
+  entryName,
+  content: generateChunk(),
+});
 
 assert(!!resourceItem2);
 
@@ -68,11 +61,16 @@ resourceItem2 = await fetchResource(resourceItem2._id);
 
 assert.equal(resourceItem2, null);
 
-resourceItem2 = await upload(entryName);
+resourceItem2 = await upload({
+  entryName,
+  content: generateChunk(),
+});
 
 assert.equal(resourceItem2, null);
 
-resourceItem2 = await upload();
+resourceItem2 = await upload({
+  content: generateChunk(),
+});
 
 assert.equal(resourceItem2.name, '');
 
