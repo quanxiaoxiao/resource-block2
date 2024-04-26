@@ -54,6 +54,7 @@ export default {
             {
               pathname: ctx.resourcePathname,
               blockData: ctx.blockItem,
+              socket: ctx.socket,
             },
           );
           ctx.response = {
