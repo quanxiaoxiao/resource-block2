@@ -154,8 +154,16 @@ export const upload = async ({
     options.path = `${options.path}?name=${name}`;
   }
   const responseItem = await httpRequest(options);
-  if (responseItem.statusCode !== 200) {
-    return null;
-  }
-  return decodeContentToJSON(responseItem.body, responseItem.headers);
+  return decode(responseItem);
+};
+
+export const updateResourceBlock = async (resource, content) => {
+  const responseItem = await httpRequest({
+    hostname: '127.0.0.1',
+    port: 4059,
+    method: 'PUT',
+    path: `/resource/${resource}`,
+    body: content,
+  });
+  return decode(responseItem);
 };
