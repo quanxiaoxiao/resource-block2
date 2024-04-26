@@ -8,37 +8,24 @@ import { httpRequest } from '@quanxiaoxiao/http-request';
 import {
   removeResource,
   fetchResource,
+  fetchResourceChunk,
+  upload,
 } from './apis.mjs';
 
 const semp = new Semaphore(24);
-
-const fetchResourceChunk = async (resource) => {
-  const resourceItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
-    path: `/resource/${resource}`,
-  });
-  assert.equal(resourceItem.statusCode, 200);
-  return resourceItem.body;
-};
 
 const aaa = async () => {
   const buf2 = crypto.randomBytes(_.random(30, 800));
   const buf1 = crypto.randomBytes(_.random(30, 800));
   assert(sha256(buf1) !== sha256(buf2));
-  let responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
-    method: 'POST',
-    path: '/upload',
-    body: buf1,
+  let data = await upload({
+    content: buf1,
   });
-  assert.equal(responseItem.statusCode, 200);
-  let data = decodeContentToJSON(responseItem.body, responseItem.headers);
+  assert(data !== null);
   assert.equal(data.hash, sha256(buf1));
   let resourceChunk = await fetchResourceChunk(data._id);
   assert.equal(sha256(resourceChunk), sha256(buf1));
-  responseItem = await httpRequest({
+  let responseItem = await httpRequest({
     hostname: '127.0.0.1',
     port: 4059,
     method: 'PUT',
