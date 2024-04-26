@@ -117,3 +117,15 @@ export const updateResource = async (resource, data) => {
   });
   return decode(responseItem);
 };
+
+export const fetchResourceChunk = async (resource) => {
+  const responseItem = await httpRequest({
+    hostname: '127.0.0.1',
+    port: 4059,
+    path: `/resource/${resource}`,
+  });
+  if (responseItem.statusCode !== 200) {
+    return null;
+  }
+  return responseItem.body;
+};
