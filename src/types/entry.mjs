@@ -11,6 +11,9 @@ export default {
   alias: {
     type: 'string',
   },
+  readOnly: {
+    type: 'boolean',
+  },
   description: {
     type: 'string',
   },

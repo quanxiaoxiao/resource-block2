@@ -23,6 +23,9 @@ const checkoutResource = async (ctx) => {
   if (!entryItem) {
     throw createError(404);
   }
+  if (ctx.request.method !== 'GET' && entryItem.readOnly) {
+    throw createError(403, 'entry is read only');
+  }
   ctx.entryItem = entryItem;
   ctx.resourceItem = resourceItem;
 };
@@ -264,6 +267,9 @@ export default {
       const entryItem = selectEntry(entry);
       if (!entryItem) {
         throw createError(403, `\`${entry}\` entry is not exist`);
+      }
+      if (entryItem.readOnly) {
+        throw createError(403, 'entry is read only');
       }
       ctx.entryItem = entryItem;
     },

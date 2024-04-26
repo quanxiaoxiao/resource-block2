@@ -60,6 +60,10 @@ export default {
             type: 'string',
             nullable: true,
           },
+          readOnly: {
+            type: 'boolean',
+            nullable: true,
+          },
         },
         required: ['name'],
         additionalProperties: false,
@@ -146,6 +150,10 @@ export default {
           },
           alias: {
             type: 'string',
+            nullable: true,
+          },
+          readOnly: {
+            type: 'boolean',
             nullable: true,
           },
           description: {
