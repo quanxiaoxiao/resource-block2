@@ -173,11 +173,7 @@ export default {
         ctx.entryList = curd.update(
           entryList,
           (d) => d._id.toString() === entry,
-          {
-            name: entryItem.name,
-            alias: entryItem.alias,
-            description: entryItem.description,
-          },
+          ctx.request.data,
         );
       },
     },

@@ -17,11 +17,6 @@ export default new Schema({
     type: Number,
     default: Date.now,
   },
-  readOnly: {
-    type: Boolean,
-    default: false,
-    index: true,
-  },
   linkCount: {
     type: Number,
     default: 1,

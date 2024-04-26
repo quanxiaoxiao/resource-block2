@@ -136,7 +136,7 @@ export const fetchResourceChunk = async (resource, range) => {
 };
 
 export const upload = async ({
-  entryName,
+  entry,
   name,
   content,
 }) => {
@@ -147,8 +147,8 @@ export const upload = async ({
     path: '/upload',
     body: content,
   };
-  if (entryName) {
-    options.path = `/upload/${entryName}`;
+  if (entry) {
+    options.path = `/upload/${entry}`;
   }
   if (name) {
     options.path = `${options.path}?name=${name}`;

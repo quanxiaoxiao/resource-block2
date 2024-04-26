@@ -20,7 +20,7 @@ const entryName = 'test_88';
 }
 
 const resourceEmpty = await upload({
-  entryName,
+  entry: entryName,
   content: generateChunk(),
 });
 
@@ -32,7 +32,7 @@ const entryItem = await createEntry({
 });
 
 const resourceItem = await upload({
-  entryName,
+  entry: entryName,
   content: generateChunk(),
 });
 
@@ -49,7 +49,7 @@ resourceItem2 = await fetchResource(resourceItem._id);
 assert.equal(resourceItem2, null);
 
 resourceItem2 = await upload({
-  entryName,
+  entry: entryName,
   content: generateChunk(),
 });
 
@@ -62,7 +62,7 @@ resourceItem2 = await fetchResource(resourceItem2._id);
 assert.equal(resourceItem2, null);
 
 resourceItem2 = await upload({
-  entryName,
+  entry: entryName,
   content: generateChunk(),
 });
 

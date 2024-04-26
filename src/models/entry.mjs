@@ -34,4 +34,9 @@ export default new Schema({
     index: true,
     type: Date,
   },
+  readOnly: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
 });
