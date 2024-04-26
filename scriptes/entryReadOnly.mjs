@@ -66,3 +66,5 @@ resourceItem = await upload({
 });
 
 assert(!!resourceItem);
+
+await removeEntry(entryAlias);
