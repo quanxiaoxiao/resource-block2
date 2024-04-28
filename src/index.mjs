@@ -3,14 +3,16 @@ import process from 'node:process';
 import fs from 'node:fs';
 import shelljs from 'shelljs';
 import handleSocket from '@quanxiaoxiao/httttp';
+import {
+  createHttpRequestHooks,
+  generateRouteMatchList,
+} from '@quanxiaoxiao/http-router';
 import store from './store/store.mjs';
 import './models/index.mjs';
 import logger from './logger.mjs';
 import generateBlockDirs from './configs/generateBlockDirs.mjs';
 import checkoutResourceEntries from './configs/checkoutResourceEntries.mjs';
 import connectMongo from './connectMongo.mjs';
-import generateRouteMatches from './generateRouteMatches.mjs';
-import createHttpRequestHooks from './createHttpRequestHooks.mjs';
 import routes from './routes/index.mjs';
 
 process.nextTick(async () => {
@@ -20,7 +22,7 @@ process.nextTick(async () => {
 
   generateBlockDirs();
 
-  dispatch('routeMatchList', generateRouteMatches(routes));
+  dispatch('routeMatchList', generateRouteMatchList(routes));
 
   {
     const httpRequestHooks = createHttpRequestHooks({
