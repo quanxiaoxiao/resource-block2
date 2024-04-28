@@ -1,12 +1,15 @@
-import fs from 'node:fs';
 import createError from 'http-errors';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
-import { selectRouteMatchList } from '../store/selector.mjs';
-import logger from '../logger.mjs';
 
-export default {
+export default ({
+  getRouteMatches,
+  logger,
+  onRequest,
+  onResponse,
+  onSocketClose,
+}) => ({
   onHttpRequestStartLine: (ctx) => {
-    const routeMatchList = selectRouteMatchList();
+    const routeMatchList = getRouteMatches();
     const routeMatched = routeMatchList.find((routeItem) => routeItem.urlMatch(ctx.request.pathname));
     if (!routeMatched) {
       throw createError(404);
@@ -23,12 +26,15 @@ export default {
     if (ctx.routeMatched.query) {
       ctx.request.query = ctx.routeMatched.query(ctx.request.query);
     }
-    if (ctx.routeMatched.match
-      && !ctx.routeMatched.match(ctx.request)) {
+    if (ctx.routeMatched.match && !ctx.routeMatched.match(ctx.request)) {
       throw createError(400);
     }
 
-    if (ctx.routeMatched.onPre) {
+    if (onRequest) {
+      await onRequest(ctx);
+    }
+
+    if (ctx.socket.writable && ctx.routeMatched.onPre) {
       await ctx.routeMatched.onPre(ctx);
     }
 
@@ -71,6 +77,9 @@ export default {
     if (ctx.routeMatched.onPost) {
       ctx.routeMatched.onPost(ctx);
     }
+    if (onResponse) {
+      onResponse(ctx);
+    }
   },
   onHttpError: (ctx) => {
     logger.warn(`$$${ctx.request.method} ${ctx.request.path} ${ctx.response.statusCode} ${ctx.error.message}`);
@@ -79,13 +88,8 @@ export default {
     }
   },
   onClose: (ctx) => {
-    const { resourcePathname } = ctx;
-    if (resourcePathname) {
-      setTimeout(() => {
-        if (fs.existsSync(ctx.resourcePathname)) {
-          fs.unlinkSync(ctx.resourcePathname);
-        }
-      }, 50);
+    if (onSocketClose) {
+      onSocketClose(ctx);
     }
   },
-};
+});

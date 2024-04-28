@@ -3,14 +3,12 @@ import Ajv from 'ajv';
 import _ from 'lodash';
 import { select } from '@quanxiaoxiao/datav';
 import { generateRouteList } from '@quanxiaoxiao/http-router';
-import store from '../store/store.mjs';
-import routes from '../routes/index.mjs';
 
-const { dispatch } = store;
-
-export default () => {
+export default (routes) => {
   const routeList = generateRouteList(routes);
-  dispatch('routeMatchList', routeList.map((d) => {
+  const result = [];
+  for (let i = 0; i < routeList.length; i++) {
+    const d = routeList[i];
     const routeItem = {
       match: d.match,
       pathname: d.pathname,
@@ -34,9 +32,9 @@ export default () => {
       routeItem.onPost = d.onPost;
     }
     const httpMethodList = ['get', 'post', 'put', 'delete'];
-    for (let i = 0; i < httpMethodList.length; i++) {
-      const handler = d[httpMethodList[i]];
-      const httpMethod = httpMethodList[i].toUpperCase();
+    for (let j = 0; j < httpMethodList.length; j++) {
+      const handler = d[httpMethodList[j]];
+      const httpMethod = httpMethodList[j].toUpperCase();
       if (handler) {
         if (typeof handler === 'function') {
           routeItem[httpMethod] = {
@@ -59,6 +57,7 @@ export default () => {
         }
       }
     }
-    return routeItem;
-  }));
+    result.push(routeItem);
+  }
+  return result;
 };
