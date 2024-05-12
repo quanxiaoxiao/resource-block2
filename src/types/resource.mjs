@@ -14,7 +14,7 @@ export default {
   timeUpdate: {
     type: 'number',
   },
-  mine: {
+  mime: {
     type: 'string',
   },
   size: ['block.size', { type: 'number' }],

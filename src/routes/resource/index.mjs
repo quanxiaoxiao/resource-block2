@@ -77,7 +77,7 @@ export default {
         const resourceName = ctx.resourceItem.name || ctx.resourceItem._id.toString();
         if (ctx.request.params[0] === 'preview') {
           if (ctx.resourceItem.mime) {
-            ctx.response.headers['content-type'] = ctx.resourceItem.mine;
+            ctx.response.headers['content-type'] = ctx.resourceItem.mime;
           }
           ctx.response.headers['content-disposition'] = `inline; filename=${resourceName}`;
         } else {
@@ -148,7 +148,7 @@ export default {
             nullable: true,
           },
         },
-        additionalProperties: true,
+        additionalProperties: false,
       },
       fn: async (ctx) => {
         const resourceItem = await updateResource(ctx.resourceItem, ctx.request.data);

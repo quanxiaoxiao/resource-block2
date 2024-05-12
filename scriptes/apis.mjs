@@ -129,6 +129,13 @@ export const fetchResourceChunk = async (resource, range) => {
     options.headers.range = `bytes=${range[0]}-${range[1] == null ? '' : range[1]}`;
   }
   const responseItem = await httpRequest(options);
+  if (range) {
+    assert(responseItem.statusCode !== 200);
+    if (responseItem.statusCode === 404) {
+      return null;
+    }
+    return responseItem.body;
+  }
   if (responseItem.statusCode !== 200) {
     return null;
   }
