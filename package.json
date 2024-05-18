@@ -31,7 +31,7 @@
     "@quanxiaoxiao/mongo": "^0.2.0",
     "@quanxiaoxiao/node-utils": "^0.7.0",
     "@quanxiaoxiao/store": "^0.1.0",
-    "@quanxiaoxiao/utils": "^0.2.2",
+    "@quanxiaoxiao/utils": "^0.3.0",
     "ajv": "^8.12.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",
