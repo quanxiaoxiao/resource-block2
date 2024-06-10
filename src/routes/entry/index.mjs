@@ -51,6 +51,9 @@ export default {
           name: {
             type: 'string',
             minLength: 1,
+            not: {
+              pattern: '^\\s+$',
+            },
           },
           alias: {
             type: 'string',
@@ -147,6 +150,9 @@ export default {
           name: {
             type: 'string',
             minLength: 1,
+            not: {
+              pattern: '^\\s+$',
+            },
           },
           alias: {
             type: 'string',

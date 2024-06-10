@@ -130,6 +130,9 @@ export default {
           name: {
             type: 'string',
             minLength: 1,
+            not: {
+              pattern: '^\\s+$',
+            },
           },
           mime: {
             type: 'string',
