@@ -56,11 +56,13 @@ export default async (ctx) => {
           },
         },
       );
-      const data = await findResource(resourceItem._id);
       logger.warn(`\`${resourceItem._id}\` set block with empty`);
-      ctx.response = {
-        data,
-      };
+      const data = await findResource(resourceItem._id);
+      if (data) {
+        ctx.response = {
+          data,
+        };
+      }
     }
   } else {
     const typeName = 'update';

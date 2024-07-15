@@ -39,9 +39,11 @@ export default async (ctx) => {
     await resourceItem.save();
     logger.warn(`\`${resourceItem._id.toString()}\` create resource with empty`);
     const data = await findResource(resourceItem._id);
-    ctx.response = {
-      data,
-    };
+    if (data) {
+      ctx.response = {
+        data,
+      };
+    }
   } else {
     const typeName = 'create';
     await handleStoreStreamBlock(
