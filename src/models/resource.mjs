@@ -43,6 +43,11 @@ export default new Schema({
     default: Date.now,
     index: true,
   },
+  timeAtFirstComplete: {
+    type: Number,
+    default: Date.now,
+    index: true,
+  },
   timeAccess: {
     type: Number,
     default: Date.now,

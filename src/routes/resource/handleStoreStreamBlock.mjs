@@ -49,7 +49,7 @@ export default (ctx, onDone, typeName) => {
           size: streamInputItem.size,
           block: streamInputItem._id,
           timeCreate: streamInputItem.timeCreate,
-          dateTimeAtComplete: Date.now(),
+          timeAtComplete: Date.now(),
           pathname: resourceTempPathname,
         });
         if (resource) {

@@ -18,6 +18,7 @@ export default async (ctx) => {
       entry: ctx.entryItem._id,
       timeCreate: ctx.request.dateTimeCreate,
       timeUpdate: ctx.request.dateTimeCreate,
+      timeAtFirstComplete: ctx.request.dateTimeCreate,
     });
     const emptyBlockItem = await BlockModel.findOneAndUpdate(
       {
@@ -54,6 +55,7 @@ export default async (ctx) => {
           entry: ret.entry,
           timeCreate: ret.timeCreate,
           timeUpdate: ret.timeCreate,
+          timeAtFirstComplete: ret.timeAtComplete,
         });
         if (blockMatched) {
           await BlockModel.updateOne(
