@@ -1,13 +1,9 @@
 import createError from 'http-errors';
 import resourceType from '../../types/resource.mjs';
 import { selectEntry } from '../../store/selector.mjs';
-import parseContentRange from '../../utilities/parseContentRange.mjs';
-import handleResourceStreamReceive from './handleResourceStreamReceive.mjs';
 import queryResources from './queryResources.mjs';
 import removeResource from './removeResource.mjs';
 import updateResource from './updateResource.mjs';
-import getResourceBlockStream from './getResourceBlockStream.mjs';
-import updateResourceByBlock from './updateResourceByBlock.mjs';
 import checkoutResource from './checkoutResource.mjs';
 import handleStoreStreamBlockWithCreate from './handleStoreStreamBlockWithCreate.mjs';
 import handleStoreStreamBlockWithUpdate from './handleStoreStreamBlockWithUpdate.mjs';
@@ -21,11 +17,13 @@ export default {
     },
     onPre: async (ctx) => {
       await checkoutResource(ctx);
-      if (ctx.request.method === 'PUT' && !ctx.signal.aborted) {
+      if (ctx.request.method === 'PUT') {
         if (ctx.request.params[0] === 'preview') {
           throw createError(404);
         }
-        await handleStoreStreamBlockWithUpdate(ctx);
+        if (!ctx.signal.aborted) {
+          await handleStoreStreamBlockWithUpdate(ctx);
+        }
       }
     },
     put: {
