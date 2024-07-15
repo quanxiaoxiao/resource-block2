@@ -12,6 +12,7 @@ import generateBlockDirs from './configs/generateBlockDirs.mjs';
 import checkoutResourceEntries from './configs/checkoutResourceEntries.mjs';
 import connectMongo from './connectMongo.mjs';
 import routes from './routes/index.mjs';
+import runSchedules from './schedules/index.mjs';
 
 process.nextTick(async () => {
   const { getState, dispatch } = store;
@@ -26,10 +27,14 @@ process.nextTick(async () => {
     socket,
     ...createHttpRequestHandler(getState().routeMatchList, logger),
   }));
+
   const { port } = getState().server;
+
   server.listen(port, () => {
     console.log(`server listen at \`${port}\``);
   });
+
+  runSchedules();
 });
 
 process.on('uncaughtException', (error) => {

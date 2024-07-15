@@ -30,7 +30,9 @@ export default {
       fn: () => {},
     },
     get: {
-      fn: handleReadStreamBlock,
+      fn: (ctx) => {
+        handleReadStreamBlock(ctx);
+      },
     },
   },
   '/api/resource/:_id': {

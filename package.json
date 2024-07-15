@@ -18,7 +18,7 @@
     "@quanxiaoxiao/datav": "^0.3.0",
     "@quanxiaoxiao/http-request": "^0.34.0",
     "@quanxiaoxiao/http-utils": "^0.18.0",
-    "@quanxiaoxiao/httttp": "^0.36.0",
+    "@quanxiaoxiao/httttp": "^0.37.0",
     "@quanxiaoxiao/logger": "^0.0.1",
     "@quanxiaoxiao/mongo": "^0.2.0",
     "@quanxiaoxiao/node-utils": "^0.11.0",
