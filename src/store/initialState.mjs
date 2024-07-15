@@ -15,9 +15,6 @@ const initialState = {
     dir: getPathname(process.env.BLOCK_DIR),
     tempDir: getPathname(process.env.BLOCK_TEMP_DIR),
   },
-  configPathnames: {
-    state: getPathname('./.state.json'),
-  },
   cipher: {
     secret: process.env.CIPHER_SECRET,
     algorithm: process.env.CIPHER_ALGORITHM,

@@ -36,6 +36,8 @@ const resourceItem = await upload({
   content: generateChunk(),
 });
 
+assert(!!resourceItem);
+
 let resourceItem2 = await fetchResource(resourceItem._id);
 
 assert.deepEqual(resourceItem, resourceItem2);

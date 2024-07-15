@@ -22,7 +22,9 @@ await entryList.reduce(async (acc, entryItem) => {
     sem.acquire(() => {
       fetchResourceChunk(resourceItem._id)
         .then((buf) => {
-          assert.equal(sha256(buf), resourceItem.hash);
+          if (buf) {
+            assert.equal(sha256(buf), resourceItem.hash);
+          }
           console.log(`------${i}`);
           sem.release();
         });

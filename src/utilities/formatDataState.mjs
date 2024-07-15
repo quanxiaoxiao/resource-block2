@@ -2,18 +2,6 @@ import crypto from 'node:crypto';
 import { Buffer } from 'node:buffer';
 import fileSize from 'file-size';
 
-const getObjKeys = (obj) => Object
-  .keys(obj)
-  .sort((a, b) => {
-    if (a === b) {
-      return 0;
-    }
-    if (a > b) {
-      return 1;
-    }
-    return -1;
-  });
-
 const format = (obj) => {
   if (obj == null) {
     return null;
@@ -28,7 +16,7 @@ const format = (obj) => {
   if (type === 'object') {
     if (obj instanceof Map) {
       const objMap = Object.fromEntries(obj);
-      return getObjKeys(obj)
+      return Object.keys(obj)
         .reduce((acc, cur) => ({
           ...acc,
           [cur]: format(objMap[cur]),
@@ -49,7 +37,7 @@ const format = (obj) => {
     if (Array.isArray(obj)) {
       return obj.map((d) => format(d));
     }
-    return getObjKeys(obj).reduce((acc, key) => ({
+    return Object.keys(obj).reduce((acc, key) => ({
       ...acc,
       [key]: format(obj[key]),
     }), {});

@@ -1,12 +1,10 @@
 import net from 'node:net';
 import process from 'node:process';
-import fs from 'node:fs';
-import shelljs from 'shelljs';
-import handleSocket from '@quanxiaoxiao/httttp';
 import {
-  createHttpRequestHooks,
+  handleSocketRequest,
+  createHttpRequestHandler,
   generateRouteMatchList,
-} from '@quanxiaoxiao/http-router';
+} from '@quanxiaoxiao/httttp';
 import store from './store/store.mjs';
 import './models/index.mjs';
 import logger from './logger.mjs';
@@ -24,39 +22,13 @@ process.nextTick(async () => {
 
   dispatch('routeMatchList', generateRouteMatchList(routes));
 
-  {
-    const httpRequestHooks = createHttpRequestHooks({
-      getRouteMatches: () => getState().routeMatchList,
-      logger,
-      onSocketClose: (ctx) => {
-        const { resourcePathname } = ctx;
-        if (resourcePathname) {
-          setTimeout(() => {
-            if (fs.existsSync(ctx.resourcePathname)) {
-              fs.unlinkSync(ctx.resourcePathname);
-            }
-          }, 50);
-        }
-      },
-    });
-
-    const server = net.createServer((socket) => handleSocket({
-      ...httpRequestHooks,
-      socket,
-    }));
-    const { port } = getState().server;
-    server.listen(port, () => {
-      console.log(`server listen at \`${port}\``);
-    });
-  }
-
-  process.on('exit', () => {
-    if (shelljs.test('-f', getState().configPathnames.state)) {
-      shelljs.rm(getState().configPathnames.state);
-    }
-  });
-  process.on('SIGINT', () => {
-    process.exit(0);
+  const server = net.createServer((socket) => handleSocketRequest({
+    socket,
+    ...createHttpRequestHandler(getState().routeMatchList, logger),
+  }));
+  const { port } = getState().server;
+  server.listen(port, () => {
+    console.log(`server listen at \`${port}\``);
   });
 });
 

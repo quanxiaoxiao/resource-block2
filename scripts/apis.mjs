@@ -1,8 +1,22 @@
 import assert from 'node:assert';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
-import { httpRequest } from '@quanxiaoxiao/http-request';
+import { request, getSocketConnect } from '@quanxiaoxiao/http-request';
 
-const decode = (responseItem) => {
+const httpRequest = async ({
+  path,
+  method = 'GET',
+  headers = {},
+  body = null,
+}) => {
+  const responseItem = await request(
+    {
+      path,
+      method,
+      body,
+      headers,
+    },
+    () => getSocketConnect({ port: 4059 }),
+  );
   if (responseItem.statusCode !== 200) {
     return null;
   }
@@ -10,38 +24,30 @@ const decode = (responseItem) => {
 };
 
 export const fetchEntries = async () => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     path: '/api/entries',
   });
-  assert(responseItem.statusCode === 200);
-  return decodeContentToJSON(responseItem.body, responseItem.headers);
+  return ret;
 };
 
 export const fetchEntryStatistics = async (entry) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     path: `/api/entry/${entry}/statistics`,
   });
-  return decode(responseItem);
+  return ret;
 };
 
 export const fetchEntryResources = async (entry, count) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     path: `/api/entry/${entry}/resources?limit=${count}`,
   });
-  const { list } = decode(responseItem);
+  assert(!!ret);
+  const { list } = ret;
   return list;
 };
 
 export const createEntry = async (data) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     method: 'POST',
     path: '/api/entry',
     headers: {
@@ -49,32 +55,26 @@ export const createEntry = async (data) => {
     },
     body: JSON.stringify(data),
   });
-  return decode(responseItem);
+  return ret;
 };
 
 export const fetchEntry = async (entry) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     path: `/api/entry/${entry}`,
   });
-  return decode(responseItem);
+  return ret;
 };
 
 export const removeEntry = async (entry) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     method: 'DELETE',
     path: `/api/entry/${entry}`,
   });
-  return decode(responseItem);
+  return ret;
 };
 
 export const updateEntry = async (entry, data) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     method: 'PUT',
     headers: {
       'content-type': 'application/json',
@@ -82,32 +82,26 @@ export const updateEntry = async (entry, data) => {
     body: JSON.stringify(data),
     path: `/api/entry/${entry}`,
   });
-  return decode(responseItem);
+  return ret;
 };
 
 export const fetchResource = async (resource) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     path: `/api/resource/${resource}`,
   });
-  return decode(responseItem);
+  return ret;
 };
 
 export const removeResource = async (resource) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     method: 'DELETE',
     path: `/api/resource/${resource}`,
   });
-  return decode(responseItem);
+  return ret;
 };
 
 export const updateResource = async (resource, data) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     method: 'PUT',
     headers: {
       'content-type': 'application/json',
@@ -115,20 +109,21 @@ export const updateResource = async (resource, data) => {
     body: JSON.stringify(data),
     path: `/api/resource/${resource}`,
   });
-  return decode(responseItem);
+  return ret;
 };
 
 export const fetchResourceChunk = async (resource, range) => {
   const options = {
-    hostname: '127.0.0.1',
-    port: 4059,
     path: `/resource/${resource}`,
     headers: {},
   };
   if (range) {
     options.headers.range = `bytes=${range[0]}-${range[1] == null ? '' : range[1]}`;
   }
-  const responseItem = await httpRequest(options);
+  const responseItem = await request(
+    options,
+    () => getSocketConnect({ port: 4059 }),
+  );
   if (range) {
     assert(responseItem.statusCode !== 200);
     if (responseItem.statusCode === 404) {
@@ -148,8 +143,6 @@ export const upload = async ({
   content,
 }) => {
   const options = {
-    hostname: '127.0.0.1',
-    port: 4059,
     method: 'POST',
     path: '/upload',
     body: content,
@@ -160,17 +153,15 @@ export const upload = async ({
   if (name) {
     options.path = `${options.path}?name=${name}`;
   }
-  const responseItem = await httpRequest(options);
-  return decode(responseItem);
+  const ret = await httpRequest(options);
+  return ret;
 };
 
 export const updateResourceBlock = async (resource, content) => {
-  const responseItem = await httpRequest({
-    hostname: '127.0.0.1',
-    port: 4059,
+  const ret = await httpRequest({
     method: 'PUT',
     path: `/resource/${resource}`,
     body: content,
   });
-  return decode(responseItem);
+  return ret;
 };

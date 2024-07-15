@@ -14,8 +14,8 @@ const incrementBuffer = (buf, counter) => {
   let i = len - 1;
   while (counter !== 0) {
     const mod = (counter + buf[i]) % 256;
-    counter = Math.floor((counter + buf[i]) / 256); // eslint-disable-line no-param-reassign
-    buf[i] = mod; // eslint-disable-line no-param-reassign
+    counter = Math.floor((counter + buf[i]) / 256);
+    buf[i] = mod;
     i -= 1;
     if (i < 0) {
       i = len - 1;

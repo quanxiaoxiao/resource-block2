@@ -1,109 +1,38 @@
-import fs from 'node:fs/promises';
 import createError from 'http-errors';
-import { select } from '@quanxiaoxiao/datav';
-import { waitFor } from '@quanxiaoxiao/utils';
 import resourceType from '../../types/resource.mjs';
 import { selectEntry } from '../../store/selector.mjs';
 import parseContentRange from '../../utilities/parseContentRange.mjs';
 import handleResourceStreamReceive from './handleResourceStreamReceive.mjs';
-import createResource from './createResource.mjs';
 import queryResources from './queryResources.mjs';
-import findResource from './findResource.mjs';
 import removeResource from './removeResource.mjs';
 import updateResource from './updateResource.mjs';
 import getResourceBlockStream from './getResourceBlockStream.mjs';
 import updateResourceByBlock from './updateResourceByBlock.mjs';
-
-const checkoutResource = async (ctx) => {
-  const resourceItem = await findResource(ctx.request.params._id);
-  if (!resourceItem) {
-    throw createError(404);
-  }
-  const entryItem = selectEntry(resourceItem.entry);
-  if (!entryItem) {
-    throw createError(404);
-  }
-  if (ctx.request.method !== 'GET' && entryItem.readOnly) {
-    throw createError(403, 'entry is read only');
-  }
-  ctx.entryItem = entryItem;
-  ctx.resourceItem = resourceItem;
-};
+import checkoutResource from './checkoutResource.mjs';
+import handleStoreStreamBlockWithCreate from './handleStoreStreamBlockWithCreate.mjs';
+import handleStoreStreamBlockWithUpdate from './handleStoreStreamBlockWithUpdate.mjs';
+import handleReadStreamBlock from './handleReadStreamBlock.mjs';
 
 export default {
-  '/resource/:_id/(preview)?': {
-    onPre: checkoutResource,
-    put: {
-      fn: (ctx) => {
+  '/resource/:_id{/preview}?': {
+    select: {
+      type: 'object',
+      properties: resourceType,
+    },
+    onPre: async (ctx) => {
+      await checkoutResource(ctx);
+      if (ctx.request.method === 'PUT' && !ctx.signal.aborted) {
         if (ctx.request.params[0] === 'preview') {
           throw createError(404);
         }
-        return handleResourceStreamReceive(ctx);
-      },
-      onRequestEnd: async (ctx) => {
-        await waitFor(50);
-        ctx.blockItem.sha256 = ctx.hash.digest('hex');
-        if (ctx.blockItem.sha256 === ctx.resourceItem.block.sha256) {
-          await fs.unlink(ctx.pathname);
-          ctx.response = {
-            data: select({
-              type: 'object',
-              properties: resourceType,
-            })(ctx.resourceItem),
-          };
-        } else {
-          const resourceItem = await updateResourceByBlock(
-            ctx.resourceItem,
-            {
-              pathname: ctx.resourcePathname,
-              blockData: ctx.blockItem,
-              socket: ctx.socket,
-            },
-          );
-          ctx.response = {
-            data: select({
-              type: 'object',
-              properties: resourceType,
-            })(resourceItem),
-          };
-        }
-      },
+        await handleStoreStreamBlockWithUpdate(ctx);
+      }
+    },
+    put: {
+      fn: () => {},
     },
     get: {
-      fn: (ctx) => {
-        ctx.response = {
-          headers: {},
-        };
-        const resourceName = ctx.resourceItem.name || ctx.resourceItem._id.toString();
-        if (ctx.request.params[0] === 'preview') {
-          if (ctx.resourceItem.mime) {
-            ctx.response.headers['content-type'] = ctx.resourceItem.mime;
-          }
-          ctx.response.headers['content-disposition'] = `inline; filename=${resourceName}`;
-        } else {
-          ctx.response.headers['content-disposition'] = `attachment; filename="${resourceName}"`;
-        }
-        if (ctx.request.headers.range) {
-          const [start, end] = parseContentRange(ctx.request.headers.range, ctx.resourceItem.block.size);
-          ctx.response.statusCode = 206;
-          ctx.response.headers['accept-ranges'] = 'bytes';
-          ctx.response.headers['content-range'] = `bytes ${start}-${end}/${ctx.resourceItem.block.size}`;
-          if (start === end) {
-            ctx.response.body = null;
-          } else {
-            ctx.response.body = getResourceBlockStream(
-              ctx.resourceItem,
-              ctx.request.timeCreate,
-              [start, end],
-            );
-          }
-        } else {
-          ctx.response.body = getResourceBlockStream(
-            ctx.resourceItem,
-            ctx.request.timeCreate,
-          );
-        }
-      },
+      fn: handleReadStreamBlock,
     },
   },
   '/api/resource/:_id': {
@@ -167,6 +96,7 @@ export default {
       if (!entryItem) {
         throw createError(404);
       }
+      ctx.entryItem = entryItem;
     },
     select: {
       type: 'object',
@@ -249,7 +179,7 @@ export default {
       };
     },
   },
-  '/upload/:entry?': {
+  '/upload{/:entry}?': {
     select: {
       type: 'object',
       properties: resourceType,
@@ -272,26 +202,15 @@ export default {
         throw createError(403, `\`${entry}\` entry is not exist`);
       }
       if (entryItem.readOnly) {
-        throw createError(403, 'entry is read only');
+        throw createError(403, `\`${entry}\` entry is read only`);
       }
       ctx.entryItem = entryItem;
+      if (ctx.request.method === 'POST' && !ctx.signal.aborted) {
+        await handleStoreStreamBlockWithCreate(ctx);
+      }
     },
     post: {
-      fn: handleResourceStreamReceive,
-      onRequestEnd: async (ctx) => {
-        await waitFor(50);
-        ctx.blockItem.sha256 = ctx.hash.digest('hex');
-        const resourceItem = await createResource({
-          socket: ctx.socket,
-          name: ctx.request.query.name,
-          pathname: ctx.resourcePathname,
-          entry: ctx.entryItem._id,
-          blockData: ctx.blockItem,
-        });
-        ctx.response = {
-          data: resourceItem,
-        };
-      },
+      fn: () => {},
     },
   },
 };
