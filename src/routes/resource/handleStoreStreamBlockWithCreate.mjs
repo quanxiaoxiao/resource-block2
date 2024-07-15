@@ -36,7 +36,7 @@ export default async (ctx) => {
     );
     resourceItem.block = emptyBlockItem._id;
     await resourceItem.save();
-    logger.warn(`\`${ctx.entryItem._id.toString()}\` handleStoreStreamBlockWithCreate \`${resourceItem._id.toString()}\` create resource with empty`);
+    logger.warn(`\`${resourceItem._id.toString()}\` create resource with empty`);
     const data = await findResource(resourceItem._id);
     ctx.response = {
       data,
@@ -86,10 +86,10 @@ export default async (ctx) => {
           );
           shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
           await blockItem.save();
-          logger.warn(`\`${blockItem._id.toString()}\` store block \`${blockPathname}\``);
+          logger.warn(`\`${blockItem._id.toString()}\` create block`);
         }
         await resourceItem.save();
-        logger.warn(`\`${resourceItem._id.toString()}\` createResource \`${JSON.stringify({ name: resourceItem.name, entry: resourceItem.entry.toString() })}\``);
+        logger.warn(`\`${resourceItem._id.toString()}\` createResource \`${JSON.stringify({ name: resourceItem.name, entry: resourceItem.entry.toString(), sha256: ret.sha256 })}\``);
         return resourceItem._id;
       },
       typeName,
