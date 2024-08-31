@@ -4,6 +4,7 @@ import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
 import {
   Resource as ResourceModel,
   Block as BlockModel,
+  ResourceRecord as ResourceRecordModel,
 } from '../../models/index.mjs';
 import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
 import calcEmptyBlockSha256 from '../../utilities/calcEmptyBlockSha256.mjs';
@@ -45,17 +46,27 @@ export default async (ctx) => {
           },
         ),
       ]);
-      await ResourceModel.updateOne(
-        {
-          _id: resourceItem._id,
-        },
-        {
-          $set: {
-            block: emptyBlockItem._id,
-            timeUpdate: ctx.request.dateTimeCreate,
+      const resourceRecordItem = new ResourceRecordModel({
+        block: resourceItem.block._id,
+        resource: resourceItem._id,
+        timeCreate: ctx.request.dateTimeCreate,
+        timeAtComplete: ctx.request.dateTimeCreate,
+      });
+      await Promise.all([
+        resourceRecordItem.save(),
+        ResourceModel.updateOne(
+          {
+            _id: resourceItem._id,
           },
-        },
-      );
+          {
+            $set: {
+              record: resourceRecordItem._id,
+              block: emptyBlockItem._id,
+              timeUpdate: ctx.request.dateTimeCreate,
+            },
+          },
+        ),
+      ]);
       logger.warn(`\`${resourceItem._id}\` set block with empty`);
       const data = await findResource(resourceItem._id);
       if (data) {
@@ -87,7 +98,14 @@ export default async (ctx) => {
           sha256: ret.sha256,
         });
         if (blockMatched) {
+          const resourceRecordItem = new ResourceRecordModel({
+            block: blockMatched._id,
+            resource: resourceItem._id,
+            timeCreate: ret.timeCreate,
+            timeAtComplete: ret.timeAtComplete,
+          });
           await Promise.all([
+            resourceRecordItem.save(),
             BlockModel.updateOne(
               { _id: blockMatched._id },
               {
@@ -101,6 +119,7 @@ export default async (ctx) => {
               },
               {
                 $set: {
+                  record: resourceRecordItem._id,
                   timeUpdate: ret.timeCreate,
                   block: blockMatched._id,
                 },
@@ -129,7 +148,14 @@ export default async (ctx) => {
           tempPathname,
         );
         shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
+        const resourceRecordItem = new ResourceRecordModel({
+          block: blockItem._id,
+          resource: resourceItem._id,
+          timeCreate: ret.timeCreate,
+          timeAtComplete: ret.timeAtComplete,
+        });
         await Promise.all([
+          resourceRecordItem.save(),
           blockItem.save(),
           ResourceModel.updateOne(
             {
@@ -137,13 +163,13 @@ export default async (ctx) => {
             },
             {
               $set: {
+                record: resourceRecordItem._id,
                 timeUpdate: ret.timeCreate,
                 block: blockItem._id,
               },
             },
           ),
         ]);
-        await resourceItem.save();
         logger.warn(`\`${blockItem._id.toString()}\` create block`);
         logger.warn(`\`${resourceItem._id.toString()}\` updateResource \`${JSON.stringify({ entry: resourceItem.entry.toString(), sha256: ret.sha256 })}\``);
         return resourceItem._id;

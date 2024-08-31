@@ -34,7 +34,7 @@ process.nextTick(async () => {
     console.log(`server listen at \`${port}\``);
   });
 
-  runSchedules();
+  // runSchedules();
 });
 
 process.on('uncaughtException', (error) => {

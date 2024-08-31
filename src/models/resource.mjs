@@ -9,6 +9,11 @@ export default new Schema({
     ref: 'Block',
     index: true,
   },
+  record: {
+    type: Schema.Types.ObjectId,
+    ref: 'ResourceRecord',
+    index: true,
+  },
   mime: {
     type: String,
     index: true,
@@ -39,16 +44,6 @@ export default new Schema({
     index: true,
   },
   timeUpdate: {
-    type: Number,
-    default: Date.now,
-    index: true,
-  },
-  timeAtFirstComplete: {
-    type: Number,
-    default: Date.now,
-    index: true,
-  },
-  timeAccess: {
     type: Number,
     default: Date.now,
     index: true,

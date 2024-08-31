@@ -4,6 +4,7 @@ import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
 import {
   Resource as ResourceModel,
   Block as BlockModel,
+  ResourceRecord as ResourceRecordModel,
 } from '../../models/index.mjs';
 import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
 import calcEmptyBlockSha256 from '../../utilities/calcEmptyBlockSha256.mjs';
@@ -36,7 +37,17 @@ export default async (ctx) => {
       },
     );
     resourceItem.block = emptyBlockItem._id;
-    await resourceItem.save();
+    const resourceRecordItem = new ResourceRecordModel({
+      block: resourceItem.block,
+      resource: resourceItem._id,
+      timeCreate: resourceItem.timeCreate,
+      timeAtComplete: resourceItem.timeCreate,
+    });
+    resourceItem.record = resourceRecordItem._id;
+    await Promise.all([
+      resourceItem.save(),
+      resourceRecordItem.save(),
+    ]);
     logger.warn(`\`${resourceItem._id.toString()}\` create resource with empty`);
     const data = await findResource(resourceItem._id);
     if (data) {
@@ -92,7 +103,21 @@ export default async (ctx) => {
           await blockItem.save();
           logger.warn(`\`${blockItem._id.toString()}\` create block`);
         }
-        await resourceItem.save();
+
+        const resourceRecordItem = new ResourceRecordModel({
+          block: resourceItem.block,
+          resource: resourceItem._id,
+          timeCreate: resourceItem.timeCreate,
+          timeAtComplete: ret.timeAtComplete,
+        });
+
+        resourceItem.record = resourceRecordItem._id;
+
+        await Promise.all([
+          resourceRecordItem.save(),
+          resourceItem.save(),
+        ]);
+
         logger.warn(`\`${resourceItem._id.toString()}\` createResource \`${JSON.stringify({ name: resourceItem.name, entry: resourceItem.entry.toString(), sha256: ret.sha256 })}\``);
         return resourceItem._id;
       },
