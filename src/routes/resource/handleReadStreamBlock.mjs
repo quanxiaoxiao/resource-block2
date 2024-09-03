@@ -9,7 +9,7 @@ const BLOCK_SIZE = 16;
 
 const getResourceBlockStream = (
   resourceItem,
-  timeCreate,
+  dateTimeCreate,
   range,
 ) => {
   const pathname = calcBlockPathname(resourceItem.block._id);

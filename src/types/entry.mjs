@@ -17,7 +17,7 @@ export default {
   description: {
     type: 'string',
   },
-  timeCreate: {
+  dateTimeCreate: {
     type: 'number',
     index: 1,
   },

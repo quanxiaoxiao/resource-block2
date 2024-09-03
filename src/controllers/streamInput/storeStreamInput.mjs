@@ -24,7 +24,7 @@ export default async (streamInput) => {
       _id: streamInputItem.resource,
       name: streamInputItem.name,
       entry: streamInputItem.entry,
-      timeCreate: streamInputItem.dateTimeCreate,
+      dateTimeCreate: streamInputItem.dateTimeCreate,
       timeUpdate: streamInputItem.timeUpdate,
       dateTimeStore: streamInputItem.dateTimeStore,
     });
@@ -61,7 +61,7 @@ export default async (streamInput) => {
       _id: streamInputItem._id,
       sha256: streamInputItem.sha256,
       size: streamInputItem.chunkSize,
-      timeCreate: streamInputItem.dateTimeCreate,
+      dateTimeCreate: streamInputItem.dateTimeCreate,
       timeUpdate: streamInputItem.dateTimeCreate,
       linkCount: 1,
     });

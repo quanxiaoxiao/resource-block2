@@ -9,7 +9,7 @@ export default new Schema({
     unique: true,
     index: true,
   },
-  timeCreate: {
+  dateTimeCreate: {
     type: Number,
     default: Date.now,
   },

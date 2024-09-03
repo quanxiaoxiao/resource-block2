@@ -21,7 +21,7 @@ export default ({
     name,
     order: entryList.length,
     description,
-    timeCreate: Date.now(),
+    dateTimeCreate: Date.now(),
     readOnly,
   };
 

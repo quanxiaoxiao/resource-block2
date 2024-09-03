@@ -22,7 +22,7 @@ export default new Schema({
     default: false,
     index: true,
   },
-  timeCreate: {
+  dateTimeCreate: {
     type: Number,
     default: Date.now,
   },

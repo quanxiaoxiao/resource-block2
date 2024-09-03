@@ -28,7 +28,7 @@ export default (ctx, onDone, typeName) => {
       entry: ctx.entryItem._id,
       typeName,
       dateTimeActive: null,
-      timeCreate: ctx.request.dateTimeCreate,
+      dateTimeCreate: ctx.request.dateTimeCreate,
     }]);
     logger.warn(`\`${ctx.entryItem._id.toString()}\` entry \`${block.toString()}\` block start receive stream`);
     const hash = crypto.createHash('sha256');
@@ -48,7 +48,7 @@ export default (ctx, onDone, typeName) => {
           entry: streamInputItem.entry,
           size: streamInputItem.size,
           block: streamInputItem._id,
-          timeCreate: streamInputItem.timeCreate,
+          dateTimeCreate: streamInputItem.dateTimeCreate,
           timeAtComplete: Date.now(),
           pathname: resourceTempPathname,
         });

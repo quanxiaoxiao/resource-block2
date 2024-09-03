@@ -22,7 +22,7 @@ export default async () => {
     alias: (d.alias ?? '').trim(),
     name: d.name,
     order: d.order,
-    timeCreate: d.timeCreate,
+    dateTimeCreate: d.dateTimeCreate,
     description: d.description,
     readOnly: d.readOnly,
   }))));

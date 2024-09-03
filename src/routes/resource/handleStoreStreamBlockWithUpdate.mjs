@@ -48,7 +48,7 @@ export default async (ctx) => {
       const resourceRecordItem = new ResourceRecordModel({
         block: resourceItem.block._id,
         resource: resourceItem._id,
-        timeCreate: ctx.request.dateTimeCreate,
+        dateTimeCreate: ctx.request.dateTimeCreate,
         timeAtComplete: ctx.request.dateTimeCreate,
       });
       await Promise.all([

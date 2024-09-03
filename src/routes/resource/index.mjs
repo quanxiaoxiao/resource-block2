@@ -150,7 +150,7 @@ export default {
         type: 'string',
         resolve: (v) => {
           if (!v) {
-            return 'timeCreate';
+            return 'dateTimeCreate';
           }
           return v;
         },
@@ -160,7 +160,7 @@ export default {
       'query.order': { $in: [-1, 1] },
       'query.orderBy': {
         $in: [
-          'timeCreate',
+          'dateTimeCreate',
           'timeUpdate',
           'size',
           'mime',

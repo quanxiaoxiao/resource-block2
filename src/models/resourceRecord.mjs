@@ -15,7 +15,7 @@ export default new Schema({
     ref: 'Block',
     index: true,
   },
-  timeCreate: {
+  dateTimeCreate: {
     type: Number,
     index: true,
   },
