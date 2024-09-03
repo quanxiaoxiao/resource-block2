@@ -5,7 +5,7 @@ import removeEntry from '../../controllers/entry/removeEntry.mjs';
 import findEntry from '../../controllers/entry/findEntry.mjs';
 import updateEntry from './updateEntry.mjs';
 import createEntry from './createEntry.mjs';
-import sortEntries from './sortEntries.mjs';
+// import sortEntries from './sortEntries.mjs';
 import statisticsEntry from './statisticsEntry.mjs';
 
 export default {
@@ -23,11 +23,14 @@ export default {
         },
         minItems: 1,
       },
-      fn: async (ctx) => {
+      fn: async () => {
+        /*
         const entryList = await sortEntries(ctx.contentData);
         ctx.response = {
           data: entryList,
         };
+        */
+        throw createError(403);
       },
     },
   },
