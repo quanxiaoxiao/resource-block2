@@ -3,7 +3,9 @@ import assert from 'node:assert';
 import { Transform } from 'node:stream';
 import { parseContentRange } from '@quanxiaoxiao/http-utils';
 import { decrypt } from '../../providers/cipher.mjs';
-import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
+import createStreamOutput from '../../controllers/streamOutput/createStreamOutput.mjs';
+import updateStreamOutput from '../../controllers/streamOutput/updateStreamOutput.mjs';
+import removeStreamOutput from '../../controllers/streamOutput/removeStreamOutput.mjs';
 
 const BLOCK_SIZE = 16;
 
@@ -12,13 +14,34 @@ const getResourceBlockStream = (
   dateTimeCreate,
   range,
 ) => {
-  const pathname = calcBlockPathname(resourceItem.block._id);
+  const streamOutputItem = createStreamOutput({
+    resource: resourceItem._id.toString(),
+    block: resourceItem.block._id.toString(),
+    blockSize: resourceItem.block.size,
+  });
+
+  const pass = new Transform({
+    transform(chunk, encoding, callback) {
+      updateStreamOutput(streamOutputItem._id, (pre) => ({
+        chunkSize: pre.chunkSize + chunk.length,
+        dateTimeActive: Date.now(),
+      }));
+      callback(null, chunk);
+    },
+  });
+
+  pass.once('close', () => {
+    removeStreamOutput(streamOutputItem._id);
+  });
 
   if (range) {
     const [start, end] = range;
     const startCounter = Math.floor(start / BLOCK_SIZE);
     const offsetStart = start - startCounter * BLOCK_SIZE;
     let init = false;
+    updateStreamOutput(streamOutputItem._id, () => ({
+      range: [start, end],
+    }));
     const transform = new Transform({
       transform(chunk, encoding, callback) {
         if (!init) {
@@ -30,22 +53,22 @@ const getResourceBlockStream = (
       },
     });
 
-    const ws = fs.createReadStream(pathname, {
+    const ws = fs.createReadStream(streamOutputItem.pathname, {
       start: offsetStart !== 0 ? startCounter * BLOCK_SIZE : start,
       end,
     });
 
-    return ws
-      .pipe(decrypt(resourceItem.block._id, startCounter))
-      .pipe(transform);
+    ws.pipe(decrypt(resourceItem.block._id, startCounter))
+      .pipe(transform)
+      .pipe(pass);
+    return pass;
   }
 
-  const ws = fs.createReadStream(pathname);
+  const ws = fs.createReadStream(streamOutputItem.pathname);
 
   const decodeStream = decrypt(resourceItem.block._id);
-
-  return ws
-    .pipe(decodeStream);
+  ws.pipe(decodeStream).pipe(pass);
+  return pass;
 };
 
 export default (ctx) => {
