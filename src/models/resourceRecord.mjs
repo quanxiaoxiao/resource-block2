@@ -9,6 +9,10 @@ export default new Schema({
     ref: 'Resource',
     index: true,
   },
+  readCount: {
+    type: Number,
+    default: 0,
+  },
   block: {
     type: Schema.Types.ObjectId,
     required: true,
