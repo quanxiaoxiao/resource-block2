@@ -17,6 +17,9 @@ export default async (resource) => {
     .populate({
       path: 'block',
     })
+    .populate({
+      path: 'record',
+    })
     .lean();
 
   if (!resourceItem || !resourceItem.block) {
