@@ -2,7 +2,10 @@ import path from 'node:path';
 import assert from 'node:assert';
 import shelljs from 'shelljs';
 import logger from '../../logger.mjs';
-import { STREAM_TYPE_RESOURCE_CREATE } from '../../constants.mjs';
+import {
+  STREAM_TYPE_RESOURCE_CREATE,
+  STREAM_TYPE_RESOURCE_UPDATE,
+} from '../../constants.mjs';
 import {
   Resource as ResourceModel,
   Block as BlockModel,
@@ -28,7 +31,7 @@ export default async (streamInput) => {
       dateTimeUpdate: streamInputItem.dateTimeUpdate,
       dateTimeStore: streamInputItem.dateTimeStore,
     });
-  } else {
+  } else if (streamInputItem.type === STREAM_TYPE_RESOURCE_UPDATE) {
     resourceItem = await ResourceModel.findOne({
       _id: streamInputItem.resource,
       invalid: {
@@ -39,6 +42,8 @@ export default async (streamInput) => {
       removeStreamInput(streamInputItem._id);
       return null;
     }
+  } else {
+    return null;
   }
   const blockMatched = await BlockModel.findOne({
     sha256: streamInputItem.sha256,
