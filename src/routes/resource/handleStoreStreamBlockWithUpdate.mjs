@@ -49,7 +49,6 @@ export default async (ctx) => {
         block: resourceItem.block._id,
         resource: resourceItem._id,
         dateTimeCreate: ctx.request.dateTimeCreate,
-        dateTimeComplete: ctx.request.dateTimeCreate,
       });
       await Promise.all([
         resourceRecordItem.save(),

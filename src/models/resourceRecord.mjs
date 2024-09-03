@@ -9,15 +9,15 @@ export default new Schema({
     ref: 'Resource',
     index: true,
   },
-  readCount: {
-    type: Number,
-    default: 0,
-  },
   block: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'Block',
     index: true,
+  },
+  countRead: {
+    type: Number,
+    default: 0,
   },
   dateTimeCreate: {
     type: Number,
@@ -27,7 +27,7 @@ export default new Schema({
     type: Number,
     index: true,
   },
-  dateTimeComplete: {
+  dateTimeStore: {
     type: Number,
     index: true,
   },

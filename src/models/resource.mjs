@@ -43,10 +43,6 @@ export default new Schema({
     default: Date.now,
     index: true,
   },
-  dateTimeStore: {
-    type: Number,
-    default: null,
-  },
   dateTimeUpdate: {
     type: Number,
     default: Date.now,

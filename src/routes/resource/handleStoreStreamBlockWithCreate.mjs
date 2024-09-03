@@ -39,7 +39,7 @@ export default async (ctx) => {
       block: resourceItem.block,
       resource: resourceItem._id,
       dateTimeCreate: resourceItem.dateTimeCreate,
-      dateTimeComplete: resourceItem.dateTimeCreate,
+      dateTimeStore: resourceItem.dateTimeStore,
     });
     resourceItem.record = resourceRecordItem._id;
     await Promise.all([

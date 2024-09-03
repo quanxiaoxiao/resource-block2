@@ -13,7 +13,6 @@ import connectMongo from './connectMongo.mjs';
 import routes from './routes/index.mjs';
 import { selectRouteMatchList } from './store/selector.mjs';
 import configEntries from './controllers/entry/configEntries.mjs';
-// import runSchedules from './schedules/index.mjs';
 
 process.nextTick(async () => {
   const { getState, dispatch } = store;
@@ -37,8 +36,6 @@ process.nextTick(async () => {
   server.listen(port, () => {
     console.log(`server listen at \`${port}\``);
   });
-
-  // runSchedules();
 });
 
 process.on('uncaughtException', (error) => {

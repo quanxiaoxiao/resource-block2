@@ -10,6 +10,7 @@ export default ({
   resource,
   blockSize,
   block,
+  resourceRecord,
 }) => {
   assert(typeof resource === 'string');
   const model = {
@@ -21,6 +22,7 @@ export default ({
     dateTimeActive: null,
     blockSize,
     pathname: calcBlockPathname(block),
+    resourceRecord,
   };
 
   dispatch('streamOutputList', (pre) => sort([...pre, model]));

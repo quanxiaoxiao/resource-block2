@@ -9,6 +9,7 @@ import {
 import {
   Resource as ResourceModel,
   Block as BlockModel,
+  ResourceRecord as ResourceRecordModel,
 } from '../../models/index.mjs';
 import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
 import findStreamInput from './findStreamInput.mjs';
@@ -29,7 +30,6 @@ export default async (streamInput) => {
       entry: streamInputItem.entry,
       dateTimeCreate: streamInputItem.dateTimeCreate,
       dateTimeUpdate: streamInputItem.dateTimeUpdate,
-      dateTimeStore: streamInputItem.dateTimeStore,
     });
   } else if (streamInputItem.type === STREAM_TYPE_RESOURCE_UPDATE) {
     resourceItem = await ResourceModel.findOne({
@@ -82,7 +82,17 @@ export default async (streamInput) => {
     logger.warn(`\`${blockItem._id.toString()}\` create block \`chunkSize:${blockItem.size}\``);
     resourceItem.block = blockItem._id;
   }
-  await resourceItem.save();
+  const resourceRecordItem = new ResourceRecordModel({
+    block: resourceItem.block,
+    resource: resourceItem._id,
+    dateTimeCreate: streamInputItem.dateTimeCreate,
+    dateTimeStore: streamInputItem.dateTimeStore,
+  });
+  resourceItem.record = resourceRecordItem._id;
+  await Promise.all([
+    resourceRecordItem.save(),
+    resourceItem.save(),
+  ]);
   removeStreamInput(streamInputItem._id);
   return streamInputItem;
 };
