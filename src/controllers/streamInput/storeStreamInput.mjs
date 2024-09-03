@@ -53,7 +53,9 @@ export default async (streamInput) => {
       { _id: blockMatched._id },
       {
         $inc: { linkCount: 1 },
-        dateTimeUpdate: streamInputItem.dateTimeCreate,
+        $set: {
+          dateTimeUpdate: streamInputItem.dateTimeCreate,
+        },
       },
     );
     logger.warn(`\`${blockMatched._id.toString()}\` block set link count \`${blockMatched.linkCount + 1}\``);

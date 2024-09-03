@@ -11,17 +11,17 @@ export default (streamOutput) => {
     return null;
   }
   const [streamOutputItem] = ret;
-  if (streamOutputItem.record) {
+  if (streamOutputItem.resourceRecord) {
     ResourceRecordModel.updateOne(
       {
-        _id: streamOutputItem.record,
+        _id: streamOutputItem.resourceRecord,
       },
       {
         $set: {
           dateTimeAccess: streamOutputItem.dateTimeCreate,
-          countRead: {
-            $inc: 1,
-          },
+        },
+        $inc: {
+          countRead: 1,
         },
       },
     )
