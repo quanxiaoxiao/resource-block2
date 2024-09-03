@@ -1,5 +1,5 @@
 import createError from 'http-errors';
-import { selectEntry } from '../../store/selector.mjs';
+import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
 import findResource from './findResource.mjs';
 
 export default async (ctx) => {
@@ -7,7 +7,7 @@ export default async (ctx) => {
   if (!resourceItem) {
     throw createError(404);
   }
-  const entryItem = selectEntry(resourceItem.entry);
+  const entryItem = findEntryOfId(resourceItem.entry.toString());
   if (!entryItem) {
     throw createError(404);
   }

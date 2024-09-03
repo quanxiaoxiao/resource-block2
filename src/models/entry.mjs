@@ -17,6 +17,11 @@ export default new Schema({
   order: {
     type: Number,
   },
+  readOnly: {
+    type: Boolean,
+    default: false,
+    index: true,
+  },
   timeCreate: {
     type: Number,
     default: Date.now,
@@ -32,11 +37,6 @@ export default new Schema({
   },
   timeInvalid: {
     index: true,
-    type: Date,
-  },
-  readOnly: {
-    type: Boolean,
-    default: false,
-    index: true,
+    type: Number,
   },
 });

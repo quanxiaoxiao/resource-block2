@@ -1,19 +1,9 @@
 import createError from 'http-errors';
-import { isValidObjectId } from '@quanxiaoxiao/mongo';
-import {
-  Entry as EntryModel,
-  Resource as ResourceModel,
-} from '../../models/index.mjs';
+import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
+import { Resource as ResourceModel } from '../../models/index.mjs';
 
 export default async (entry) => {
-  if (!isValidObjectId(entry)) {
-    throw createError(404);
-  }
-  const entryItem = await EntryModel.findOne({
-    invalid: {
-      $ne: true,
-    },
-  });
+  const entryItem = findEntryOfId(entry);
   if (!entryItem) {
     throw createError(404);
   }

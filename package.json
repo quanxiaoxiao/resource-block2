@@ -1,6 +1,6 @@
 {
   "name": "resource-block2",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "scripts": {
     "start": "node src/index.mjs"
@@ -14,16 +14,17 @@
     "node": ">= 20.0.0"
   },
   "dependencies": {
-    "@quanxiaoxiao/curd": "^0.2.0",
-    "@quanxiaoxiao/datav": "^0.3.0",
-    "@quanxiaoxiao/http-request": "^0.34.0",
-    "@quanxiaoxiao/http-utils": "^0.18.0",
-    "@quanxiaoxiao/httttp": "^0.37.0",
+    "@quanxiaoxiao/curd": "^0.3.0",
+    "@quanxiaoxiao/datav": "^0.3.2",
+    "@quanxiaoxiao/http-request": "^0.53.0",
+    "@quanxiaoxiao/http-utils": "^0.25.0",
+    "@quanxiaoxiao/httttp": "^0.93.0",
+    "@quanxiaoxiao/list": "^0.1.0",
     "@quanxiaoxiao/logger": "^0.0.1",
     "@quanxiaoxiao/mongo": "^0.2.0",
-    "@quanxiaoxiao/node-utils": "^0.11.0",
-    "@quanxiaoxiao/store": "^0.1.0",
-    "@quanxiaoxiao/utils": "^0.9.0",
+    "@quanxiaoxiao/node-utils": "^0.14.0",
+    "@quanxiaoxiao/store": "^0.1.2",
+    "@quanxiaoxiao/utils": "^0.11.0",
     "ajv": "^8.12.0",
     "dayjs": "^1.11.10",
     "dotenv": "^16.4.5",

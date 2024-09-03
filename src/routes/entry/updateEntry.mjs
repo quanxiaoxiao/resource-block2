@@ -1,51 +1,28 @@
 import createError from 'http-errors';
-import logger from '../../logger.mjs';
-import { Entry as EntryModel } from '../../models/index.mjs';
+import findEntryOfAlias from '../../controllers/entry/findEntryOfAlias.mjs';
+import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
+import updateEntry from '../../controllers/entry/updateEntry.mjs';
 
-export default async (entryItem, input) => {
+export default async (entry, input) => {
   const data = {
     ...input,
   };
+  let entryItem = findEntryOfId(entry);
+  if (!entryItem) {
+    throw createError(404);
+  }
   if (typeof data.alias === 'string') {
     data.alias = data.alias.trim();
   }
-  if (data.alias
-    && data.alias !== entryItem.alias
-  ) {
-    const matched = await EntryModel.findOne({
-      _id: {
-        $ne: entryItem._id,
-      },
-      alias: data.alias,
-      invalid: {
-        $ne: true,
-      },
-    });
+  if (data.alias && data.alias !== entryItem.alias) {
+    const matched = findEntryOfAlias(data.alias);
     if (matched) {
       throw createError(403, `\`${data.alias}\` alias alreay set`);
     }
   }
-  const entryItemNext = await EntryModel
-    .findOneAndUpdate(
-      {
-        _id: entryItem._id,
-        invalid: {
-          $ne: true,
-        },
-      },
-      {
-        $set: {
-          ...data,
-        },
-      },
-      {
-        new: true,
-      },
-    )
-    .lean();
-  if (!entryItemNext) {
+  entryItem = await updateEntry(entry, () => data);
+  if (!entryItem) {
     throw createError(404);
   }
-  logger.warn(`\`${entryItem._id}\` updateEntry \`${JSON.stringify(data)}\``);
-  return entryItemNext;
+  return entryItem;
 };

@@ -14,7 +14,17 @@ const clear = async () => {
   ].reduce(async (acc, alias) => {
     const entryItem = await fetchEntry(alias);
     if (entryItem) {
-      await removeEntry(entryItem._id);
+      let ret = await fetchEntry(alias);
+      assert.deepEqual(ret, entryItem);
+      ret = await fetchEntry(entryItem._id);
+      assert.deepEqual(ret, entryItem);
+      assert.equal(ret.alias, alias);
+      ret = await removeEntry(entryItem._id);
+      assert.equal(ret.alias, alias);
+      ret = await fetchEntry(alias);
+      assert.equal(ret, null);
+      ret = await fetchEntry(entryItem._id);
+      assert.equal(ret, null);
     }
   }, Promise.resolve);
 };
@@ -26,6 +36,9 @@ const entryItem = await createEntry({
 });
 
 assert(entryItem);
+
+assert.equal(entryItem.name, 'aaa');
+assert.equal(entryItem.alias, '');
 
 let entryItem2 = await fetchEntry(entryItem._id);
 
@@ -84,17 +97,17 @@ entryItem2 = await fetchEntry('test_123');
 
 assert.equal(entryItem2.name, 'fffffff');
 
-entryItem2 = await updateEntry('test_123', {
+entryItem2 = await updateEntry(entryItem2._id, {
   alias: 'test_9999',
 });
 
 assert.equal(entryItem2.alias, 'test_9999');
 
-entryItem2 = await removeEntry('test_123');
+const entryRemoveByAlias = await removeEntry(entryItem2.alias);
 
-assert.equal(entryItem2, null);
+assert.equal(entryRemoveByAlias, null);
 
-entryItem3 = await updateEntry('test_1234', {
+entryItem3 = await updateEntry(entryItem3._id, {
   alias: 'test_123',
 });
 

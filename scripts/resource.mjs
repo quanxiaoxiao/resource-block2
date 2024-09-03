@@ -1,4 +1,5 @@
 import assert from 'node:assert';
+import { sha256 } from '@quanxiaoxiao/node-utils';
 import {
   fetchEntry,
   createEntry,
@@ -6,6 +7,7 @@ import {
   removeResource,
   fetchResource,
   updateResource,
+  fetchResourceChunk,
   upload,
 } from './apis.mjs';
 import generateChunk from './generateChunk.mjs';
@@ -31,12 +33,20 @@ const entryItem = await createEntry({
   alias: entryName,
 });
 
+const blockChunk = generateChunk();
+
 const resourceItem = await upload({
   entry: entryName,
-  content: generateChunk(),
+  content: blockChunk,
 });
 
+
 assert(!!resourceItem);
+
+assert.equal(resourceItem.hash, sha256(blockChunk));
+const resourceChunk = await fetchResourceChunk(resourceItem._id);
+
+assert.equal(sha256(blockChunk), sha256(resourceChunk));
 
 let resourceItem2 = await fetchResource(resourceItem._id);
 

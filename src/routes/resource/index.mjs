@@ -1,6 +1,8 @@
+import { Readable } from 'node:stream';
 import createError from 'http-errors';
+import { readStream } from '@quanxiaoxiao/httttp';
 import resourceType from '../../types/resource.mjs';
-import { selectEntry } from '../../store/selector.mjs';
+import findEntry from '../../controllers/entry/findEntry.mjs';
 import queryResources from './queryResources.mjs';
 import removeResource from './removeResource.mjs';
 import updateResource from './updateResource.mjs';
@@ -26,14 +28,17 @@ export default {
         }
       }
     },
-    put: {
-      fn: () => {},
+    put: async (ctx) => {
+      if (ctx.response
+        && ctx.response.body instanceof Readable
+        && ctx.response.body.readable
+        && !ctx.signal.aborted
+      ) {
+        const buf = await readStream(ctx.response.body, ctx.signal);
+        ctx.response.data = JSON.parse(buf);
+      }
     },
-    get: {
-      fn: (ctx) => {
-        handleReadStreamBlock(ctx);
-      },
-    },
+    get: handleReadStreamBlock,
   },
   '/api/resource/:_id': {
     select: {
@@ -92,7 +97,7 @@ export default {
   },
   '/api/entry/:entry/resources': {
     onPre: async (ctx) => {
-      const entryItem = selectEntry(ctx.request.params.entry);
+      const entryItem = findEntry(ctx.request.params.entry);
       if (!entryItem) {
         throw createError(404);
       }
@@ -197,7 +202,7 @@ export default {
     },
     onPre: async (ctx) => {
       const entry = ctx.request.params.entry || 'default';
-      const entryItem = selectEntry(entry);
+      const entryItem = findEntry(entry);
       if (!entryItem) {
         throw createError(403, `\`${entry}\` entry is not exist`);
       }
@@ -209,8 +214,6 @@ export default {
         await handleStoreStreamBlockWithCreate(ctx);
       }
     },
-    post: {
-      fn: () => {},
-    },
+    post: () => {},
   },
 };

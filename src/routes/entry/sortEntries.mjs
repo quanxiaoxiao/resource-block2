@@ -1,13 +1,9 @@
 import { generateSortDataUpdates } from '@quanxiaoxiao/mongo';
 import { Entry as EntryModel } from '../../models/index.mjs';
-import queryEntries from './queryEntries.mjs';
+import getEntryList from '../../controllers/entry/getEntryList.mjs';
 
 export default async (input) => {
-  const entryList = await EntryModel.find({
-    invalid: {
-      $ne: true,
-    },
-  });
+  const entryList = getEntryList();
 
   const updates = generateSortDataUpdates(entryList, input);
 
@@ -21,5 +17,5 @@ export default async (input) => {
     },
   );
   await EntryModel.bulkWrite(updates);
-  return queryEntries({});
+  return getEntryList();
 };

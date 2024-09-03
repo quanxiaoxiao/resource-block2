@@ -1,16 +1,15 @@
-import path from 'node:path';
-import shelljs from 'shelljs';
 import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
 import {
   Resource as ResourceModel,
   Block as BlockModel,
   ResourceRecord as ResourceRecordModel,
 } from '../../models/index.mjs';
-import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
+import { STREAM_TYPE_RESOURCE_UPDATE } from '../../constants.mjs';
 import calcEmptyBlockSha256 from '../../utilities/calcEmptyBlockSha256.mjs';
 import logger from '../../logger.mjs';
 import findResource from './findResource.mjs';
-import handleStoreStreamBlock from './handleStoreStreamBlock.mjs';
+import createStreamInput from '../../controllers/streamInput/createStreamInput.mjs';
+import handleStreamInput from './handleStreamInput.mjs';
 
 export default async (ctx) => {
   if (!hasHttpBodyContent(ctx.request.headers)) {
@@ -75,106 +74,18 @@ export default async (ctx) => {
         };
       }
     }
-  } else {
-    const typeName = 'update';
-    await handleStoreStreamBlock(
-      ctx,
-      async (ret) => {
-        const resourceItem = await findResource(ctx.resourceItem._id);
-        if (!resourceItem) {
-          if (shelljs.test('-f', ret.pathname)) {
-            shelljs.rm('-f', ret.pathname);
-          }
-          return null;
-        }
-        if (ret.sha256 === resourceItem.block.sha256) {
-          logger.warn(`\`${resourceItem._id.toString()}\` receive same block \`${ret.sha256}\``);
-          if (shelljs.test('-f', ret.pathname)) {
-            shelljs.rm('-f', ret.pathname);
-          }
-          return resourceItem._id;
-        }
-        const blockMatched = await BlockModel.findOne({
-          sha256: ret.sha256,
-        });
-        if (blockMatched) {
-          const resourceRecordItem = new ResourceRecordModel({
-            block: blockMatched._id,
-            resource: resourceItem._id,
-            timeCreate: ret.timeCreate,
-            timeAtComplete: ret.timeAtComplete,
-          });
-          await Promise.all([
-            resourceRecordItem.save(),
-            BlockModel.updateOne(
-              { _id: blockMatched._id },
-              {
-                $inc: { linkCount: 1 },
-                timeUpdate: ret.timeCreate,
-              },
-            ),
-            ResourceModel.updateOne(
-              {
-                _id: resourceItem._id,
-              },
-              {
-                $set: {
-                  record: resourceRecordItem._id,
-                  timeUpdate: ret.timeCreate,
-                  block: blockMatched._id,
-                },
-              },
-            ),
-          ]);
-          logger.warn(`\`${blockMatched._id.toString()}\` block set link count \`${blockMatched.linkCount + 1}\``);
-          if (shelljs.test('-f', ret.pathname)) {
-            shelljs.rm('-f', ret.pathname);
-          }
-          return resourceItem._id;
-        }
-        const blockItem = new BlockModel({
-          _id: ret.block,
-          sha256: ret.sha256,
-          size: ret.size,
-          timeCreate: ret.timeCreate,
-          timeUpdate: ret.timeCreate,
-          linkCount: 1,
-        });
-        resourceItem.block = blockItem._id;
-        const blockPathname = calcBlockPathname(blockItem._id.toString());
-        const tempPathname = path.join(path.resolve(ret.pathname, '..'), path.basename(blockPathname));
-        shelljs.mv(
-          ret.pathname,
-          tempPathname,
-        );
-        shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
-        const resourceRecordItem = new ResourceRecordModel({
-          block: blockItem._id,
-          resource: resourceItem._id,
-          timeCreate: ret.timeCreate,
-          timeAtComplete: ret.timeAtComplete,
-        });
-        await Promise.all([
-          resourceRecordItem.save(),
-          blockItem.save(),
-          ResourceModel.updateOne(
-            {
-              _id: resourceItem._id,
-            },
-            {
-              $set: {
-                record: resourceRecordItem._id,
-                timeUpdate: ret.timeCreate,
-                block: blockItem._id,
-              },
-            },
-          ),
-        ]);
-        logger.warn(`\`${blockItem._id.toString()}\` create block`);
-        logger.warn(`\`${resourceItem._id.toString()}\` updateResource \`${JSON.stringify({ entry: resourceItem.entry.toString(), sha256: ret.sha256 })}\``);
-        return resourceItem._id;
+  } else if (!ctx.signal.aborted) {
+    const streamInputItem = createStreamInput({
+      entry: ctx.entryItem._id.toString(),
+      resource: ctx.resourceItem._id.toString(),
+      dateTime: ctx.request.dateTimeCreate,
+      name: ctx.resourceItem.name,
+      type: STREAM_TYPE_RESOURCE_UPDATE,
+      request: {
+        path: ctx.request.path,
+        headers: ctx.request.headers,
       },
-      typeName,
-    );
+    });
+    await handleStreamInput(ctx, streamInputItem._id);
   }
 };

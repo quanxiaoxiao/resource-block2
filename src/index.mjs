@@ -9,15 +9,16 @@ import store from './store/store.mjs';
 import './models/index.mjs';
 import logger from './logger.mjs';
 import generateBlockDirs from './configs/generateBlockDirs.mjs';
-import checkoutResourceEntries from './configs/checkoutResourceEntries.mjs';
 import connectMongo from './connectMongo.mjs';
 import routes from './routes/index.mjs';
-import runSchedules from './schedules/index.mjs';
+import { selectRouteMatchList } from './store/selector.mjs';
+import configEntries from './controllers/entry/configEntries.mjs';
+// import runSchedules from './schedules/index.mjs';
 
 process.nextTick(async () => {
   const { getState, dispatch } = store;
   await connectMongo();
-  await checkoutResourceEntries();
+  await configEntries();
 
   generateBlockDirs();
 
@@ -25,7 +26,10 @@ process.nextTick(async () => {
 
   const server = net.createServer((socket) => handleSocketRequest({
     socket,
-    ...createHttpRequestHandler(getState().routeMatchList, logger),
+    ...createHttpRequestHandler({
+      list: selectRouteMatchList(),
+      logger,
+    }),
   }));
 
   const { port } = getState().server;

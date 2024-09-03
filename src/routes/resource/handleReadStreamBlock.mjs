@@ -1,15 +1,11 @@
 import fs from 'node:fs';
-import crypto from 'node:crypto';
 import assert from 'node:assert';
 import { Transform } from 'node:stream';
-import store from '../../store/store.mjs';
+import { parseContentRange } from '@quanxiaoxiao/http-utils';
 import { decrypt } from '../../providers/cipher.mjs';
 import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
-import parseContentRange from '../../utilities/parseContentRange.mjs';
 
 const BLOCK_SIZE = 16;
-
-const { dispatch } = store;
 
 const getResourceBlockStream = (
   resourceItem,
@@ -17,25 +13,6 @@ const getResourceBlockStream = (
   range,
 ) => {
   const pathname = calcBlockPathname(resourceItem.block._id);
-  const uuid = crypto.randomUUID();
-  dispatch('streamOutputList', (pre) => [...pre, {
-    uuid,
-    timeCreate,
-    timeEnd: null,
-    resource: resourceItem._id,
-  }]);
-
-  const handleCloseOnReadStream = () => {
-    dispatch('streamOutputList', (pre) => pre.map((d) => {
-      if (d.uuid === uuid) {
-        return {
-          ...d,
-          timeEnd: Date.now(),
-        };
-      }
-      return d;
-    }));
-  };
 
   if (range) {
     const [start, end] = range;
@@ -58,8 +35,6 @@ const getResourceBlockStream = (
       end,
     });
 
-    transform.once('close', handleCloseOnReadStream);
-
     return ws
       .pipe(decrypt(resourceItem.block._id, startCounter))
       .pipe(transform);
@@ -69,20 +44,12 @@ const getResourceBlockStream = (
 
   const decodeStream = decrypt(resourceItem.block._id);
 
-  decodeStream.once('close', handleCloseOnReadStream);
-
   return ws
     .pipe(decodeStream);
 };
 
 export default (ctx) => {
   if (ctx.resourceItem.block.size === 0) {
-    dispatch('streamOutputList', (pre) => [...pre, {
-      uuid: crypto.randomUUID(),
-      timeCreate: ctx.request.dateTimeCreate,
-      timeEnd: Date.now(),
-      resource: ctx.resourceItem._id,
-    }]);
     ctx.response = {
       headers: {},
       body: Buffer.from([]),

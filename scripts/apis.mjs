@@ -1,6 +1,6 @@
 import assert from 'node:assert';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
-import { request, getSocketConnect } from '@quanxiaoxiao/http-request';
+import request from '@quanxiaoxiao/http-request';
 
 const httpRequest = async ({
   path,
@@ -15,7 +15,9 @@ const httpRequest = async ({
       body,
       headers,
     },
-    () => getSocketConnect({ port: 4059 }),
+    {
+      port: 4059,
+    },
   );
   if (responseItem.statusCode !== 200) {
     return null;
@@ -122,7 +124,9 @@ export const fetchResourceChunk = async (resource, range) => {
   }
   const responseItem = await request(
     options,
-    () => getSocketConnect({ port: 4059 }),
+    {
+      port: 4059,
+    },
   );
   if (range) {
     assert(responseItem.statusCode !== 200);

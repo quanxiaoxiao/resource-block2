@@ -1,0 +1,2 @@
+export const STREAM_TYPE_RESOURCE_CREATE = 1;
+export const STREAM_TYPE_RESOURCE_UPDATE = 2;

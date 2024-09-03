@@ -1,15 +1,12 @@
-import curd from '@quanxiaoxiao/curd';
-import store from '../../store/store.mjs';
+import createError from 'http-errors';
 import entryType from '../../types/entry.mjs';
-import createEntry from './createEntry.mjs';
-import findEntry from './findEntry.mjs';
-import removeEntry from './removeEntry.mjs';
+import getEntryList from '../../controllers/entry/getEntryList.mjs';
+import removeEntry from '../../controllers/entry/removeEntry.mjs';
+import findEntry from '../../controllers/entry/findEntry.mjs';
 import updateEntry from './updateEntry.mjs';
-import queryEntries from './queryEntries.mjs';
+import createEntry from './createEntry.mjs';
 import sortEntries from './sortEntries.mjs';
 import statisticsEntry from './statisticsEntry.mjs';
-
-const { dispatch, getState } = store;
 
 export default {
   '/api/entries/sort': {
@@ -17,11 +14,7 @@ export default {
       type: 'array',
       properties: ['_id', { type: 'string' }],
     },
-    onPost: (ctx) => {
-      if (Object.hasOwnProperty.call(ctx, 'entryList')) {
-        dispatch('entryList', ctx.entryList);
-      }
-    },
+    onPost: () => {},
     put: {
       validate: {
         type: 'array',
@@ -32,7 +25,6 @@ export default {
       },
       fn: async (ctx) => {
         const entryList = await sortEntries(ctx.contentData);
-        ctx.entryList = entryList;
         ctx.response = {
           data: entryList,
         };
@@ -79,11 +71,6 @@ export default {
         };
       },
     },
-    onPost: (ctx) => {
-      if (ctx.entryItem) {
-        dispatch('entryList', (pre) => [...pre, ctx.entryItem]);
-      }
-    },
   },
   '/api/entries': {
     select: {
@@ -91,10 +78,9 @@ export default {
       properties: entryType,
     },
     get: {
-      fn: async (ctx) => {
-        const entryList = await queryEntries({});
+      fn: (ctx) => {
         ctx.response = {
-          data: entryList,
+          data: getEntryList(),
         };
       },
     },
@@ -126,21 +112,13 @@ export default {
       type: 'object',
       properties: entryType,
     },
-    onPre: async (ctx) => {
-      const entryItem = await findEntry(decodeURIComponent(ctx.request.params.entry));
-      if (!entryItem) {
-        ctx.throw(404);
-      }
-      ctx.entryItem = entryItem;
-    },
-    onPost: (ctx) => {
-      if (Object.hasOwnProperty.call(ctx, 'entryList')) {
-        dispatch('entryList', ctx.entryList);
-      }
-    },
     get: (ctx) => {
+      const entryItem = findEntry(decodeURIComponent(ctx.request.params.entry));
+      if (!entryItem) {
+        throw createError(404);
+      }
       ctx.response = {
-        data: ctx.entryItem,
+        data: entryItem,
       };
     },
     put: {
@@ -170,27 +148,20 @@ export default {
         additionalProperties: false,
       },
       fn: async (ctx) => {
-        const entryItem = await updateEntry(ctx.entryItem, ctx.request.data);
+        const entryItem = await updateEntry(ctx.request.params.entry, ctx.request.data);
         ctx.response = {
           data: entryItem,
         };
-        const { entryList } = getState();
-        const entry = entryItem._id.toString();
-        ctx.entryList = curd.update(
-          entryList,
-          (d) => d._id.toString() === entry,
-          ctx.request.data,
-        );
       },
     },
     delete: async (ctx) => {
-      await removeEntry(ctx.entryItem);
+      const entryItem = await removeEntry(ctx.request.params.entry);
+      if (!entryItem) {
+        throw createError(404);
+      }
       ctx.response = {
-        data: ctx.entryItem,
+        data: entryItem,
       };
-      const { entryList } = getState();
-      const entry = ctx.entryItem._id.toString();
-      ctx.entryList = curd.remove(entryList, (d) => d._id.toString() === entry);
     },
   },
 };
