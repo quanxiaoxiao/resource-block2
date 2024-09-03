@@ -13,6 +13,7 @@ export default ({
   resourceRecord,
 }) => {
   assert(typeof resource === 'string');
+  assert(typeof resourceRecord === 'string');
   const model = {
     _id: crypto.randomUUID(),
     resource,

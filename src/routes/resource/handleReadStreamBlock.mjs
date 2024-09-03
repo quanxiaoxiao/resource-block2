@@ -16,7 +16,7 @@ const getResourceBlockStream = (
 ) => {
   const streamOutputItem = createStreamOutput({
     resource: resourceItem._id.toString(),
-    resourceRecord: resourceItem.record?.toString() ?? null,
+    resourceRecord: resourceItem.record._id.toString(),
     block: resourceItem.block._id.toString(),
     blockSize: resourceItem.block.size,
   });
