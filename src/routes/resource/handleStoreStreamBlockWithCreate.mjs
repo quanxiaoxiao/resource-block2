@@ -56,7 +56,6 @@ export default async (ctx) => {
   } else if (!ctx.signal.aborted) {
     const streamInputItem = createStreamInput({
       entry: ctx.entryItem._id.toString(),
-      dateTime: ctx.request.dateTimeCreate,
       name: ctx.request.query.name,
       request: {
         path: ctx.request.path,

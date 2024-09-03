@@ -78,7 +78,6 @@ export default async (ctx) => {
     const streamInputItem = createStreamInput({
       entry: ctx.entryItem._id.toString(),
       resource: ctx.resourceItem._id.toString(),
-      dateTime: ctx.request.dateTimeCreate,
       name: ctx.resourceItem.name,
       type: STREAM_TYPE_RESOURCE_UPDATE,
       request: {

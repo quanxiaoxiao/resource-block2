@@ -14,7 +14,6 @@ const { dispatch, getState } = store;
 export default ({
   entry,
   name = '',
-  dateTime,
   request,
   resource,
   type = STREAM_TYPE_RESOURCE_CREATE,
@@ -38,7 +37,7 @@ export default ({
     sha256: null,
     dateTimeActive: null,
     dateTimeStore: null,
-    dateTimeCreate: dateTime ?? Date.now(),
+    dateTimeCreate: Date.now(),
     pathname: path.resolve(getState().block.tempDir, _id),
     entry,
   };
