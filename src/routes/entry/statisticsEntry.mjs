@@ -18,7 +18,7 @@ export default async (entry) => {
     },
     {
       $sort: {
-        timeUpdate: -1,
+        dateTimeUpdate: -1,
       },
     },
     {
@@ -37,7 +37,7 @@ export default async (entry) => {
     {
       $project: {
         entry: 1,
-        timeUpdate: 1,
+        dateTimeUpdate: 1,
         size: {
           $first: '$blocks.size',
         },
@@ -46,8 +46,8 @@ export default async (entry) => {
     {
       $group: {
         _id: '$entry',
-        timeUpdates: {
-          $push: '$timeUpdate',
+        dateTimeUpdates: {
+          $push: '$dateTimeUpdate',
         },
         size: {
           $sum: '$size',
@@ -59,8 +59,8 @@ export default async (entry) => {
     },
     {
       $project: {
-        timeUpdate: {
-          $first: '$timeUpdates',
+        dateTimeUpdate: {
+          $first: '$dateTimeUpdates',
         },
         size: 1,
         count: 1,
@@ -71,7 +71,7 @@ export default async (entry) => {
     return {
       size: 0,
       count: 0,
-      timeUpdate: null,
+      dateTimeUpdate: null,
     };
   }
   return data;

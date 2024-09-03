@@ -27,7 +27,7 @@ export default async (ctx) => {
           },
           {
             size: 0,
-            timeUpdate: ctx.request.dateTimeCreate,
+            dateTimeUpdate: ctx.request.dateTimeCreate,
             $inc: { linkCount: 1 },
           },
           {
@@ -49,7 +49,7 @@ export default async (ctx) => {
         block: resourceItem.block._id,
         resource: resourceItem._id,
         dateTimeCreate: ctx.request.dateTimeCreate,
-        timeAtComplete: ctx.request.dateTimeCreate,
+        dateTimeComplete: ctx.request.dateTimeCreate,
       });
       await Promise.all([
         resourceRecordItem.save(),
@@ -61,7 +61,7 @@ export default async (ctx) => {
             $set: {
               record: resourceRecordItem._id,
               block: emptyBlockItem._id,
-              timeUpdate: ctx.request.dateTimeCreate,
+              dateTimeUpdate: ctx.request.dateTimeCreate,
             },
           },
         ),

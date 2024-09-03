@@ -19,11 +19,11 @@ export default new Schema({
     type: Number,
     index: true,
   },
-  timeAccess: {
+  dateTimeAccess: {
     type: Number,
     index: true,
   },
-  timeAtComplete: {
+  dateTimeComplete: {
     type: Number,
     index: true,
   },

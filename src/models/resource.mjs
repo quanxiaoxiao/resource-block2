@@ -47,7 +47,7 @@ export default new Schema({
     type: Number,
     default: null,
   },
-  timeUpdate: {
+  dateTimeUpdate: {
     type: Number,
     default: Date.now,
     index: true,
@@ -57,7 +57,7 @@ export default new Schema({
     index: true,
     default: false,
   },
-  timeInvalid: {
+  dateTimeInvalid: {
     type: Number,
     index: true,
   },

@@ -161,7 +161,7 @@ export default {
       'query.orderBy': {
         $in: [
           'dateTimeCreate',
-          'timeUpdate',
+          'dateTimeUpdate',
           'size',
           'mime',
           'name',

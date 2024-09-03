@@ -23,7 +23,7 @@ export default (entry) => {
     {
       $set: {
         invalid: true,
-        timeInvalid: Date.now(),
+        dateTimeInvalid: Date.now(),
       },
     },
   )

@@ -25,7 +25,7 @@ export default async (streamInput) => {
       name: streamInputItem.name,
       entry: streamInputItem.entry,
       dateTimeCreate: streamInputItem.dateTimeCreate,
-      timeUpdate: streamInputItem.timeUpdate,
+      dateTimeUpdate: streamInputItem.dateTimeUpdate,
       dateTimeStore: streamInputItem.dateTimeStore,
     });
   } else {
@@ -48,7 +48,7 @@ export default async (streamInput) => {
       { _id: blockMatched._id },
       {
         $inc: { linkCount: 1 },
-        timeUpdate: streamInputItem.dateTimeCreate,
+        dateTimeUpdate: streamInputItem.dateTimeCreate,
       },
     );
     logger.warn(`\`${blockMatched._id.toString()}\` block set link count \`${blockMatched.linkCount + 1}\``);
@@ -62,7 +62,7 @@ export default async (streamInput) => {
       sha256: streamInputItem.sha256,
       size: streamInputItem.chunkSize,
       dateTimeCreate: streamInputItem.dateTimeCreate,
-      timeUpdate: streamInputItem.dateTimeCreate,
+      dateTimeUpdate: streamInputItem.dateTimeCreate,
       linkCount: 1,
     });
     resourceItem.block = blockItem._id;

@@ -16,7 +16,7 @@ export default async (ctx) => {
       name: ctx.request.query.name,
       entry: ctx.entryItem._id,
       dateTimeCreate: ctx.request.dateTimeCreate,
-      timeUpdate: ctx.request.dateTimeCreate,
+      dateTimeUpdate: ctx.request.dateTimeCreate,
       timeAtFirstComplete: ctx.request.dateTimeCreate,
     });
     const emptyBlockItem = await BlockModel.findOneAndUpdate(
@@ -25,7 +25,7 @@ export default async (ctx) => {
       },
       {
         size: 0,
-        timeUpdate: ctx.request.dateTimeCreate,
+        dateTimeUpdate: ctx.request.dateTimeCreate,
         $inc: { linkCount: 1 },
       },
       {
@@ -39,7 +39,7 @@ export default async (ctx) => {
       block: resourceItem.block,
       resource: resourceItem._id,
       dateTimeCreate: resourceItem.dateTimeCreate,
-      timeAtComplete: resourceItem.dateTimeCreate,
+      dateTimeComplete: resourceItem.dateTimeCreate,
     });
     resourceItem.record = resourceRecordItem._id;
     await Promise.all([

@@ -13,7 +13,7 @@ export default new Schema({
     type: Number,
     default: Date.now,
   },
-  timeUpdate: {
+  dateTimeUpdate: {
     type: Number,
     default: Date.now,
   },

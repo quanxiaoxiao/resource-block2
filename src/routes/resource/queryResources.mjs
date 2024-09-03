@@ -65,14 +65,14 @@ export default async ({
 
   const orderAt = {};
 
-  if (orderBy === 'timeUpdate') {
-    orderAt.timeUpdate = order;
+  if (orderBy === 'dateTimeUpdate') {
+    orderAt.dateTimeUpdate = order;
   } else if (orderBy === 'size') {
     orderAt.blockSize = order;
-    orderAt.timeUpdate = -1;
+    orderAt.dateTimeUpdate = -1;
   } else {
     orderAt[orderBy] = order;
-    orderAt.timeUpdate = -1;
+    orderAt.dateTimeUpdate = -1;
   }
 
   const [list, count] = await Promise.all([

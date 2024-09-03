@@ -16,7 +16,7 @@ export default async (resourceItem) => {
       },
       {
         $inc: { linkCount: -1 },
-        timeUpdate: now,
+        dateTimeUpdate: now,
       },
     ),
     ResourceModel.updateOne(
@@ -29,7 +29,7 @@ export default async (resourceItem) => {
       {
         $set: {
           invalid: true,
-          timeInvalid: now,
+          dateTimeInvalid: now,
         },
       },
     ),

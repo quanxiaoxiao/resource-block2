@@ -50,7 +50,7 @@ export default () => {
             },
             update: {
               $set: {
-                timeAccess: resourceTimeAccesses[resource],
+                dateTimeAccess: resourceTimeAccesses[resource],
               },
             },
           },

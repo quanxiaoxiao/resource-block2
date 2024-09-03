@@ -11,7 +11,7 @@ export default {
   dateTimeCreate: {
     type: 'number',
   },
-  timeUpdate: {
+  dateTimeUpdate: {
     type: 'number',
   },
   mime: {
