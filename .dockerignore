@@ -7,8 +7,8 @@ node_modules
 imgs
 _temp
 _blocks
-eslint.config.mjs
 .editorconfig
+eslint.config.mjs
 .dockerignore
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
