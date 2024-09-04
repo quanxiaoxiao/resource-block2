@@ -1,6 +1,7 @@
 import assert from 'node:assert';
 import createError from 'http-errors';
 import resourceType from '../../types/resource.mjs';
+import resourceRecordType from '../../types/resourceRecord.mjs';
 import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
 import findEntry from '../../controllers/entry/findEntry.mjs';
 import queryResources from './queryResources.mjs';
@@ -10,6 +11,7 @@ import handleStoreStreamBlockWithCreate from './handleStoreStreamBlockWithCreate
 import handleStoreStreamBlockWithUpdate from './handleStoreStreamBlockWithUpdate.mjs';
 import handleReadStreamBlock from './handleReadStreamBlock.mjs';
 import findResource from './findResource.mjs';
+import getResourceRecords from './getResourceRecords.mjs';
 
 const routers = {
   '/resource/:resource{/preview}?': {
@@ -29,6 +31,18 @@ const routers = {
     },
     put: async () => {},
     get: handleReadStreamBlock,
+  },
+  '/api/resource/:resource/records': {
+    select: {
+      type: 'array',
+      properties: resourceRecordType,
+    },
+    get: async (ctx) => {
+      const list = await getResourceRecords(ctx.request.params.resource);
+      ctx.response = {
+        data: list,
+      };
+    },
   },
   '/api/resource/:resource': {
     select: {
@@ -193,7 +207,7 @@ const routers = {
       const entry = ctx.request.params.entry || 'default';
       const entryItem = findEntry(entry);
       if (!entryItem) {
-        throw createError(403, `\`${entry}\` entry is not exist`);
+        throw createError(404);
       }
       if (entryItem.readOnly) {
         throw createError(403, `\`${entry}\` entry is read only`);
