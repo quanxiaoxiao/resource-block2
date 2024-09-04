@@ -1,6 +1,4 @@
-import { Readable } from 'node:stream';
 import createError from 'http-errors';
-import { readStream } from '@quanxiaoxiao/httttp';
 import resourceType from '../../types/resource.mjs';
 import findEntry from '../../controllers/entry/findEntry.mjs';
 import queryResources from './queryResources.mjs';
@@ -12,7 +10,7 @@ import handleStoreStreamBlockWithUpdate from './handleStoreStreamBlockWithUpdate
 import handleReadStreamBlock from './handleReadStreamBlock.mjs';
 
 export default {
-  '/resource/:_id{/preview}?': {
+  '/resource/:resource{/preview}?': {
     select: {
       type: 'object',
       properties: resourceType,
@@ -28,19 +26,10 @@ export default {
         }
       }
     },
-    put: async (ctx) => {
-      if (ctx.response
-        && ctx.response.body instanceof Readable
-        && ctx.response.body.readable
-        && !ctx.signal.aborted
-      ) {
-        const buf = await readStream(ctx.response.body, ctx.signal);
-        ctx.response.data = JSON.parse(buf);
-      }
-    },
+    put: async () => {},
     get: handleReadStreamBlock,
   },
-  '/api/resource/:_id': {
+  '/api/resource/:resource': {
     select: {
       type: 'object',
       properties: resourceType,
