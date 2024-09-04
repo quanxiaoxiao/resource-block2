@@ -19,7 +19,7 @@
     "@quanxiaoxiao/http-request": "^0.53.0",
     "@quanxiaoxiao/http-utils": "^0.25.0",
     "@quanxiaoxiao/httttp": "^0.93.0",
-    "@quanxiaoxiao/list": "^0.1.0",
+    "@quanxiaoxiao/list": "^0.2.0",
     "@quanxiaoxiao/logger": "^0.0.1",
     "@quanxiaoxiao/mongo": "^0.2.0",
     "@quanxiaoxiao/node-utils": "^0.14.0",

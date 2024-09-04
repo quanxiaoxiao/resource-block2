@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import createError from 'http-errors';
 import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
 import { Resource as ResourceModel } from '../../models/index.mjs';
@@ -10,7 +11,7 @@ export default async (entry) => {
   const [data] = await ResourceModel.aggregate([
     {
       $match: {
-        entry: entryItem._id,
+        entry: new mongoose.Types.ObjectId(entryItem._id),
         invalid: {
           $ne: true,
         },
@@ -60,7 +61,7 @@ export default async (entry) => {
     {
       $project: {
         dateTimeUpdate: {
-          $first: '$dateTimeUpdates',
+          $first: '$dateTimeUpdate',
         },
         size: 1,
         count: 1,
