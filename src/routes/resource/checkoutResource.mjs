@@ -1,3 +1,4 @@
+import assert from 'node:assert';
 import createError from 'http-errors';
 import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
 import findResource from './findResource.mjs';
@@ -5,6 +6,7 @@ import findResource from './findResource.mjs';
 export default async (ctx) => {
   if (ctx.request.params && ctx.request.params.resource) {
     const resourceItem = await findResource(ctx.request.params.resource);
+    assert(!ctx.signal.aborted);
     if (!resourceItem) {
       throw createError(404);
     }
