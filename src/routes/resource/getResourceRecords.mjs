@@ -29,7 +29,7 @@ export default async (resource) => {
     },
     {
       $sort: {
-        dateTimeCreate: 1,
+        dateTimeCreate: -1,
       },
     },
   ]);

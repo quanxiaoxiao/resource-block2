@@ -17,7 +17,7 @@ export default {
   size: ['block.size', {
     type: 'number',
   }],
-  sha256: ['block.sha256', {
+  hash: ['block.sha256', {
     type: 'string',
   }],
 };

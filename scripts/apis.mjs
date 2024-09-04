@@ -169,3 +169,10 @@ export const updateResourceBlock = async (resource, content) => {
   });
   return ret;
 };
+
+export const fetchResourceRecords = async (resource) => {
+  const ret = await httpRequest({
+    path: `/api/resource/${resource}/records`,
+  });
+  return ret;
+};
