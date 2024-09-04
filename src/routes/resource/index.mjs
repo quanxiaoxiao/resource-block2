@@ -1,22 +1,23 @@
+import assert from 'node:assert';
 import createError from 'http-errors';
 import resourceType from '../../types/resource.mjs';
+import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
 import findEntry from '../../controllers/entry/findEntry.mjs';
 import queryResources from './queryResources.mjs';
 import removeResource from './removeResource.mjs';
 import updateResource from './updateResource.mjs';
-import checkoutResource from './checkoutResource.mjs';
 import handleStoreStreamBlockWithCreate from './handleStoreStreamBlockWithCreate.mjs';
 import handleStoreStreamBlockWithUpdate from './handleStoreStreamBlockWithUpdate.mjs';
 import handleReadStreamBlock from './handleReadStreamBlock.mjs';
+import findResource from './findResource.mjs';
 
-export default {
+const routers = {
   '/resource/:resource{/preview}?': {
     select: {
       type: 'object',
       properties: resourceType,
     },
     onPre: async (ctx) => {
-      await checkoutResource(ctx);
       if (ctx.request.method === 'PUT') {
         if (ctx.request.params[0] === 'preview') {
           throw createError(404);
@@ -34,7 +35,6 @@ export default {
       type: 'object',
       properties: resourceType,
     },
-    onPre: checkoutResource,
     get: (ctx) => {
       ctx.response = {
         data: ctx.resourceItem,
@@ -206,3 +206,38 @@ export default {
     post: () => {},
   },
 };
+
+export default Object
+  .keys(routers)
+  .reduce((acc, pathname) => {
+    const handler = routers[pathname];
+    return {
+      ...acc,
+      [pathname]: {
+        ...handler,
+        onPre: async (ctx) => {
+          if (ctx.request.params && ctx.request.params.resource) {
+            const resourceItem = await findResource(ctx.request.params.resource);
+            assert(!ctx.signal.aborted);
+            if (!resourceItem) {
+              throw createError(404);
+            }
+            const entryItem = findEntryOfId(resourceItem.entry.toString());
+            if (!entryItem) {
+              throw createError(404);
+            }
+            if (ctx.request.method !== 'GET' && entryItem.readOnly) {
+              throw createError(403, 'entry is read only');
+            }
+            ctx.entryItem = entryItem;
+            ctx.resourceItem = resourceItem;
+          }
+
+          if (handler.onPre) {
+            await handler.onPre(ctx);
+            assert(!ctx.signal.aborted);
+          }
+        },
+      },
+    };
+  }, {});
