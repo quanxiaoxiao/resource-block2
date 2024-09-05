@@ -33,7 +33,7 @@ const upload = async (pathname, name) => {
     hostname: '127.0.0.1',
     port: resourceServerPort,
     method: 'POST',
-    path: `/upload?name=${name}`,
+    path: `/upload/driver?name=${name}`,
     body: fs.createReadStream(pathname),
   });
   if (responseItem.statusCode !== 200) {

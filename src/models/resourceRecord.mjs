@@ -15,6 +15,9 @@ export default new Schema({
     ref: 'Block',
     index: true,
   },
+  remoteAddress: {
+    type: String,
+  },
   countRead: {
     type: Number,
     default: 0,
