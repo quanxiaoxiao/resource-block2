@@ -17,6 +17,12 @@ export default {
   size: ['block.size', {
     type: 'number',
   }],
+  userAgent: {
+    type: 'string',
+  },
+  remoteAddress: {
+    type: 'string',
+  },
   hash: ['block.sha256', {
     type: 'string',
   }],

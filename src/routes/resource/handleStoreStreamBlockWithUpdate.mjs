@@ -49,6 +49,8 @@ export default async (ctx) => {
         block: resourceItem.block._id,
         resource: resourceItem._id,
         dateTimeCreate: ctx.request.dateTimeCreate,
+        userAgent: ctx.request.headers['user-agent'] ?? null,
+        remoteAddress: ctx.request.headers['x-remote-address'] || ctx.socket.remoteAddress,
       });
       await Promise.all([
         resourceRecordItem.save(),
@@ -78,6 +80,7 @@ export default async (ctx) => {
       entry: ctx.entryItem._id.toString(),
       resource: ctx.resourceItem._id.toString(),
       name: ctx.resourceItem.name,
+      remoteAddress: ctx.request.headers['x-remote-address'] || ctx.socket.remoteAddress,
       type: STREAM_TYPE_RESOURCE_UPDATE,
       request: {
         path: ctx.request.path,

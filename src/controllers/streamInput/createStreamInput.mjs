@@ -16,6 +16,7 @@ export default ({
   name = '',
   request,
   resource,
+  remoteAddress,
   type = STREAM_TYPE_RESOURCE_CREATE,
 }) => {
   assert(typeof entry === 'string');
@@ -32,12 +33,13 @@ export default ({
     name,
     request: {
       path: request.path,
-      headers: request.headers,
+      headers: request.headers || {},
     },
     sha256: null,
     dateTimeActive: null,
     dateTimeStore: null,
     dateTimeCreate: Date.now(),
+    remoteAddress,
     pathname: path.resolve(getState().block.tempDir, _id),
     entry,
   };

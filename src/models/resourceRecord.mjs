@@ -15,6 +15,9 @@ export default new Schema({
     ref: 'Block',
     index: true,
   },
+  userAgent: {
+    type: String,
+  },
   remoteAddress: {
     type: String,
   },

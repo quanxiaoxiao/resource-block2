@@ -105,7 +105,9 @@ export default async (streamInput) => {
   const resourceRecordItem = new ResourceRecordModel({
     block: resourceItem.block,
     resource: resourceItem._id,
+    remoteAddress: streamInputItem.remoteAddress,
     dateTimeCreate: streamInputItem.dateTimeCreate,
+    userAgent: streamInputItem.request.headers['user-agent'] ?? null,
     dateTimeStore: streamInputItem.dateTimeStore,
   });
   resourceItem.record = resourceRecordItem._id;
