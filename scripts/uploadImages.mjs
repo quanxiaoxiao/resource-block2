@@ -2,7 +2,7 @@ import path from 'node:path';
 import process from 'node:process';
 import fs from 'node:fs';
 import { Semaphore } from '@quanxiaoxiao/utils';
-import { httpRequest } from '@quanxiaoxiao/http-request';
+import request from '@quanxiaoxiao/http-request';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
 
 const sem = new Semaphore(24);
@@ -15,6 +15,18 @@ const host1 = {
 };
 
 const resourceServerPort = 4059;
+
+const httpRequest = ({
+  hostname,
+  port,
+  ...options
+}) => request(
+  options,
+  {
+    hostname,
+    port,
+  },
+);
 
 const upload = async (pathname, name) => {
   const responseItem = await httpRequest({

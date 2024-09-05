@@ -75,14 +75,32 @@ export default async (streamInput) => {
     resourceItem.block = blockItem._id;
     const blockPathname = calcBlockPathname(streamInputItem._id);
     const tempPathname = path.join(path.resolve(streamInputItem.pathname, '..'), path.basename(blockPathname));
-    shelljs.mv(
-      streamInputItem.pathname,
-      tempPathname,
-    );
-    shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
-    await blockItem.save();
-    logger.warn(`\`${blockItem._id.toString()}\` create block \`chunkSize:${blockItem.size}\``);
-    resourceItem.block = blockItem._id;
+    try {
+      await blockItem.save();
+      shelljs.mv(
+        streamInputItem.pathname,
+        tempPathname,
+      );
+      shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
+      logger.warn(`\`${blockItem._id.toString()}\` create block \`chunkSize:${blockItem.size}\``);
+      resourceItem.block = blockItem._id;
+    } catch (error) { // eslint-disable-line
+      const otherBlock  = await BlockModel.findOneAndUpdate(
+        { sha256: streamInputItem.sha256 },
+        {
+          $inc: { linkCount: 1 },
+          $set: {
+            dateTimeUpdate: streamInputItem.dateTimeCreate,
+          },
+        },
+      );
+      assert(otherBlock);
+      logger.warn(`\`${otherBlock._id.toString()}\` block set link count \`${otherBlock.linkCount + 1}\``);
+      resourceItem.block = otherBlock._id;
+      if (shelljs.test('-f', streamInputItem.pathname)) {
+        shelljs.rm('-f', streamInputItem.pathname);
+      }
+    }
   }
   const resourceRecordItem = new ResourceRecordModel({
     block: resourceItem.block,
