@@ -31,4 +31,12 @@ export default new Schema({
     type: Number,
     index: true,
   },
+  info: {
+    type: String,
+    default: '',
+  },
+  description: {
+    type: String,
+    default: '',
+  },
 });

@@ -16,9 +16,9 @@
   "dependencies": {
     "@quanxiaoxiao/curd": "^0.3.0",
     "@quanxiaoxiao/datav": "^0.3.2",
-    "@quanxiaoxiao/http-request": "^0.53.0",
+    "@quanxiaoxiao/http-request": "^0.54.0",
     "@quanxiaoxiao/http-utils": "^0.25.0",
-    "@quanxiaoxiao/httttp": "^0.93.0",
+    "@quanxiaoxiao/httttp": "^0.94.0",
     "@quanxiaoxiao/list": "^0.2.0",
     "@quanxiaoxiao/logger": "^0.0.1",
     "@quanxiaoxiao/mongo": "^0.2.0",
