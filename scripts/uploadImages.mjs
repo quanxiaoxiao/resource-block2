@@ -71,6 +71,47 @@ const dirname = path.resolve(process.cwd(), 'imgs');
 
 const fileList = fs.readdirSync(dirname);
 
+const images = {};
+
+for (let i = 0; i < fileList.length; i++) {
+  const fileName = fileList[i];
+  const matches = fileName.match(/^([0-9x]+)_(\w+)\.\w+$/i);
+  if (matches) {
+    if (!images[matches[1]]) {
+      images[matches[1]] = [];
+    }
+    images[matches[1]].push(fileName);
+  }
+}
+
+const result = [];
+
+Object.keys(images).forEach((code) => {
+  const arr = images[code];
+  if (arr.length > 1) {
+    const cc = arr
+      .map((name) => {
+        const stats = fs.statSync(path.join(dirname, name));
+        return {
+          name,
+          dateTimeCreate: stats.ctimeMs,
+        };
+      })
+      .sort((a, b) => {
+        if (a.dateTimeCreate === b.dateTimeCreate) {
+          return 0;
+        }
+        if (a.dateTimeCreate > b.dateTimeCreate) {
+          return -1;
+        }
+        return 1;
+      });
+    result.push(cc[0].name);
+  } else {
+    result.push(arr[0]);
+  }
+});
+
 const action = async (name) => {
   const matches = name.match(/^([0-9x]+)_(\w+)\.\w+$/i);
   if (matches) {
@@ -85,8 +126,8 @@ const action = async (name) => {
   }
 };
 
-for (let i = 0; i < fileList.length; i++) {
-  const fileName = fileList[i];
+for (let i = 0; i < result.length; i++) {
+  const fileName = result[i];
   sem.acquire(() => {
     action(fileName)
       .then(() => {
