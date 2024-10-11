@@ -14,14 +14,14 @@ import findResource from './findResource.mjs';
 import getResourceRecords from './getResourceRecords.mjs';
 
 const routers = {
-  '/resource/:resource{/preview}?': {
+  '/resource/:resource{/preview}': {
     select: {
       type: 'object',
       properties: resourceType,
     },
     onPre: async (ctx) => {
       if (ctx.request.method === 'PUT') {
-        if (ctx.request.params[0] === 'preview') {
+        if (/\/preview$/.test(ctx.request.pathname)) {
           throw createError(404);
         }
         if (!ctx.signal.aborted) {
@@ -187,7 +187,7 @@ const routers = {
       };
     },
   },
-  '/upload{/:entry}?': {
+  '/upload{/:entry}': {
     select: {
       type: 'object',
       properties: resourceType,

@@ -39,8 +39,7 @@ process.nextTick(async () => {
 });
 
 process.on('uncaughtException', (error) => {
-  console.error('boooooooom');
+  console.log('----- boooooooom start -----');
   console.error(error);
-  logger.error(`boooooooom ${error.message}`);
-  process.exit(1);
+  console.log('----- boooooooom end -----');
 });
