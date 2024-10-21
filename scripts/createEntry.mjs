@@ -3,12 +3,14 @@ import {
   fetchEntry,
 } from './apis.mjs';
 
-let entryItem = await fetchEntry('driver');
+const name = 'avatar';
+
+let entryItem = await fetchEntry(name);
 
 if (!entryItem) {
   entryItem = await createEntry({
-    name: 'driver',
-    alias: 'driver',
+    name,
+    alias: name,
   });
   console.log(`createEntry \`${entryItem.alias}\``);
 } else {
