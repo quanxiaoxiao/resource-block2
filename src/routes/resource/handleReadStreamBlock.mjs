@@ -1,11 +1,13 @@
-import fs from 'node:fs';
 import assert from 'node:assert';
+import fs from 'node:fs';
 import { Transform } from 'node:stream';
+
 import { parseContentRange } from '@quanxiaoxiao/http-utils';
-import { decrypt } from '../../providers/cipher.mjs';
+
 import createStreamOutput from '../../controllers/streamOutput/createStreamOutput.mjs';
-import updateStreamOutput from '../../controllers/streamOutput/updateStreamOutput.mjs';
 import removeStreamOutput from '../../controllers/streamOutput/removeStreamOutput.mjs';
+import updateStreamOutput from '../../controllers/streamOutput/updateStreamOutput.mjs';
+import { decrypt } from '../../providers/cipher.mjs';
 
 const BLOCK_SIZE = 16;
 

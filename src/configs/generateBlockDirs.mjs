@@ -1,8 +1,8 @@
 import path from 'node:path';
-import shelljs from 'shelljs';
-import store from '../store/store.mjs';
 
-const { getState } = store;
+import shelljs from 'shelljs';
+
+import { getState } from '../store/store.mjs';
 
 export default () => {
   const blockDir = getState().block.dir;

@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
+
 import blockSchema from './block.mjs';
-import resourceSchema from './resource.mjs';
 import entrySchema from './entry.mjs';
+import resourceSchema from './resource.mjs';
 import resourceRecordSchema from './resourceRecord.mjs';
 
 export const Block = mongoose.model('Block', blockSchema);

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+
 import { ResourceRecord as ResourceRecordModel } from '../../models/index.mjs';
 
 export default async (resource) => {

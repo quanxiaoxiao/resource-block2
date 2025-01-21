@@ -1,6 +1,8 @@
 import assert from 'node:assert';
-import createError from 'http-errors';
+
 import { isValidObjectId } from '@quanxiaoxiao/mongo';
+import createError from 'http-errors';
+
 import { Resource as ResourceModel } from '../../models/index.mjs';
 
 export default async (resource) => {

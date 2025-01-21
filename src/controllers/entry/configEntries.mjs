@@ -1,11 +1,11 @@
 import assert from 'node:assert';
-import { sort } from '@quanxiaoxiao/list';
-import { Entry as EntryModel } from '../../models/index.mjs';
-import store from '../../store/store.mjs';
-import findEntryOfAlias from './findEntryOfAlias.mjs';
-import createEntry from './createEntry.mjs';
 
-const { dispatch } = store;
+import { sort } from '@quanxiaoxiao/list';
+
+import { Entry as EntryModel } from '../../models/index.mjs';
+import { dispatch } from '../../store/store.mjs';
+import createEntry from './createEntry.mjs';
+import findEntryOfAlias from './findEntryOfAlias.mjs';
 
 export default async () => {
   const entryList = await EntryModel.find({

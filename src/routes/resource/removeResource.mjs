@@ -1,7 +1,7 @@
 import logger from '../../logger.mjs';
 import {
-  Resource as ResourceModel,
   Block as BlockModel,
+  Resource as ResourceModel,
 } from '../../models/index.mjs';
 
 export default async (resourceItem) => {

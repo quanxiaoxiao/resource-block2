@@ -1,6 +1,4 @@
-import store from '../../store/store.mjs';
-
-const { getState } = store;
+import { getState } from '../../store/store.mjs';
 
 export default (alias) => {
   if (!alias || alias.trim() === '') {

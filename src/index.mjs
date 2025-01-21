@@ -1,21 +1,23 @@
+import './store/store.mjs';
+
 import net from 'node:net';
 import process from 'node:process';
+
 import {
-  handleSocketRequest,
   createHttpRequestHandler,
   generateRouteMatchList,
+  handleSocketRequest,
 } from '@quanxiaoxiao/httttp';
-import store from './store/store.mjs';
-import './models/index.mjs';
-import logger from './logger.mjs';
+
 import generateBlockDirs from './configs/generateBlockDirs.mjs';
 import connectMongo from './connectMongo.mjs';
+import configEntries from './controllers/entry/configEntries.mjs';
+import logger from './logger.mjs';
 import routes from './routes/index.mjs';
 import { selectRouteMatchList } from './store/selector.mjs';
-import configEntries from './controllers/entry/configEntries.mjs';
+import { dispatch,getState } from './store/store.mjs'; // eslint-disable-line
 
 process.nextTick(async () => {
-  const { getState, dispatch } = store;
   await connectMongo();
   await configEntries();
 

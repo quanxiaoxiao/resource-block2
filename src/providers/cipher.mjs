@@ -4,10 +4,10 @@ import {
   createDecipheriv,
   createHmac,
 } from 'node:crypto';
-import { isValidObjectId } from '@quanxiaoxiao/mongo';
-import store from '../store/store.mjs';
 
-const { getState } = store;
+import { isValidObjectId } from '@quanxiaoxiao/mongo';
+
+import { getState } from '../store/store.mjs';
 
 const incrementBuffer = (buf, counter) => {
   const len = buf.length;

@@ -1,10 +1,10 @@
 import assert from 'node:assert';
-import { update } from '@quanxiaoxiao/list';
-import { Entry as EntryModel } from '../../models/index.mjs';
-import store from '../../store/store.mjs';
-import findEntryOfAlias from './findEntryOfAlias.mjs';
 
-const { getState, dispatch } = store;
+import { update } from '@quanxiaoxiao/list';
+
+import { Entry as EntryModel } from '../../models/index.mjs';
+import { dispatch,getState } from '../../store/store.mjs';
+import findEntryOfAlias from './findEntryOfAlias.mjs';
 
 export default (entry, fn) => {
   const { entryList } = getState();

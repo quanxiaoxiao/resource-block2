@@ -1,12 +1,13 @@
 import createError from 'http-errors';
-import entryType from '../../types/entry.mjs';
+
+import findEntry from '../../controllers/entry/findEntry.mjs';
 import getEntryList from '../../controllers/entry/getEntryList.mjs';
 import removeEntry from '../../controllers/entry/removeEntry.mjs';
-import findEntry from '../../controllers/entry/findEntry.mjs';
-import updateEntry from './updateEntry.mjs';
+import entryType from '../../types/entry.mjs';
 import createEntry from './createEntry.mjs';
 // import sortEntries from './sortEntries.mjs';
 import statisticsEntry from './statisticsEntry.mjs';
+import updateEntry from './updateEntry.mjs';
 
 export default {
   '/api/entries/sort': {

@@ -1,4 +1,5 @@
 import createError from 'http-errors';
+
 import findEntryOfAlias from '../../controllers/entry/findEntryOfAlias.mjs';
 import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
 import updateEntry from '../../controllers/entry/updateEntry.mjs';

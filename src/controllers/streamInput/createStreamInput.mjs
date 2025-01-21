@@ -1,15 +1,15 @@
-import mongoose from 'mongoose';
-import path from 'node:path';
 import assert from 'node:assert';
-import { isValidObjectId } from '@quanxiaoxiao/mongo';
+import path from 'node:path';
+
 import { sort } from '@quanxiaoxiao/list';
+import { isValidObjectId } from '@quanxiaoxiao/mongo';
+import mongoose from 'mongoose';
+
 import {
   STREAM_TYPE_RESOURCE_CREATE,
   STREAM_TYPE_RESOURCE_UPDATE,
 } from '../../constants.mjs';
-import store from '../../store/store.mjs';
-
-const { dispatch, getState } = store;
+import { dispatch,getState } from '../../store/store.mjs';
 
 export default ({
   entry,

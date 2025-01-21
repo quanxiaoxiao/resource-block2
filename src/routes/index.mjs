@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { toDataify } from '@quanxiaoxiao/node-utils';
-import store from '../store/store.mjs';
-import resource from './resource/index.mjs';
-import entry from './entry/index.mjs';
 
-const { getState } = store;
+import { toDataify } from '@quanxiaoxiao/node-utils';
+
+import { getState } from '../store/store.mjs';
+import entry from './entry/index.mjs';
+import resource from './resource/index.mjs';
 
 export default {
   '/api/state': {

@@ -1,6 +1,4 @@
-import store from './store.mjs';
-
-const { getState } = store;
+import { getState } from './store.mjs';
 
 export const selectRouteMatchList = () => {
   const state = getState();

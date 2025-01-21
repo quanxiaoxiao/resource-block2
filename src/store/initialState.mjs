@@ -1,6 +1,6 @@
-import * as dotenv from 'dotenv';
 import { select } from '@quanxiaoxiao/datav';
 import { getPathname } from '@quanxiaoxiao/node-utils';
+import * as dotenv from 'dotenv';
 
 dotenv.config();
 

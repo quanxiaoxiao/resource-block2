@@ -1,10 +1,10 @@
 import assert from 'node:assert';
-import path from 'node:path';
 import crypto from 'node:crypto';
-import { isValidObjectId } from '@quanxiaoxiao/mongo';
-import store from '../store/store.mjs';
+import path from 'node:path';
 
-const { getState } = store;
+import { isValidObjectId } from '@quanxiaoxiao/mongo';
+
+import { getState } from '../store/store.mjs';
 
 export default (block) => {
   assert(isValidObjectId(block));

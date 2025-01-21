@@ -1,14 +1,15 @@
 import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
+
+import { STREAM_TYPE_RESOURCE_UPDATE } from '../../constants.mjs';
+import createStreamInput from '../../controllers/streamInput/createStreamInput.mjs';
+import logger from '../../logger.mjs';
 import {
-  Resource as ResourceModel,
   Block as BlockModel,
+  Resource as ResourceModel,
   ResourceRecord as ResourceRecordModel,
 } from '../../models/index.mjs';
-import { STREAM_TYPE_RESOURCE_UPDATE } from '../../constants.mjs';
 import calcEmptyBlockSha256 from '../../utilities/calcEmptyBlockSha256.mjs';
-import logger from '../../logger.mjs';
 import findResource from './findResource.mjs';
-import createStreamInput from '../../controllers/streamInput/createStreamInput.mjs';
 import handleStreamInput from './handleStreamInput.mjs';
 
 export default async (ctx) => {

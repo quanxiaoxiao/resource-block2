@@ -1,14 +1,16 @@
-import { PassThrough } from 'node:stream';
-import fs from 'node:fs';
 import assert from 'node:assert';
 import crypto from 'node:crypto';
+import fs from 'node:fs';
+import { PassThrough } from 'node:stream';
+
 import { wrapStreamRead } from '@quanxiaoxiao/node-utils';
-import { encrypt } from '../../providers/cipher.mjs';
-import findResource from './findResource.mjs';
+
 import findStreamInput from '../../controllers/streamInput/findStreamInput.mjs';
-import updateStreamInput from '../../controllers/streamInput/updateStreamInput.mjs';
 import removeStreamInput from '../../controllers/streamInput/removeStreamInput.mjs';
 import storeStreamInput from '../../controllers/streamInput/storeStreamInput.mjs';
+import updateStreamInput from '../../controllers/streamInput/updateStreamInput.mjs';
+import { encrypt } from '../../providers/cipher.mjs';
+import findResource from './findResource.mjs';
 
 export default (ctx, streamInput) => {
   const streamInputItem = findStreamInput(streamInput);

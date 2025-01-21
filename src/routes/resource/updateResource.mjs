@@ -1,9 +1,10 @@
-import createError from 'http-errors';
 import { isValidObjectId } from '@quanxiaoxiao/mongo';
+import createError from 'http-errors';
+
 import logger from '../../logger.mjs';
 import {
-  Resource as ResourceModel,
   Entry as EntryModel,
+  Resource as ResourceModel,
 } from '../../models/index.mjs';
 import findResource from './findResource.mjs';
 

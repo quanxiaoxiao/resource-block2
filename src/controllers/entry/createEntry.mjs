@@ -1,12 +1,12 @@
 import assert from 'node:assert';
-import mongoose from 'mongoose';
-import { sort } from '@quanxiaoxiao/list';
-import { Entry as EntryModel } from '../../models/index.mjs';
-import store from '../../store/store.mjs';
-import findEntryOfAlias from './findEntryOfAlias.mjs';
-import logger from '../../logger.mjs';
 
-const { dispatch, getState } = store;
+import { sort } from '@quanxiaoxiao/list';
+import mongoose from 'mongoose';
+
+import logger from '../../logger.mjs';
+import { Entry as EntryModel } from '../../models/index.mjs';
+import { dispatch,getState } from '../../store/store.mjs';
+import findEntryOfAlias from './findEntryOfAlias.mjs';
 
 export default ({
   alias,
@@ -45,7 +45,6 @@ export default ({
     );
 
   dispatch('entryList', (pre) => sort([...pre, model]));
-
 
   return model;
 };

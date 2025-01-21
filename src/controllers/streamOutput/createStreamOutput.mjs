@@ -1,10 +1,10 @@
-import crypto from 'node:crypto';
 import assert from 'node:assert';
-import { sort } from '@quanxiaoxiao/list';
-import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
-import store from '../../store/store.mjs';
+import crypto from 'node:crypto';
 
-const { dispatch } = store;
+import { sort } from '@quanxiaoxiao/list';
+
+import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
+import { dispatch } from '../../store/store.mjs';
 
 export default ({
   resource,

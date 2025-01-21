@@ -1,6 +1,7 @@
 import { isValidObjectId } from '@quanxiaoxiao/mongo';
-import findEntryOfId  from './findEntryOfId.mjs';
+
 import findEntryOfAlias from './findEntryOfAlias.mjs';
+import findEntryOfId  from './findEntryOfId.mjs';
 
 export default (entry) => {
   if (isValidObjectId(entry)) {

@@ -1,8 +1,7 @@
 import { connectDb } from '@quanxiaoxiao/mongo';
 
 export default async () => {
-  const store = await import('./store/store.mjs');
-  const { getState, dispatch } = store.default;
+  const { getState, dispatch } = await import('./store/store.mjs');
   const config = getState().mongo;
   await connectDb({
     database: config.database,

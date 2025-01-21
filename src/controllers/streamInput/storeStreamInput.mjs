@@ -1,14 +1,16 @@
-import path from 'node:path';
 import assert from 'node:assert';
+import path from 'node:path';
+
 import shelljs from 'shelljs';
-import logger from '../../logger.mjs';
+
 import {
   STREAM_TYPE_RESOURCE_CREATE,
   STREAM_TYPE_RESOURCE_UPDATE,
 } from '../../constants.mjs';
+import logger from '../../logger.mjs';
 import {
-  Resource as ResourceModel,
   Block as BlockModel,
+  Resource as ResourceModel,
   ResourceRecord as ResourceRecordModel,
 } from '../../models/index.mjs';
 import calcBlockPathname from '../../providers/calcBlockPathname.mjs';

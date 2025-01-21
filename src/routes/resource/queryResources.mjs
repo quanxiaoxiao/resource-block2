@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
-import createError from 'http-errors';
 import { getQuery, isValidObjectId } from '@quanxiaoxiao/mongo';
 import { escapeString } from '@quanxiaoxiao/utils';
+import createError from 'http-errors';
+import mongoose from 'mongoose';
+
 import {
-  Resource as ResourceModel,
   Entry as EntryModel,
+  Resource as ResourceModel,
 } from '../../models/index.mjs';
 
 export default async ({

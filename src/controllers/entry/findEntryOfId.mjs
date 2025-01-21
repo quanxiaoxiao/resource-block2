@@ -1,8 +1,8 @@
 import assert from 'node:assert';
-import { find } from '@quanxiaoxiao/list';
-import store from '../../store/store.mjs';
 
-const { getState } = store;
+import { find } from '@quanxiaoxiao/list';
+
+import { getState } from '../../store/store.mjs';
 
 export default (entry) => {
   assert(typeof entry === 'string');
