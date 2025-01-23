@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-export default new Schema({
+const resourceSchema = new Schema({
   block: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -58,3 +58,5 @@ export default new Schema({
     index: true,
   },
 });
+
+export default resourceSchema;

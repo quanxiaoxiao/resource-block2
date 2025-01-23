@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-export default new Schema({
+const entrySchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -40,3 +40,5 @@ export default new Schema({
     type: Number,
   },
 });
+
+export default entrySchema;

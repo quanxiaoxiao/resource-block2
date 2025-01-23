@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-export default new Schema({
+const blockSchema = new Schema({
   sha256: {
     type: String,
     required: true,
@@ -26,3 +26,5 @@ export default new Schema({
     type: Number,
   },
 });
+
+export default blockSchema;
