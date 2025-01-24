@@ -20,9 +20,7 @@ export default (entry, fn) => {
   EntryModel.updateOne(
     {
       _id: entry,
-      invalid: {
-        $ne: true,
-      },
+      invalidAt: null,
     },
     {
       $set: {

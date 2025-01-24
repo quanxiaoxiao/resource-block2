@@ -22,14 +22,11 @@ export default async (resourceItem) => {
     ResourceModel.updateOne(
       {
         _id: resourceItem._id,
-        invalid: {
-          $ne: true,
-        },
+        invalidAt: null,
       },
       {
         $set: {
-          invalid: true,
-          dateTimeInvalid: now,
+          invalidAt: now,
         },
       },
     ),
