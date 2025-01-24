@@ -9,10 +9,9 @@ import findEntryOfAlias from './findEntryOfAlias.mjs';
 
 export default async () => {
   const entryList = await EntryModel.find({
-    invalid: {
-      $ne: true,
-    },
-  });
+    invalidAt: null,
+  })
+    .lean();
   const aliasList = entryList
     .filter((d) => d.alias && d.alias.trim())
     .map((d) => d.alias.trim());

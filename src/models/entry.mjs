@@ -30,14 +30,9 @@ const entrySchema = new Schema({
     type: String,
     default: '',
   },
-  invalid: {
-    type: Boolean,
-    index: true,
-    default: false,
-  },
-  dateTimeInvalid: {
-    index: true,
+  invalidAt: {
     type: Number,
+    index: true,
   },
 });
 

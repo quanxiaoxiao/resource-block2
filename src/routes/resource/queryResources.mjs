@@ -18,9 +18,7 @@ export default async ({
   ...args
 }) => {
   const entryItem = await EntryModel.findOne({
-    invalid: {
-      $ne: true,
-    },
+    invalidAt: null,
     ...isValidObjectId(entry)
       ? {
         _id: new mongoose.Types.ObjectId(entry),
@@ -33,9 +31,7 @@ export default async ({
     throw createError(404);
   }
   const query = getQuery(args);
-  query.invalid = {
-    $ne: true,
-  };
+  query.invalidAt = null;
   if (keywords) {
     if (keywords[0] === '/') {
       if (keywords.length > 1) {
