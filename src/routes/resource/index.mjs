@@ -4,9 +4,9 @@ import createError from 'http-errors';
 
 import findEntry from '../../controllers/entry/findEntry.mjs';
 import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
+import getResourceById from '../../controllers/resource/getResourceById.mjs';
 import resourceType from '../../types/resource.mjs';
 import resourceRecordType from '../../types/resourceRecord.mjs';
-import findResource from './findResource.mjs';
 import getResourceRecords from './getResourceRecords.mjs';
 import handleReadStreamBlock from './handleReadStreamBlock.mjs';
 import handleStoreStreamBlockWithCreate from './handleStoreStreamBlockWithCreate.mjs';
@@ -233,7 +233,7 @@ export default Object
         ...handler,
         onPre: async (ctx) => {
           if (ctx.request.params && ctx.request.params.resource) {
-            const resourceItem = await findResource(ctx.request.params.resource);
+            const resourceItem = await getResourceById(ctx.request.params.resource);
             assert(!ctx.signal.aborted);
             if (!resourceItem) {
               throw createError(404);

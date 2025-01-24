@@ -5,12 +5,12 @@ import { PassThrough } from 'node:stream';
 
 import { wrapStreamRead } from '@quanxiaoxiao/node-utils';
 
+import getResourceById from '../../controllers/resource/getResourceById.mjs';
 import findStreamInput from '../../controllers/streamInput/findStreamInput.mjs';
 import removeStreamInput from '../../controllers/streamInput/removeStreamInput.mjs';
 import storeStreamInput from '../../controllers/streamInput/storeStreamInput.mjs';
 import updateStreamInput from '../../controllers/streamInput/updateStreamInput.mjs';
 import { encrypt } from '../../providers/cipher.mjs';
-import findResource from './findResource.mjs';
 
 export default (ctx, streamInput) => {
   const streamInputItem = findStreamInput(streamInput);
@@ -35,7 +35,7 @@ export default (ctx, streamInput) => {
     storeStreamInput(streamInputItem._id)
       .then((ret) => {
         if (ret) {
-          return findResource(ret.resource);
+          return getResourceById(ret.resource);
         }
         return null;
       })

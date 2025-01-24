@@ -1,6 +1,7 @@
 import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
 
 import { STREAM_TYPE_RESOURCE_UPDATE } from '../../constants.mjs';
+import getResourceById from '../../controllers/resource/getResourceById.mjs';
 import createStreamInput from '../../controllers/streamInput/createStreamInput.mjs';
 import logger from '../../logger.mjs';
 import {
@@ -9,7 +10,6 @@ import {
   ResourceRecord as ResourceRecordModel,
 } from '../../models/index.mjs';
 import calcEmptyBlockSha256 from '../../utilities/calcEmptyBlockSha256.mjs';
-import findResource from './findResource.mjs';
 import handleStreamInput from './handleStreamInput.mjs';
 
 export default async (ctx) => {
@@ -69,7 +69,7 @@ export default async (ctx) => {
         ),
       ]);
       logger.warn(`\`${resourceItem._id}\` set block with empty`);
-      const data = await findResource(resourceItem._id);
+      const data = await getResourceById(resourceItem._id);
       if (data) {
         ctx.response = {
           data,

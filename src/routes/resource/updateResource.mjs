@@ -1,12 +1,12 @@
 import { isValidObjectId } from '@quanxiaoxiao/mongo';
 import createError from 'http-errors';
 
+import getResourceById from '../../controllers/resource/getResourceById.mjs';
 import logger from '../../logger.mjs';
 import {
   Entry as EntryModel,
   Resource as ResourceModel,
 } from '../../models/index.mjs';
-import findResource from './findResource.mjs';
 
 export default async (resourceItem, input) => {
   if (Object.hasOwnProperty.call(input, 'name')
@@ -44,5 +44,5 @@ export default async (resourceItem, input) => {
     },
   );
   logger.warn(`\`${resourceItem._id.toString()}\` updateResource \`${JSON.stringify(input)}\``);
-  return findResource(resourceItem._id);
+  return getResourceById(resourceItem._id);
 };
