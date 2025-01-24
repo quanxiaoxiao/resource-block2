@@ -7,7 +7,9 @@ export default async (resource) => {
     {
       $match: {
         resource: new mongoose.Types.ObjectId(resource),
-        invalidAt: null,
+        invalid: {
+          $ne: true,
+        },
       },
     },
     {

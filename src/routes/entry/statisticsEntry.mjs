@@ -13,7 +13,9 @@ export default async (entry) => {
     {
       $match: {
         entry: new mongoose.Types.ObjectId(entryItem._id),
-        invalidAt: null,
+        invalid: {
+          $ne: true,
+        },
       },
     },
     {

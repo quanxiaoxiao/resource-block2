@@ -36,7 +36,9 @@ export default async (streamInput) => {
   } else if (streamInputItem.type === STREAM_TYPE_RESOURCE_UPDATE) {
     resourceItem = await ResourceModel.findOne({
       _id: streamInputItem.resource,
-      invalidAt: null,
+      invalid: {
+        $ne: true,
+      },
     });
     if (!resourceItem) {
       removeStreamInput(streamInputItem._id);

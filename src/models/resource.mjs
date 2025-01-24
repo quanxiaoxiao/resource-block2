@@ -48,9 +48,13 @@ const resourceSchema = new Schema({
     default: Date.now,
     index: true,
   },
-  invalidAt: {
-    type: Number,
+  invalid: {
+    type: Boolean,
     index: true,
+    default: false,
+  },
+  dateTimeInvalid: {
+    type: Number,
   },
 });
 

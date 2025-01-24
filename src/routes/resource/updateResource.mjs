@@ -21,7 +21,9 @@ export default async (resourceItem, input) => {
     if (input.entry !== resourceItem.entry.toString()) {
       const entryItem = await EntryModel.findOne({
         _id: input.entry,
-        invalidAt: null,
+        invalid: {
+          $ne: true,
+        },
       });
       if (!entryItem) {
         throw createError(403, `\`${input.entry}\` entry not exist`);
@@ -31,7 +33,9 @@ export default async (resourceItem, input) => {
   await ResourceModel.updateOne(
     {
       _id: resourceItem._id,
-      invalidAt: null,
+      invalid: {
+        $ne: true,
+      },
     },
     {
       $set: {

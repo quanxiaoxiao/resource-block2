@@ -12,7 +12,9 @@ export default async (resource) => {
   const resourceItem = await ResourceModel
     .findOne({
       _id: resource,
-      invalidAt: null,
+      invalid: {
+        $ne: true,
+      },
     })
     .populate({
       path: 'block',

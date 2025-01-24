@@ -16,11 +16,14 @@ export default (entry) => {
   EntryModel.updateOne(
     {
       _id: entry,
-      invalidAt: null,
+      invalid: {
+        $ne: true,
+      },
     },
     {
       $set: {
-        invalidAt: Date.now(),
+        invalid: true,
+        dateTimeInvalid: Date.now(),
       },
     },
   )
