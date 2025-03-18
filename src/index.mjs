@@ -15,7 +15,7 @@ import configEntries from './controllers/entry/configEntries.mjs';
 import logger from './logger.mjs';
 import routes from './routes/index.mjs';
 import { selectRouteMatchList } from './store/selector.mjs';
-import { dispatch,getState } from './store/store.mjs'; // eslint-disable-line
+import { dispatch, getState } from './store/store.mjs'; // eslint-disable-line
 
 // dateTime invalid
 

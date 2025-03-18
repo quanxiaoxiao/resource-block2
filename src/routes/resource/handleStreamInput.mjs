@@ -22,12 +22,25 @@ export default (ctx, streamInput) => {
   encode.pipe(ws);
   ctx.response = {
     headers: {
-      'content-type': 'application/json; charset=utf-8',
+      'Content-Type': 'application/json; charset=utf-8',
     },
     body: new PassThrough(),
   };
 
+  const handleDrain = () => {
+    if (!ctx.signal.aborted
+      && ctx.request.body
+      && !ctx.request.body.destroyed
+      && ctx.request.body.resume
+      && ctx.request.body.isPaused()) {
+      ctx.request.body.resume();
+    }
+  };
+
+  ws.on('drain', handleDrain);
+
   ws.once('finish', () => {
+    ws.off('drain', handleDrain);
     updateStreamInput(streamInputItem._id, () => ({
       sha256: hash.digest('hex'),
       dateTimeStore: Date.now(),
@@ -51,6 +64,7 @@ export default (ctx, streamInput) => {
   });
 
   const handleError = () => {
+    ws.off('drain', handleDrain);
     if (!encode.destroyed) {
       encode.unpipe(ws);
       encode.destroy();

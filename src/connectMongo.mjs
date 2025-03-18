@@ -10,10 +10,14 @@ export default async () => {
     username: config.username,
     password: config.password,
     onRequest: (uri) => {
-      console.warn(`mongo connect -> ${uri}`);
+      if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
+        console.warn(`mongo connect -> ${uri}`);
+      }
     },
     onConnect: () => {
-      console.warn('mongodb connect success');
+      if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
+        console.warn('mongodb connect success');
+      }
       dispatch('mongo', (pre) => ({
         ...pre,
         dateTimeConnect: Date.now(),

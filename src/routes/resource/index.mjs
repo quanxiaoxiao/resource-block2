@@ -216,6 +216,10 @@ const routers = {
       }
       ctx.entryItem = entryItem;
       if (ctx.request.method === 'POST' && !ctx.signal.aborted) {
+        if (ctx.request.headers['expect']
+          && ctx.request.headers['expect'].toLowerCase() === '100-continue') {
+          ctx.socket.write('HTTP/1.1 100 Continue\r\n\r\n');
+        }
         await handleStoreStreamBlockWithCreate(ctx);
       }
     },

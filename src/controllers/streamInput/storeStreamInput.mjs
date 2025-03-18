@@ -86,8 +86,8 @@ export default async (streamInput) => {
       shelljs.mv(tempPathname, path.resolve(blockPathname, '..'));
       logger.warn(`\`${blockItem._id.toString()}\` create block \`chunkSize:${blockItem.size}\``);
       resourceItem.block = blockItem._id;
-    } catch (error) { // eslint-disable-line
-      const otherBlock  = await BlockModel.findOneAndUpdate(
+    } catch (error) {
+      const otherBlock = await BlockModel.findOneAndUpdate(
         { sha256: streamInputItem.sha256 },
         {
           $inc: { linkCount: 1 },
