@@ -84,7 +84,7 @@ export default (ctx) => {
     ctx.response = {
       headers: {},
     };
-    const resourceName = ctx.resourceItem.name || ctx.resourceItem._id.toString();
+    const resourceName = ctx.resourceItem.name ? encodeURIComponent(ctx.resourceItem.name) : ctx.resourceItem._id.toString();
     assert(!!resourceName);
     if (ctx.request.params[0] === 'preview') {
       if (ctx.resourceItem.mime) {
