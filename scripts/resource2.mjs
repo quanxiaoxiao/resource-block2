@@ -1,15 +1,17 @@
 import assert from 'node:assert';
-import _ from 'lodash';
-import { Semaphore } from '@quanxiaoxiao/utils';
+
 import { sha256 } from '@quanxiaoxiao/node-utils';
-import generateChunk from './generateChunk.mjs';
+import { Semaphore } from '@quanxiaoxiao/utils';
+import _ from 'lodash';
+
 import {
-  removeResource,
   fetchResource,
   fetchResourceChunk,
-  upload,
+  removeResource,
   updateResourceBlock,
+  upload,
 } from './apis.mjs';
+import generateChunk from './generateChunk.mjs';
 
 const semp = new Semaphore(24);
 

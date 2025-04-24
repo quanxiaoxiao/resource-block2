@@ -15,13 +15,14 @@ import configEntries from './controllers/entry/configEntries.mjs';
 import logger from './logger.mjs';
 import routes from './routes/index.mjs';
 import { selectRouteMatchList } from './store/selector.mjs';
-import { dispatch, getState } from './store/store.mjs'; // eslint-disable-line
+import { dispatch, getState, getValue } from './store/store.mjs'; // eslint-disable-line
 
 // dateTime invalid
 
 process.nextTick(async () => {
   await connectMongo();
   await configEntries();
+  const port = getValue('server.port');
 
   generateBlockDirs();
 
@@ -34,8 +35,6 @@ process.nextTick(async () => {
       logger,
     }),
   }));
-
-  const { port } = getState().server;
 
   server.listen(port, () => {
     console.log(`server listen at \`${port}\``);

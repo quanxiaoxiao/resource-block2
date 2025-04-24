@@ -1,12 +1,10 @@
-import mongoose from 'mongoose';
-
 import { ResourceRecord as ResourceRecordModel } from '../../models/index.mjs';
 
-export default async (resource) => {
+export default async (resourceItem) => {
   const resourceRecordList = await ResourceRecordModel.aggregate([
     {
       $match: {
-        resource: new mongoose.Types.ObjectId(resource),
+        resource: resourceItem._id,
         invalid: {
           $ne: true,
         },

@@ -40,7 +40,11 @@ const routers = {
       properties: resourceRecordType,
     },
     get: async (ctx) => {
-      const list = await getResourceRecords(ctx.request.params.resource);
+      const resourceItem = await getResourceById(ctx.request.params.resource);
+      if (!resourceItem) {
+        throw createError(404);
+      }
+      const list = await getResourceRecords(resourceItem._id);
       ctx.response = {
         data: list,
       };
@@ -256,6 +260,7 @@ export default Object
 
           if (handler.onPre) {
             await handler.onPre(ctx);
+            assert(!ctx.socket.destroyed);
             assert(!ctx.signal.aborted);
           }
         },
