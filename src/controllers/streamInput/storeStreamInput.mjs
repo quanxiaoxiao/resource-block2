@@ -109,7 +109,7 @@ export default async (streamInput) => {
     resource: resourceItem._id,
     remoteAddress: streamInputItem.remoteAddress,
     dateTimeCreate: streamInputItem.dateTimeCreate,
-    userAgent: streamInputItem.request.headers['user-agent'] ?? null,
+    userAgent: streamInputItem.request.headers['user-agent']?.toString() ?? null,
     dateTimeStore: streamInputItem.dateTimeStore,
   });
   resourceItem.record = resourceRecordItem._id;

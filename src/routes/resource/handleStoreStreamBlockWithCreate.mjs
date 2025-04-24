@@ -38,11 +38,11 @@ export default async (ctx) => {
     resourceItem.block = emptyBlockItem._id;
     const resourceRecordItem = new ResourceRecordModel({
       block: resourceItem.block,
-      userAgent: ctx.request.headers['user-agent'] ?? null,
+      userAgent: ctx.request.headers['user-agent']?.toString() ?? null,
       resource: resourceItem._id,
       dateTimeCreate: resourceItem.dateTimeCreate,
       dateTimeStore: resourceItem.dateTimeStore,
-      remoteAddress: ctx.request.headers['x-remote-address'] || ctx.socket.remoteAddress,
+      remoteAddress: ctx.request.headers['x-remote-address']?.toString() ?? ctx.socket.remoteAddress,
     });
     resourceItem.record = resourceRecordItem._id;
     await Promise.all([
@@ -59,7 +59,7 @@ export default async (ctx) => {
   } else if (!ctx.signal.aborted) {
     const streamInputItem = createStreamInput({
       entry: ctx.entryItem._id.toString(),
-      remoteAddress: ctx.request.headers['x-remote-address'] || ctx.socket.remoteAddress,
+      remoteAddress: ctx.request.headers['x-remote-address']?.toString() ?? ctx.socket.remoteAddress,
       name: ctx.request.query.name,
       request: {
         path: ctx.request.path,
