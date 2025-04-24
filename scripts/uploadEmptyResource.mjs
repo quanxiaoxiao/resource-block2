@@ -1,9 +1,10 @@
-import crypto from 'node:crypto';
 import assert from 'node:assert';
+import crypto from 'node:crypto';
+
 import {
-  upload,
   fetchResource,
   updateResourceBlock,
+  upload,
 } from './apis.mjs';
 
 let resourceItem = await upload({

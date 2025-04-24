@@ -2,10 +2,12 @@ import assert from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+
 import { sha256 } from '@quanxiaoxiao/node-utils';
+
 import {
-  upload,
   fetchResourceChunk,
+  upload,
 } from './apis.mjs';
 
 const packageBuf = fs.readFileSync(path.resolve(process.cwd(), 'package-lock.json'));

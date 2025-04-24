@@ -1,11 +1,12 @@
 import assert from 'node:assert';
+
 import {
   createEntry,
   fetchEntry,
-  removeEntry,
-  updateEntry,
   fetchResource,
+  removeEntry,
   removeResource,
+  updateEntry,
   upload,
 } from './apis.mjs';
 import generateChunk from './generateChunk.mjs';

@@ -1,6 +1,7 @@
 import assert from 'node:assert';
-import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
+
 import request from '@quanxiaoxiao/http-request';
+import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
 
 const httpRequest = async ({
   path,

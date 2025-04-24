@@ -1,13 +1,15 @@
 import assert from 'node:assert';
-import { waitFor } from '@quanxiaoxiao/utils';
+
 import { sha256 } from '@quanxiaoxiao/node-utils';
+import { waitFor } from '@quanxiaoxiao/utils';
 import _ from 'lodash';
+
 import {
+  fetchResourceChunk,
+  fetchResourceRecords,
   removeResource,
   updateResourceBlock,
   upload,
-  fetchResourceRecords,
-  fetchResourceChunk,
 } from './apis.mjs';
 import generateChunk from './generateChunk.mjs';
 
@@ -50,12 +52,9 @@ assert(resourceRecordList[0].dateTimeAccess < Date.now());
 assert(resourceRecordList[0].dateTimeAccess > Date.now() - 500);
 assert.equal(resourceRecordList[0].hash, resourceItem.hash);
 
-
-
 blockChunk = generateChunk(_.random(50, 80));
 
 let resourceItem2 = await updateResourceBlock(resourceItem._id, blockChunk);
-
 
 assert.equal(resourceItem2._id, resourceItem._id);
 

@@ -16,4 +16,3 @@ if (!entryItem) {
 } else {
   console.log(`entry \`${entryItem.alias}\` alreay exist`);
 }
-

@@ -1,10 +1,12 @@
 import assert from 'node:assert';
+
 import { sha256 } from '@quanxiaoxiao/node-utils';
 import { Semaphore } from '@quanxiaoxiao/utils';
+
 import {
   fetchEntries,
-  fetchEntryStatistics,
   fetchEntryResources,
+  fetchEntryStatistics,
   fetchResourceChunk,
 } from './apis.mjs';
 

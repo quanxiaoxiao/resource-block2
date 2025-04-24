@@ -1,9 +1,10 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import fs from 'node:fs';
-import { Semaphore } from '@quanxiaoxiao/utils';
+
 import request from '@quanxiaoxiao/http-request';
 import { decodeContentToJSON } from '@quanxiaoxiao/http-utils';
+import { Semaphore } from '@quanxiaoxiao/utils';
 
 const sem = new Semaphore(24);
 
