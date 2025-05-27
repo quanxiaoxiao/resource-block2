@@ -15,11 +15,10 @@
     "node": ">= 20.0.0"
   },
   "dependencies": {
-    "@quanxiaoxiao/curd": "^0.5.0",
     "@quanxiaoxiao/datav": "^0.4.0",
     "@quanxiaoxiao/http-request": "^0.64.0",
     "@quanxiaoxiao/http-utils": "^0.35.0",
-    "@quanxiaoxiao/httttp": "^0.107.0",
+    "@quanxiaoxiao/httttp": "^0.111.0",
     "@quanxiaoxiao/list": "^0.4.0",
     "@quanxiaoxiao/logger": "^0.0.1",
     "@quanxiaoxiao/mongo": "^0.3.0",
@@ -32,6 +31,6 @@
     "http-errors": "^2.0.0",
     "lodash": "^4.17.21",
     "mongoose": "^8.3.1",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.10.0"
   }
 }
