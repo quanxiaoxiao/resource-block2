@@ -89,6 +89,29 @@ export default {
       },
     },
   },
+  '/api/entries/statistics': {
+    select: {
+      type: 'array',
+      properties: {
+        size: {
+          type: 'number',
+        },
+        count: {
+          type: 'integer',
+        },
+        dateTimeUpdate: {
+          type: 'number',
+        },
+      },
+    },
+    get: async (ctx) => {
+      const entryList = getEntryList();
+      const statisticsList = await Promise.all(entryList.map((d) => statisticsEntry(d._id)));
+      ctx.response = {
+        data: statisticsList,
+      };
+    },
+  },
   '/api/entry/:entry/statistics': {
     select: {
       type: 'object',

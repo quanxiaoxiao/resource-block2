@@ -17,10 +17,6 @@ import updateResource from './updateResource.mjs';
 
 const routers = {
   '/resource/:resource{/preview}': {
-    select: {
-      type: 'object',
-      properties: resourceType,
-    },
     onPre: async (ctx) => {
       if (ctx.request.method === 'PUT') {
         if (/\/preview$/.test(ctx.request.pathname)) {

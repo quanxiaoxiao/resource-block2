@@ -86,7 +86,7 @@ export default (ctx) => {
     };
     const resourceName = ctx.resourceItem.name ? encodeURIComponent(ctx.resourceItem.name) : ctx.resourceItem._id.toString();
     assert(!!resourceName);
-    if (ctx.request.params[0] === 'preview') {
+    if (/\/preview$/.test(ctx.request.pathname)) {
       if (ctx.resourceItem.mime) {
         ctx.response.headers['Content-Type'] = ctx.resourceItem.mime;
       }
