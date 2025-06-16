@@ -24,10 +24,7 @@ const resourceSchema = new Schema({
     ref: 'Entry',
     index: true,
   },
-  category: {
-    type: String,
-    index: true,
-  },
+  categories: [String],
   description: {
     type: String,
     default: '',
