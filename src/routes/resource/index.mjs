@@ -5,6 +5,7 @@ import createError from 'http-errors';
 import findEntry from '../../controllers/entry/findEntry.mjs';
 import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
 import getResourceById from '../../controllers/resource/getResourceById.mjs';
+import removeResource from '../../controllers/resource/removeResource.mjs';
 import resourceType from '../../types/resource.mjs';
 import resourceRecordType from '../../types/resourceRecord.mjs';
 import getResourceRecords from './getResourceRecords.mjs';
@@ -12,7 +13,6 @@ import handleReadStreamBlock from './handleReadStreamBlock.mjs';
 import handleStoreStreamBlockWithCreate from './handleStoreStreamBlockWithCreate.mjs';
 import handleStoreStreamBlockWithUpdate from './handleStoreStreamBlockWithUpdate.mjs';
 import queryResources from './queryResources.mjs';
-import removeResource from './removeResource.mjs';
 import updateResource from './updateResource.mjs';
 
 const routers = {
