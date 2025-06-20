@@ -8,14 +8,13 @@ import {
 import getResourceById from './getResourceById.mjs';
 
 export default async (resourceItem, input) => {
-  const resourceItemNext = Object.assign({}, resourceItem.toObject?.() || resourceItem, input);
-  const tempInstance = new ResourceModel(resourceItemNext);
+  const tempInstance = new ResourceModel(Object.assign({}, resourceItem.toObject?.() || resourceItem, input));
   try {
     await tempInstance.validate();
   } catch (error) {
     throw createError(400, JSON.stringify(error.errors));
   }
-  if (resourceItemNext.entry.toString() !== resourceItem.entry.toString()) {
+  if (tempInstance.entry.toString() !== resourceItem.entry.toString()) {
     const entryItem = await EntryModel.findOne({
       _id: input.entry,
       invalid: {
