@@ -25,7 +25,7 @@ export default async (resourceItem, input) => {
       throw createError(403, `\`${input.entry}\` entry not exist`);
     }
   }
-  const modifiedCount = await ResourceModel.updateOne(
+  const ret = await ResourceModel.updateOne(
     {
       _id: resourceItem._id,
       invalid: {
@@ -38,7 +38,7 @@ export default async (resourceItem, input) => {
       },
     },
   );
-  if (modifiedCount === 0) {
+  if (ret.matchedCount === 0) {
     throw createError(404);
   }
   logger.warn(`\`${resourceItem._id.toString()}\` updateResource \`${JSON.stringify(input)}\``);
