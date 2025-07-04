@@ -1,3 +1,4 @@
+import { select } from '@quanxiaoxiao/datav';
 import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
 
 import { STREAM_TYPE_RESOURCE_UPDATE } from '../../constants.mjs';
@@ -9,8 +10,14 @@ import {
   Resource as ResourceModel,
   ResourceRecord as ResourceRecordModel,
 } from '../../models/index.mjs';
+import resourceType from '../../types/resource.mjs';
 import calcEmptyBlockSha256 from '../../utilities/calcEmptyBlockSha256.mjs';
 import handleStreamInput from './handleStreamInput.mjs';
+
+const selectData = (data) => select({
+  type: 'object',
+  properties: resourceType,
+})(data);
 
 export default async (ctx) => {
   if (!hasHttpBodyContent(ctx.request.headers)) {
@@ -18,7 +25,7 @@ export default async (ctx) => {
     if (resourceItem.block.size === 0) {
       logger.warn(`\`${resourceItem._id}\` set block with empty`);
       ctx.response = {
-        data: resourceItem,
+        data: selectData(resourceItem),
       };
     } else {
       const [emptyBlockItem] = await Promise.all([
@@ -72,7 +79,7 @@ export default async (ctx) => {
       const data = await getResourceById(resourceItem._id);
       if (data) {
         ctx.response = {
-          data,
+          data: selectData(data),
         };
       }
     }

@@ -190,10 +190,6 @@ const routers = {
     },
   },
   '/upload{/:entry}': {
-    select: {
-      type: 'object',
-      properties: resourceType,
-    },
     query: {
       name: {
         type: 'string',

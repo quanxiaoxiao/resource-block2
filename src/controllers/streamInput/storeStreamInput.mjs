@@ -44,6 +44,7 @@ export default async (streamInput) => {
       removeStreamInput(streamInputItem._id);
       return null;
     }
+    resourceItem.dateTimeUpdate = streamInputItem.dateTimeCreate;
   } else {
     return null;
   }

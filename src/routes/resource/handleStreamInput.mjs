@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import { PassThrough } from 'node:stream';
 
+import { select } from '@quanxiaoxiao/datav';
 import { wrapStreamRead } from '@quanxiaoxiao/node-utils';
 
 import getResourceById from '../../controllers/resource/getResourceById.mjs';
@@ -11,6 +12,7 @@ import removeStreamInput from '../../controllers/streamInput/removeStreamInput.m
 import storeStreamInput from '../../controllers/streamInput/storeStreamInput.mjs';
 import updateStreamInput from '../../controllers/streamInput/updateStreamInput.mjs';
 import { encrypt } from '../../providers/cipher.mjs';
+import resourceType from '../../types/resource.mjs';
 
 export default (ctx, streamInput) => {
   const streamInputItem = findStreamInput(streamInput);
@@ -55,7 +57,10 @@ export default (ctx, streamInput) => {
       .then((ret) => {
         if (!ctx.signal.aborted && ctx.response.body.writable) {
           if (ret) {
-            ctx.response.body.end(JSON.stringify(ret));
+            ctx.response.body.end(JSON.stringify(select({
+              type: 'object',
+              properties: resourceType,
+            })(ret)));
           } else {
             ctx.response.body.end();
           }
