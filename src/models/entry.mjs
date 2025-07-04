@@ -8,6 +8,10 @@ const entrySchema = new Schema({
     required: true,
     trim: true,
   },
+  icon: {
+    type: String,
+    trim: true,
+  },
   alias: {
     type: String,
     default: '',

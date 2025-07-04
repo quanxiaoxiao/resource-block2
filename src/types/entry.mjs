@@ -5,6 +5,9 @@ export default {
   name: {
     type: 'string',
   },
+  icon: {
+    type: 'string',
+  },
   size: {
     type: 'number',
   },
@@ -19,6 +22,5 @@ export default {
   },
   dateTimeCreate: {
     type: 'number',
-    index: 1,
   },
 };

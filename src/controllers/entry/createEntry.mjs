@@ -11,6 +11,7 @@ import findEntryOfAlias from './findEntryOfAlias.mjs';
 export default ({
   alias,
   name,
+  icon,
   description = '',
   readOnly = false,
 }) => {
@@ -19,6 +20,7 @@ export default ({
     _id: new mongoose.Types.ObjectId().toString(),
     alias: (alias ?? '').trim(),
     name,
+    icon,
     order: entryList.length,
     description,
     dateTimeCreate: Date.now(),

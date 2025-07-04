@@ -51,6 +51,10 @@ export default {
               pattern: '^\\s+$',
             },
           },
+          icon: {
+            type: 'string',
+            nullable: true,
+          },
           alias: {
             type: 'string',
             nullable: true,
@@ -158,6 +162,10 @@ export default {
             not: {
               pattern: '^\\s+$',
             },
+          },
+          icon: {
+            type: 'string',
+            nullable: true,
           },
           alias: {
             type: 'string',
