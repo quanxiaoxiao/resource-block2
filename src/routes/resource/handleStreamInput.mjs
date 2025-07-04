@@ -69,7 +69,7 @@ export default (ctx, streamInput) => {
       encode.unpipe(ws);
       encode.destroy();
       process.nextTick(() => {
-        if (ws.destroyed) {
+        if (!ws.destroyed) {
           ws.destroy();
         }
       });
