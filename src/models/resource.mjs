@@ -30,6 +30,11 @@ const resourceSchema = new Schema({
     default: '',
     trim: true,
   },
+  info: {
+    type: String,
+    default: '',
+    trim: true,
+  },
   name: {
     type: String,
     default: '',

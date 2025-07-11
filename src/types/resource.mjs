@@ -8,8 +8,15 @@ export default {
   description: {
     type: 'string',
   },
+  info: {
+    type: 'string',
+  },
   dateTimeCreate: {
     type: 'number',
+  },
+  categories: {
+    type: 'array',
+    properties: ['.', { type: 'string' }],
   },
   dateTimeUpdate: {
     type: 'number',

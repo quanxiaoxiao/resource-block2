@@ -15,6 +15,7 @@ export default async ({
   orderBy,
   order,
   keywords,
+  category,
   ...args
 }) => {
   const entryItem = await EntryModel.findOne({
@@ -36,6 +37,11 @@ export default async ({
   query.invalid = {
     $ne: true,
   };
+  if (category) {
+    query.categories = {
+      $in: [category],
+    };
+  }
   if (keywords) {
     if (keywords[0] === '/') {
       if (keywords.length > 1) {

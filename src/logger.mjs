@@ -16,6 +16,7 @@ let logger = {
     console.log(message);
   },
 };
+
 if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production') {
   const options = {
     fd1: getPathname(process.env.LOGGER_FD1),

@@ -81,11 +81,17 @@ const routers = {
             type: 'string',
             minLength: 1,
           },
-          category: {
+          categories: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+          description: {
             type: 'string',
             nullable: true,
           },
-          description: {
+          info: {
             type: 'string',
             nullable: true,
           },
@@ -130,6 +136,9 @@ const routers = {
           return v;
         },
       },
+      category: {
+        type: 'string',
+      },
       skip: {
         type: 'integer',
         resolve: (v) => {
@@ -170,7 +179,6 @@ const routers = {
           'size',
           'mime',
           'name',
-          'category',
         ],
       },
       'query.limit': { $gt: 0 },

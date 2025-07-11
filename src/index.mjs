@@ -17,8 +17,6 @@ import routes from './routes/index.mjs';
 import { selectRouteMatchList } from './store/selector.mjs';
 import { dispatch, getState, getValue } from './store/store.mjs'; // eslint-disable-line
 
-// dateTime invalid
-
 process.nextTick(async () => {
   await connectMongo();
   await configEntries();
