@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import { Transform } from 'node:stream';
 
 import { parseContentRange } from '@quanxiaoxiao/http-utils';
+import mime from 'mime';
 
 import createStreamOutput from '../../controllers/streamOutput/createStreamOutput.mjs';
 import removeStreamOutput from '../../controllers/streamOutput/removeStreamOutput.mjs';
@@ -89,8 +90,13 @@ export default (ctx) => {
     if (/\/preview$/.test(ctx.request.pathname)) {
       if (ctx.resourceItem.mime) {
         ctx.response.headers['Content-Type'] = ctx.resourceItem.mime;
+      } else if (/\.(\w+)/.test(resourceName)) {
+        const type = mime.getType(RegExp.$1);
+        if (type) {
+          ctx.response.headers['Content-Type'] = type;
+        }
       }
-      ctx.response.headers['Content-Disposition'] = `inline; filename=${resourceName}`;
+      ctx.response.headers['Content-Disposition'] = `inline; filename="${resourceName}"`;
     } else {
       ctx.response.headers['Content-Disposition'] = `attachment; filename="${resourceName}"`;
     }
