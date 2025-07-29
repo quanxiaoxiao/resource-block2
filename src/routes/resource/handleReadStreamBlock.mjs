@@ -1,8 +1,8 @@
-import assert from 'node:assert';
 import fs from 'node:fs';
 import { Transform } from 'node:stream';
 
 import { parseContentRange } from '@quanxiaoxiao/http-utils';
+import contentDispostion from 'content-disposition';
 import mime from 'mime';
 
 import createStreamOutput from '../../controllers/streamOutput/createStreamOutput.mjs';
@@ -85,26 +85,24 @@ export default (ctx) => {
     ctx.response = {
       headers: {},
     };
-    const resourceName = ctx.resourceItem.name ? encodeURIComponent(ctx.resourceItem.name) : ctx.resourceItem._id.toString();
-    assert(!!resourceName);
+    const resourceName = ctx.resourceItem.name || ctx.resourceItem._id.toString();
+    ctx.response.headers['Content-Disposition'] = contentDispostion(resourceName);
     if (/\/preview$/.test(ctx.request.pathname)) {
       if (ctx.resourceItem.mime) {
         ctx.response.headers['Content-Type'] = ctx.resourceItem.mime;
-      } else if (/\.(\w+)/.test(resourceName)) {
+      } else if (/\.(\w+)$/.test(resourceName)) {
         const type = mime.getType(RegExp.$1);
         if (type) {
           ctx.response.headers['Content-Type'] = type;
         }
       }
-      ctx.response.headers['Content-Disposition'] = `inline; filename="${resourceName}"`;
-    } else {
-      ctx.response.headers['Content-Disposition'] = `attachment; filename="${resourceName}"`;
+      ctx.response.headers['Content-Disposition'] = ctx.response.headers['Content-Disposition'].replace(/^attachment/, 'inline');
     }
     if (ctx.request.headers.range) {
       const [start, end] = parseContentRange(ctx.request.headers.range, ctx.resourceItem.block.size);
       ctx.response.statusCode = 206;
-      ctx.response.headers['accept-ranges'] = 'bytes';
-      ctx.response.headers['content-range'] = `bytes ${start}-${end}/${ctx.resourceItem.block.size}`;
+      ctx.response.headers['Accept-Ranges'] = 'bytes';
+      ctx.response.headers['Content-Range'] = `bytes ${start}-${end}/${ctx.resourceItem.block.size}`;
       if (start === end) {
         ctx.response.body = null;
       } else {
