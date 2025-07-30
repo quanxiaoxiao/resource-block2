@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 import logger from '../../logger.mjs';
 import { Entry as EntryModel } from '../../models/index.mjs';
-import { dispatch,getState } from '../../store/store.mjs';
+import { dispatch, getValue } from '../../store/store.mjs';
 import findEntryOfAlias from './findEntryOfAlias.mjs';
 
 export default ({
@@ -15,7 +15,7 @@ export default ({
   description = '',
   readOnly = false,
 }) => {
-  const { entryList } = getState();
+  const entryList = getValue('entryList');
   const model = {
     _id: new mongoose.Types.ObjectId().toString(),
     alias: (alias ?? '').trim(),

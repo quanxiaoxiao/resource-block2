@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { isValidObjectId } from '@quanxiaoxiao/mongo';
 
-import { getState } from '../store/store.mjs';
+import { getValue } from '../store/store.mjs';
 
 export default (block) => {
   assert(isValidObjectId(block));
@@ -13,7 +13,7 @@ export default (block) => {
   const dir = sha256.slice(0, 2);
   const fileName = sha256.slice(2);
   return path.resolve(
-    getState().block.dir,
+    getValue('block.dir'),
     dir,
     fileName,
   );

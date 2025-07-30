@@ -1,8 +1,9 @@
-import { getState } from '../../store/store.mjs';
+import { getValue } from '../../store/store.mjs';
 
 export default (alias) => {
   if (!alias || alias.trim() === '') {
     return null;
   }
-  return getState().entryList.find((d) => d.alias === alias);
+  const entryList = getValue('entryList');
+  return entryList.find((d) => d.alias === alias);
 };

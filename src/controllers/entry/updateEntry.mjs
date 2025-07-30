@@ -2,11 +2,11 @@ import { update } from '@quanxiaoxiao/list';
 import createError from 'http-errors';
 
 import { Entry as EntryModel } from '../../models/index.mjs';
-import { dispatch,getState } from '../../store/store.mjs';
+import { dispatch, getValue } from '../../store/store.mjs';
 import findEntryOfAlias from './findEntryOfAlias.mjs';
 
 export default (entry, fn) => {
-  const { entryList } = getState();
+  const entryList = getValue('entryList');
   const ret = update(entryList)(entry, fn);
   if (!ret) {
     return null;

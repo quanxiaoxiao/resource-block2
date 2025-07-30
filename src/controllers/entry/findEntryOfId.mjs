@@ -2,10 +2,10 @@ import assert from 'node:assert';
 
 import { find } from '@quanxiaoxiao/list';
 
-import { getState } from '../../store/store.mjs';
+import { getValue } from '../../store/store.mjs';
 
 export default (entry) => {
   assert(typeof entry === 'string');
-  const { entryList } = getState();
+  const entryList = getValue('entryList');
   return find(entryList)(entry);
 };

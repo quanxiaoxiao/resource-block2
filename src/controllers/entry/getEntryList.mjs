@@ -1,7 +1,7 @@
-import { getState } from '../../store/store.mjs';
+import { getValue } from '../../store/store.mjs';
 
 export default () => {
-  const { entryList } = getState();
+  const entryList = getValue('entryList');
   return [...entryList].sort((a, b) => {
     if (a.order === b.order) {
       return 0;
