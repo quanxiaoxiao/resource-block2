@@ -1,5 +1,6 @@
 import { select } from '@quanxiaoxiao/datav';
 import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
+import contentDispostion from 'content-disposition';
 
 import { STREAM_TYPE_RESOURCE_UPDATE } from '../../constants.mjs';
 import getResourceById from '../../controllers/resource/getResourceById.mjs';
@@ -18,6 +19,19 @@ const selectData = (data) => select({
   type: 'object',
   properties: resourceType,
 })(data);
+
+const getResourceName = (ctx) => {
+  if (ctx.request.headers['content-disposition']) {
+    const ret = contentDispostion.parse(ctx.request.headers['content-disposition']);
+    if (ret.type === 'attachment'
+      && ret.parameters
+      && ret.parameters.filename
+    ) {
+      return ret.parameters.filename;
+    }
+  }
+  return null;
+};
 
 export default async (ctx) => {
   if (!hasHttpBodyContent(ctx.request.headers)) {
@@ -69,6 +83,7 @@ export default async (ctx) => {
           {
             $set: {
               record: resourceRecordItem._id,
+              name: getResourceName(ctx) || ctx.resourceItem.name,
               block: emptyBlockItem._id,
               dateTimeUpdate: ctx.request.dateTimeCreate,
             },
@@ -87,7 +102,7 @@ export default async (ctx) => {
     const streamInputItem = createStreamInput({
       entry: ctx.entryItem._id.toString(),
       resource: ctx.resourceItem._id.toString(),
-      name: ctx.resourceItem.name,
+      name: getResourceName(ctx) || ctx.resourceItem.name,
       remoteAddress: ctx.request.headers['x-remote-address']?.toString() ?? ctx.socket.remoteAddress,
       type: STREAM_TYPE_RESOURCE_UPDATE,
       request: {
