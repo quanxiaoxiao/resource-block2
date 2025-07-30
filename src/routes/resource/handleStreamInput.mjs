@@ -16,89 +16,122 @@ import resourceType from '../../types/resource.mjs';
 
 export default (ctx, streamInput) => {
   const streamInputItem = findStreamInput(streamInput);
-  assert(streamInputItem);
+  assert(streamInputItem, 'Stream input item not found');
   ctx.request.body = new PassThrough();
-  const ws = fs.createWriteStream(streamInputItem.pathname);
-  const hash = crypto.createHash('sha256');
-  const encode = encrypt(streamInputItem._id);
-  encode.pipe(ws);
   ctx.response = {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
     },
     body: new PassThrough(),
   };
+  const ws = fs.createWriteStream(streamInputItem.pathname);
+  const hash = crypto.createHash('sha256');
+  const encode = encrypt(streamInputItem._id);
 
-  const handleDrain = () => {
-    if (!ctx.signal.aborted
-      && ctx.request.body
-      && !ctx.request.body.destroyed
-      && ctx.request.body.resume
-      && ctx.request.body.isPaused()) {
-      ctx.request.body.resume();
-    }
-  };
+  encode.pipe(ws);
 
-  ws.on('drain', handleDrain);
+  const cleanup = () => {
+    ws.removeAllListeners();
+    encode.removeAllListeners();
 
-  ws.once('finish', () => {
-    ws.off('drain', handleDrain);
-    updateStreamInput(streamInputItem._id, () => ({
-      sha256: hash.digest('hex'),
-      dateTimeStore: Date.now(),
-    }));
-    storeStreamInput(streamInputItem._id)
-      .then((ret) => {
-        if (ret) {
-          return getResourceById(ret.resource);
-        }
-        return null;
-      })
-      .then((ret) => {
-        if (!ctx.signal.aborted && ctx.response.body.writable) {
-          if (ret) {
-            ctx.response.body.end(JSON.stringify(select({
-              type: 'object',
-              properties: resourceType,
-            })(ret)));
-          } else {
-            ctx.response.body.end();
-          }
-        }
-      });
-  });
-
-  const handleError = () => {
-    ws.off('drain', handleDrain);
     if (!encode.destroyed) {
       encode.unpipe(ws);
       encode.destroy();
-      process.nextTick(() => {
-        if (!ws.destroyed) {
-          ws.destroy();
-        }
-      });
     }
+
+    if (!ws.destroyed) {
+      ws.destroy();
+    }
+
     process.nextTick(() => {
       removeStreamInput(streamInputItem._id);
     });
   };
 
+  const handleDrain = () => {
+    if (!ctx.signal.aborted
+      && ctx.request.body
+      && !ctx.request.body.destroyed
+      && ctx.request.body.isPaused?.()) {
+      ctx.request.body.resume();
+    }
+  };
+
+  const handleFinish = async () => {
+    try {
+      ws.off('drain', handleDrain);
+
+      updateStreamInput(streamInputItem._id, () => ({
+        sha256: hash.digest('hex'),
+        dateTimeStore: Date.now(),
+      }));
+
+      const storeResult = await storeStreamInput(streamInputItem._id);
+      let resource = null;
+
+      if (storeResult?.resource) {
+        resource = await getResourceById(storeResult.resource);
+      }
+
+      if (!ctx.signal.aborted && ctx.response.body.writable) {
+        if (resource) {
+          const responseData = select({
+            type: 'object',
+            properties: resourceType,
+          })(resource);
+          ctx.response.body.end(JSON.stringify(responseData));
+        } else {
+          ctx.response.body.end();
+        }
+      }
+    } catch (error) {
+      console.error('Error in handleFinish:', error);
+      cleanup();
+      if (!ctx.signal.aborted && ctx.response.body.writable) {
+        ctx.response.body.end();
+      }
+    }
+  };
+
+  const handleError = (error) => {
+    console.error('Stream processing error:', error);
+    cleanup();
+    if (!ctx.signal.aborted && ctx.response.body.writable) {
+      ctx.response.body.end();
+    }
+  };
+
+  ws.on('drain', handleDrain);
+  ws.once('finish', handleFinish);
+  ws.on('error', handleError);
+  encode.on('error', handleError);
+
   wrapStreamRead({
     stream: ctx.request.body,
     signal: ctx.signal,
-    onAbort: handleError,
+    onAbort: () => handleError(new Error('Stream aborted')),
     onData: (chunk) => {
-      hash.update(chunk);
-      updateStreamInput(streamInputItem._id, (pre) => ({
-        dateTimeActive: Date.now(),
-        chunkSize: pre.chunkSize + chunk.length,
-      }));
-      return encode.write(chunk);
+      try {
+        hash.update(chunk);
+
+        updateStreamInput(streamInputItem._id, (prev) => ({
+          dateTimeActive: Date.now(),
+          chunkSize: prev.chunkSize + chunk.length,
+        }));
+
+        return encode.write(chunk);
+      } catch (error) {
+        handleError(error);
+        return false;
+      }
     },
     onEnd: () => {
-      assert(!encode.writableEnded);
-      encode.end();
+      try {
+        assert(!encode.writableEnded, 'Encode stream already ended');
+        encode.end();
+      } catch (error) {
+        handleError(error);
+      }
     },
     onError: handleError,
   });
