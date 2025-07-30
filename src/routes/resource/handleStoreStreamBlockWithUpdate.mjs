@@ -1,6 +1,6 @@
 import { select } from '@quanxiaoxiao/datav';
 import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
-import contentDispostion from 'content-disposition';
+import contentDisposition from 'content-disposition';
 
 import { STREAM_TYPE_RESOURCE_UPDATE } from '../../constants.mjs';
 import getResourceById from '../../controllers/resource/getResourceById.mjs';
@@ -21,16 +21,29 @@ const selectData = (data) => select({
 })(data);
 
 const getResourceName = (ctx) => {
-  if (ctx.request.headers['content-disposition']) {
-    const ret = contentDispostion.parse(ctx.request.headers['content-disposition']);
-    if (ret.type === 'attachment'
-      && ret.parameters
-      && ret.parameters.filename
-    ) {
-      return ret.parameters.filename;
-    }
+  const contentDispositionHeader = ctx.request.headers['content-disposition'];
+  if (!contentDispositionHeader) {
+    return null;
   }
+
+  try {
+    const parsed = contentDisposition.parse(contentDispositionHeader);
+    if (parsed.type === 'attachment' && parsed.parameters?.filename) {
+      return parsed.parameters.filename;
+    }
+  } catch (error) {
+    logger.warn('Failed to parse content-disposition header', error);
+  }
+
   return null;
+};
+
+const getRemoteAddress = (ctx) => {
+  return ctx.request.headers['x-remote-address']?.toString() ?? ctx.socket.remoteAddress;
+};
+
+const getUserAgent = (ctx) => {
+  return ctx.request.headers['user-agent']?.toString() ?? null;
 };
 
 export default async (ctx) => {
@@ -71,8 +84,8 @@ export default async (ctx) => {
         block: resourceItem.block._id,
         resource: resourceItem._id,
         dateTimeCreate: ctx.request.dateTimeCreate,
-        userAgent: ctx.request.headers['user-agent']?.toString() ?? null,
-        remoteAddress: ctx.request.headers['x-remote-address']?.toString() ?? ctx.socket.remoteAddress,
+        userAgent: getUserAgent(ctx),
+        remoteAddress: getRemoteAddress(ctx),
       });
       await Promise.all([
         resourceRecordItem.save(),
@@ -103,7 +116,7 @@ export default async (ctx) => {
       entry: ctx.entryItem._id.toString(),
       resource: ctx.resourceItem._id.toString(),
       name: getResourceName(ctx) || ctx.resourceItem.name,
-      remoteAddress: ctx.request.headers['x-remote-address']?.toString() ?? ctx.socket.remoteAddress,
+      remoteAddress: getRemoteAddress(ctx),
       type: STREAM_TYPE_RESOURCE_UPDATE,
       request: {
         path: ctx.request.path,

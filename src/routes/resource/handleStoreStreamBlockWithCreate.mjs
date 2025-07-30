@@ -1,5 +1,5 @@
 import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
-import contentDispostion from 'content-disposition';
+import contentDisposition from 'content-disposition';
 
 import getResourceById from '../../controllers/resource/getResourceById.mjs';
 import createStreamInput from '../../controllers/streamInput/createStreamInput.mjs';
@@ -13,13 +13,15 @@ import calcEmptyBlockSha256 from '../../utilities/calcEmptyBlockSha256.mjs';
 import handleStreamInput from './handleStreamInput.mjs';
 
 const getResourceName = (ctx) => {
-  if (ctx.request.headers['content-disposition']) {
-    const ret = contentDispostion.parse(ctx.request.headers['content-disposition']);
-    if (ret.type === 'attachment'
-      && ret.parameters
-      && ret.parameters.filename
-    ) {
-      return ret.parameters.filename;
+  const contentDispositionHeader = ctx.request.headers['content-disposition'];
+  if (contentDispositionHeader) {
+    try {
+      const parsed = contentDisposition.parse(contentDispositionHeader);
+      if (parsed.type === 'attachment' && parsed.parameters?.filename) {
+        return parsed.parameters.filename;
+      }
+    } catch (error) {
+      logger.warn('Failed to parse content-disposition header', error);
     }
   }
   return ctx.request.query.name ?? null;
