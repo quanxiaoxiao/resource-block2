@@ -3,13 +3,20 @@
   "version": "0.0.2",
   "type": "module",
   "scripts": {
-    "start": "node src/index.mjs"
+    "start": "node src/createHttpServer.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
     "eslint": "^9.22.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^16.0.0"
+  },
+  "imports": {
+    "#logger.mjs": "./src/logger.mjs",
+    "#store.mjs": "./src/store/store.mjs",
+    "#controllers/*": "./src/controllers/*",
+    "#models.mjs": "./src/models/index.mjs",
+    "#selector.mjs": "./src/store/selector.mjs"
   },
   "engines": {
     "node": ">= 20.0.0"

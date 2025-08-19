@@ -3,9 +3,10 @@ import assert from 'node:assert';
 import { sort } from '@quanxiaoxiao/list';
 import mongoose from 'mongoose';
 
-import logger from '../../logger.mjs';
-import { Entry as EntryModel } from '../../models/index.mjs';
-import { dispatch, getValue } from '../../store/store.mjs';
+import logger from '#logger.mjs';
+import { Entry as EntryModel } from '#models.mjs';
+import { dispatch, getValue } from '#store.mjs';
+
 import findEntryOfAlias from './findEntryOfAlias.mjs';
 
 export default ({

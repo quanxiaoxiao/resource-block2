@@ -1,4 +1,4 @@
-import { getValue } from '../../store/store.mjs';
+import { getValue } from '#store.mjs';
 
 export default (alias) => {
   if (!alias || alias.trim() === '') {

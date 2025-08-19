@@ -2,7 +2,7 @@ import assert from 'node:assert';
 
 import { find } from '@quanxiaoxiao/list';
 
-import { getValue } from '../../store/store.mjs';
+import { getValue } from '#store.mjs';
 
 export default (entry) => {
   assert(typeof entry === 'string');

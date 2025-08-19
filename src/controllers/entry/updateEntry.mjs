@@ -1,8 +1,9 @@
 import { update } from '@quanxiaoxiao/list';
 import createError from 'http-errors';
 
-import { Entry as EntryModel } from '../../models/index.mjs';
-import { dispatch, getValue } from '../../store/store.mjs';
+import { Entry as EntryModel } from '#models.mjs';
+import { dispatch, getValue } from '#store.mjs';
+
 import findEntryOfAlias from './findEntryOfAlias.mjs';
 
 export default (entry, fn) => {

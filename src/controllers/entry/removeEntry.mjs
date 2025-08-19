@@ -2,9 +2,9 @@ import assert from 'node:assert';
 
 import { remove } from '@quanxiaoxiao/list';
 
-import logger from '../../logger.mjs';
-import { Entry as EntryModel } from '../../models/index.mjs';
-import { dispatch, getValue } from '../../store/store.mjs';
+import logger from '#logger.mjs';
+import { Entry as EntryModel } from '#models.mjs';
+import { dispatch, getValue } from '#store.mjs';
 
 export default (entry) => {
   assert(typeof entry === 'string');
