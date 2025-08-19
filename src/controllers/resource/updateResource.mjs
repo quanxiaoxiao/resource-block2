@@ -1,10 +1,11 @@
 import createError from 'http-errors';
 
-import logger from '../../logger.mjs';
+import logger from '#logger.mjs';
 import {
   Entry as EntryModel,
   Resource as ResourceModel,
-} from '../../models/index.mjs';
+} from '#models.mjs';
+
 import getResourceById from './getResourceById.mjs';
 
 export default async (resourceItem, input) => {

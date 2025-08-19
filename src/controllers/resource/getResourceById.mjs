@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { isValidObjectId } from '@quanxiaoxiao/mongo';
 import createError from 'http-errors';
 
-import { Resource as ResourceModel } from '../../models/index.mjs';
+import { Resource as ResourceModel } from '#models.mjs';
 
 export default async (resource) => {
   if (!isValidObjectId(resource)) {

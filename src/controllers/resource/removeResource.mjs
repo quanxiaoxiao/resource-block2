@@ -1,8 +1,8 @@
-import logger from '../../logger.mjs';
+import logger from '#logger.mjs';
 import {
   Block as BlockModel,
   Resource as ResourceModel,
-} from '../../models/index.mjs';
+} from '#models.mjs';
 
 export default async (resourceItem) => {
   const now = Date.now();

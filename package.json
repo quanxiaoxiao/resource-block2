@@ -13,6 +13,7 @@
   },
   "imports": {
     "#logger.mjs": "./src/logger.mjs",
+    "#constants.mjs": "./src/constants.mjs",
     "#store.mjs": "./src/store/store.mjs",
     "#controllers/*": "./src/controllers/*",
     "#models.mjs": "./src/models/index.mjs",

@@ -8,8 +8,8 @@ import mongoose from 'mongoose';
 import {
   STREAM_TYPE_RESOURCE_CREATE,
   STREAM_TYPE_RESOURCE_UPDATE,
-} from '../../constants.mjs';
-import { dispatch, getState } from '../../store/store.mjs';
+} from '#constants.mjs';
+import { dispatch, getState } from '#store.mjs';
 
 export default ({
   entry,
