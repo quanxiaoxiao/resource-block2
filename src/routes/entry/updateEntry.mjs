@@ -1,8 +1,8 @@
 import createError from 'http-errors';
 
-import findEntryOfAlias from '../../controllers/entry/findEntryOfAlias.mjs';
-import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
-import updateEntry from '../../controllers/entry/updateEntry.mjs';
+import findEntryOfAlias from '#controllers/entry/findEntryOfAlias.mjs';
+import findEntryOfId from '#controllers/entry/findEntryOfId.mjs';
+import updateEntry from '#controllers/entry/updateEntry.mjs';
 
 export default async (entry, input) => {
   const data = {

@@ -4,7 +4,7 @@ import path from 'node:path';
 
 import { isValidObjectId } from '@quanxiaoxiao/mongo';
 
-import { getValue } from '../store/store.mjs';
+import { getValue } from '#store.mjs';
 
 export default (block) => {
   assert(isValidObjectId(block));

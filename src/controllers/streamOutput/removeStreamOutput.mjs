@@ -1,7 +1,7 @@
 import { remove } from '@quanxiaoxiao/list';
 
-import { ResourceRecord as ResourceRecordModel } from '../../models/index.mjs';
-import { dispatch,getState } from '../../store/store.mjs';
+import { ResourceRecord as ResourceRecordModel } from '#models.mjs';
+import { dispatch,getState } from '#store.mjs';
 
 export default (streamOutput) => {
   const { streamOutputList } = getState();

@@ -3,8 +3,8 @@ import crypto from 'node:crypto';
 
 import { sort } from '@quanxiaoxiao/list';
 
-import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
-import { dispatch } from '../../store/store.mjs';
+import calcBlockPathname from '#providers/calcBlockPathname.mjs';
+import { dispatch } from '#store.mjs';
 
 export default ({
   resource,

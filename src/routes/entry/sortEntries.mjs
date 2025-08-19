@@ -1,7 +1,7 @@
 import { generateSortDataUpdates } from '@quanxiaoxiao/mongo';
 
-import getEntryList from '../../controllers/entry/getEntryList.mjs';
-import { Entry as EntryModel } from '../../models/index.mjs';
+import getEntryList from '#controllers/entry/getEntryList.mjs';
+import { Entry as EntryModel } from '#models.mjs';
 
 export default async (input) => {
   const entryList = getEntryList();

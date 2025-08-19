@@ -1,7 +1,7 @@
 import createError from 'http-errors';
 
-import createEntry from '../../controllers/entry/createEntry.mjs';
-import findEntryOfAlias from '../../controllers/entry/findEntryOfAlias.mjs';
+import createEntry from '#controllers/entry/createEntry.mjs';
+import findEntryOfAlias from '#controllers/entry/findEntryOfAlias.mjs';
 
 export default async (input) => {
   const data = {

@@ -1,6 +1,6 @@
 import { find } from '@quanxiaoxiao/list';
 
-import { getState } from '../../store/store.mjs';
+import { getState } from '#store.mjs';
 
 export default (streamOutput) => {
   const { streamOutputList } = getState();

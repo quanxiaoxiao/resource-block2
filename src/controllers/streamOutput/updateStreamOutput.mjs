@@ -1,6 +1,6 @@
 import { update } from '@quanxiaoxiao/list';
 
-import { dispatch,getState } from '../../store/store.mjs';
+import { dispatch,getState } from '#store.mjs';
 
 export default (streamOutput, fn) => {
   const { streamOutputList } = getState();

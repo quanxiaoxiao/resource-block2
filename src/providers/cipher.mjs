@@ -7,7 +7,7 @@ import {
 
 import { isValidObjectId } from '@quanxiaoxiao/mongo';
 
-import { getState } from '../store/store.mjs';
+import { getState } from '#store.mjs';
 
 const incrementBuffer = (buf, counter) => {
   const len = buf.length;
