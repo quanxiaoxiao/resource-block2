@@ -18,10 +18,10 @@ const ENVIRONMENTS = {
 };
 
 const createDefaultLogger = () => ({
-  error: (message) => console.error(`[ERROR] ${message}`),
-  warn: (message) => console.warn(`[WARN] ${message}`),
-  info: (message) => console.info(`[INFO] ${message}`),
-  debug: (message) => console.debug(`[DEBUG] ${message}`),
+  error: (message, ...other) => console.error(`[ERROR] ${message}`, ...other),
+  warn: (message, ...other) => console.warn(`[WARN] ${message}`, ...other),
+  info: (message, ...other) => console.info(`[INFO] ${message}`, ...other),
+  debug: (message, ...other) => console.debug(`[DEBUG] ${message}`, ...other),
 });
 
 const formatLogMessage = ({ level, message }) => {
