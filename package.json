@@ -15,6 +15,7 @@
     "#logger.mjs": "./src/logger.mjs",
     "#constants.mjs": "./src/constants.mjs",
     "#store.mjs": "./src/store/store.mjs",
+    "#providers/*": "./src/providers/*",
     "#controllers/*": "./src/controllers/*",
     "#models.mjs": "./src/models/index.mjs",
     "#selector.mjs": "./src/store/selector.mjs"

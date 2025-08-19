@@ -6,14 +6,15 @@ import shelljs from 'shelljs';
 import {
   STREAM_TYPE_RESOURCE_CREATE,
   STREAM_TYPE_RESOURCE_UPDATE,
-} from '../../constants.mjs';
-import logger from '../../logger.mjs';
+} from '#constants.mjs';
+import logger from '#logger.mjs';
 import {
   Block as BlockModel,
   Resource as ResourceModel,
   ResourceRecord as ResourceRecordModel,
-} from '../../models/index.mjs';
-import calcBlockPathname from '../../providers/calcBlockPathname.mjs';
+} from '#models.mjs';
+import calcBlockPathname from '#providers/calcBlockPathname.mjs';
+
 import findStreamInput from './findStreamInput.mjs';
 import removeStreamInput from './removeStreamInput.mjs';
 

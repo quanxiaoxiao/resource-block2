@@ -1,7 +1,7 @@
 import { remove } from '@quanxiaoxiao/list';
 import shelljs from 'shelljs';
 
-import { dispatch,getState } from '../../store/store.mjs';
+import { dispatch,getState } from '#store.mjs';
 
 export default (streamInput) => {
   const { streamInputList } = getState();
