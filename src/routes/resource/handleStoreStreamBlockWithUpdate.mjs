@@ -12,8 +12,8 @@ import {
   ResourceRecord as ResourceRecordModel,
 } from '#models.mjs';
 import resourceType from '#types/resource.mjs';
+import calcEmptyBlockSha256 from '#utilities/calcEmptyBlockSha256.mjs';
 
-import calcEmptyBlockSha256 from '../../utilities/calcEmptyBlockSha256.mjs';
 import handleStreamInput from './handleStreamInput.mjs';
 
 const selectData = (data) => select({

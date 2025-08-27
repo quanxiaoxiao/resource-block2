@@ -4,6 +4,12 @@ import { isMainThread } from 'node:worker_threads';
 import createLogger from '@quanxiaoxiao/logger';
 import { getPathname } from '@quanxiaoxiao/node-utils';
 import dayjs from 'dayjs';
+import * as dotenv from 'dotenv';
+
+dotenv.config({
+  debug: false,
+  quiet: true,
+});
 
 const LOG_LEVELS = {
   ERROR: 'error',

@@ -6,13 +6,13 @@ import { PassThrough } from 'node:stream';
 import { select } from '@quanxiaoxiao/datav';
 import { wrapStreamRead } from '@quanxiaoxiao/node-utils';
 
-import getResourceById from '../../controllers/resource/getResourceById.mjs';
-import findStreamInput from '../../controllers/streamInput/findStreamInput.mjs';
-import removeStreamInput from '../../controllers/streamInput/removeStreamInput.mjs';
-import storeStreamInput from '../../controllers/streamInput/storeStreamInput.mjs';
-import updateStreamInput from '../../controllers/streamInput/updateStreamInput.mjs';
-import { encrypt } from '../../providers/cipher.mjs';
-import resourceType from '../../types/resource.mjs';
+import getResourceById from '#controllers/resource/getResourceById.mjs';
+import findStreamInput from '#controllers/streamInput/findStreamInput.mjs';
+import removeStreamInput from '#controllers/streamInput/removeStreamInput.mjs';
+import storeStreamInput from '#controllers/streamInput/storeStreamInput.mjs';
+import updateStreamInput from '#controllers/streamInput/updateStreamInput.mjs';
+import { encrypt } from '#providers/cipher.mjs';
+import resourceType from '#types/resource.mjs';
 
 export default (ctx, streamInput) => {
   const streamInputItem = findStreamInput(streamInput);
