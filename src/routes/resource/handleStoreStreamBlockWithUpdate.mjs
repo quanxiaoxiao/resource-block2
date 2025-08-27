@@ -2,16 +2,17 @@ import { select } from '@quanxiaoxiao/datav';
 import { hasHttpBodyContent } from '@quanxiaoxiao/http-utils';
 import contentDisposition from 'content-disposition';
 
-import { STREAM_TYPE_RESOURCE_UPDATE } from '../../constants.mjs';
-import getResourceById from '../../controllers/resource/getResourceById.mjs';
-import createStreamInput from '../../controllers/streamInput/createStreamInput.mjs';
-import logger from '../../logger.mjs';
+import { STREAM_TYPE_RESOURCE_UPDATE } from '#constants.mjs';
+import getResourceById from '#controllers/resource/getResourceById.mjs';
+import createStreamInput from '#controllers/streamInput/createStreamInput.mjs';
+import logger from '#logger.mjs';
 import {
   Block as BlockModel,
   Resource as ResourceModel,
   ResourceRecord as ResourceRecordModel,
-} from '../../models/index.mjs';
-import resourceType from '../../types/resource.mjs';
+} from '#models.mjs';
+import resourceType from '#types/resource.mjs';
+
 import calcEmptyBlockSha256 from '../../utilities/calcEmptyBlockSha256.mjs';
 import handleStreamInput from './handleStreamInput.mjs';
 

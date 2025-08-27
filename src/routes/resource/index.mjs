@@ -2,18 +2,19 @@ import assert from 'node:assert';
 
 import createError from 'http-errors';
 
-import findEntry from '../../controllers/entry/findEntry.mjs';
-import findEntryOfId from '../../controllers/entry/findEntryOfId.mjs';
-import getResourceById from '../../controllers/resource/getResourceById.mjs';
-import removeResource from '../../controllers/resource/removeResource.mjs';
-import updateResource from '../../controllers/resource/updateResource.mjs';
-import resourceType from '../../types/resource.mjs';
-import resourceRecordType from '../../types/resourceRecord.mjs';
-import getResourceRecords from './getResourceRecords.mjs';
+import findEntry from '#controllers/entry/findEntry.mjs';
+import findEntryOfId from '#controllers/entry/findEntryOfId.mjs';
+import getResourceById from '#controllers/resource/getResourceById.mjs';
+import getResources from '#controllers/resource/getResources.mjs';
+import removeResource from '#controllers/resource/removeResource.mjs';
+import updateResource from '#controllers/resource/updateResource.mjs';
+import getResourceRecords from '#controllers/resourceRecord/getResourceRecords.mjs';
+import resourceType from '#types/resource.mjs';
+import resourceRecordType from '#types/resourceRecord.mjs';
+
 import handleReadStreamBlock from './handleReadStreamBlock.mjs';
 import handleStoreStreamBlockWithCreate from './handleStoreStreamBlockWithCreate.mjs';
 import handleStoreStreamBlockWithUpdate from './handleStoreStreamBlockWithUpdate.mjs';
-import queryResources from './queryResources.mjs';
 
 const routers = {
   '/resource/:resource{/preview}': {
@@ -40,7 +41,7 @@ const routers = {
       if (!resourceItem) {
         throw createError(404);
       }
-      const list = await getResourceRecords(resourceItem._id);
+      const list = await getResourceRecords(resourceItem);
       ctx.response = {
         data: list,
       };
@@ -185,7 +186,7 @@ const routers = {
       'query.skip': { $gte: 0 },
     },
     get: async (ctx) => {
-      const { count, list } = await queryResources({
+      const { count, list } = await getResources({
         entry: ctx.request.params.entry,
         ...ctx.request.query,
       });

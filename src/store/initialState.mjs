@@ -2,7 +2,10 @@ import { select } from '@quanxiaoxiao/datav';
 import { getPathname } from '@quanxiaoxiao/node-utils';
 import * as dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({
+  debug: false,
+  quiet: true,
+});
 
 const initialState = {
   dateTimeCreate: Date.now(),

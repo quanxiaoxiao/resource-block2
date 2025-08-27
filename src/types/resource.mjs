@@ -24,6 +24,7 @@ export default {
   mime: {
     type: 'string',
   },
+  dateTimeAccess: ['record.dateTimeAccess', { type: 'number' }],
   size: ['block.size', { type: 'number' }],
   hash: ['block.sha256', { type: 'string' }],
   entry: {

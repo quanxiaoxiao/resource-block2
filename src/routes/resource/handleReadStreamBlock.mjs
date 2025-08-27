@@ -5,10 +5,10 @@ import { parseContentRange } from '@quanxiaoxiao/http-utils';
 import contentDispostion from 'content-disposition';
 import mime from 'mime';
 
-import createStreamOutput from '../../controllers/streamOutput/createStreamOutput.mjs';
-import removeStreamOutput from '../../controllers/streamOutput/removeStreamOutput.mjs';
-import updateStreamOutput from '../../controllers/streamOutput/updateStreamOutput.mjs';
-import { decrypt } from '../../providers/cipher.mjs';
+import createStreamOutput from '#controllers/streamOutput/createStreamOutput.mjs';
+import removeStreamOutput from '#controllers/streamOutput/removeStreamOutput.mjs';
+import updateStreamOutput from '#controllers/streamOutput/updateStreamOutput.mjs';
+import { decrypt } from '#providers/cipher.mjs';
 
 const BLOCK_SIZE = 16;
 

@@ -1,4 +1,4 @@
-import { ResourceRecord as ResourceRecordModel } from '../../models/index.mjs';
+import { ResourceRecord as ResourceRecordModel } from '#models.mjs';
 
 export default async (resourceItem) => {
   const resourceRecordList = await ResourceRecordModel.aggregate([

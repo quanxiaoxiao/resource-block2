@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 import {
   Entry as EntryModel,
   Resource as ResourceModel,
-} from '../../models/index.mjs';
+} from '#models.mjs';
 
 export default async ({
   limit,
@@ -84,7 +84,7 @@ export default async ({
 
   const [list, count] = await Promise.all([
     ResourceModel.aggregate([
-      ...orderBy === 'size' ? [] : [
+      ...(orderBy === 'size' || orderBy === 'dateTimeAccess') ? [] : [
         {
           $sort: orderAt,
         },
@@ -106,14 +106,35 @@ export default async ({
         },
       },
       {
+        $lookup: {
+          from: 'resourcerecords',
+          localField: 'record',
+          foreignField: '_id',
+          as: 'record',
+          pipeline: [
+            {
+              $limit: 1,
+            },
+          ],
+        },
+      },
+      {
         $unwind: '$block',
+      },
+      {
+        $unwind: '$record',
       },
       {
         $addFields: {
           blockSize: '$block.size',
         },
       },
-      ...orderBy === 'size' ? [
+      {
+        $addFields: {
+          dateTimeAccess: '$record.dateTimeAccess',
+        },
+      },
+      ...(orderBy === 'size' || orderBy === 'dateTimeAccess') ? [
         {
           $sort: orderAt,
         },
