@@ -32,7 +32,7 @@
     "@quanxiaoxiao/httttp": "^0.117.0",
     "@quanxiaoxiao/list": "^0.6.0",
     "@quanxiaoxiao/logger": "^0.0.1",
-    "@quanxiaoxiao/mongo": "^0.3.0",
+    "@quanxiaoxiao/mongo": "^0.5.0",
     "@quanxiaoxiao/node-utils": "^0.16.0",
     "@quanxiaoxiao/store": "^0.10.0",
     "@quanxiaoxiao/utils": "^0.17.0",
